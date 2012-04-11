@@ -1,0 +1,269 @@
+object DrawingSetFrame: TDrawingSetFrame
+  Left = 0
+  Height = 635
+  Top = 0
+  Width = 863
+  ClientHeight = 635
+  ClientWidth = 863
+  OnResize = FrameResize
+  TabOrder = 0
+  DesignLeft = 295
+  DesignTop = 37
+  object Panel1: TPanel
+    Left = 0
+    Height = 635
+    Top = 0
+    Width = 500
+    Align = alLeft
+    BevelOuter = bvNone
+    ClientHeight = 635
+    ClientWidth = 500
+    TabOrder = 0
+    object Panel5: TPanel
+      Left = 0
+      Height = 619
+      Top = 0
+      Width = 16
+      Align = alLeft
+      BevelOuter = bvNone
+      Caption = 'Y'
+      Font.Height = -12
+      Font.Style = [fsBold]
+      ParentFont = False
+      TabOrder = 0
+    end
+    object Panel8: TPanel
+      Left = 0
+      Height = 16
+      Top = 619
+      Width = 500
+      Align = alBottom
+      BevelOuter = bvNone
+      Caption = 'X'
+      Font.Height = -12
+      Font.Style = [fsBold]
+      ParentFont = False
+      TabOrder = 1
+    end
+    inline DrawingFrameXY: TDrawingFrame
+      Left = 16
+      Height = 619
+      Width = 484
+      Align = alClient
+      ClientHeight = 619
+      ClientWidth = 484
+      TabOrder = 2
+      Visible = True
+      DesignLeft = 450
+      DesignTop = 155
+      inherited Panel1: TPanel
+        Top = 579
+        Width = 484
+        ClientWidth = 484
+        inherited Panel4: TPanel
+          Width = 444
+          ClientWidth = 444
+          inherited Ruler_XPB: TPaintBox
+            Width = 444
+          end
+        end
+      end
+      inherited Panel2: TPanel
+        Height = 579
+        ClientHeight = 579
+        inherited Ruler_YPB: TPaintBox
+          Height = 579
+        end
+      end
+      inherited Panel5: TPanel
+        Height = 579
+        Width = 444
+        ClientHeight = 579
+        ClientWidth = 444
+        inherited PaintBox1: TPaintBox
+          Height = 579
+          Width = 444
+        end
+      end
+    end
+  end
+  object Splitter1: TSplitter
+    Left = 500
+    Height = 635
+    Top = 0
+    Width = 5
+    Color = clBackground
+    OnMoved = Splitter1Moved
+    ParentColor = False
+  end
+  object Panel2: TPanel
+    Left = 505
+    Height = 635
+    Top = 0
+    Width = 358
+    Align = alClient
+    BevelOuter = bvNone
+    Caption = 'Panel2'
+    ClientHeight = 635
+    ClientWidth = 358
+    TabOrder = 2
+    object Panel3: TPanel
+      Left = 0
+      Height = 260
+      Top = 0
+      Width = 358
+      Align = alTop
+      BevelOuter = bvNone
+      Caption = 'Panel3'
+      ClientHeight = 260
+      ClientWidth = 358
+      TabOrder = 0
+      object Panel9: TPanel
+        Left = 0
+        Height = 16
+        Top = 244
+        Width = 358
+        Align = alBottom
+        BevelOuter = bvNone
+        Caption = 'X'
+        Font.Height = -12
+        Font.Style = [fsBold]
+        ParentFont = False
+        TabOrder = 0
+      end
+      object Panel7: TPanel
+        Left = 0
+        Height = 244
+        Top = 0
+        Width = 16
+        Align = alLeft
+        BevelOuter = bvNone
+        Caption = 'Z'
+        Font.Height = -12
+        Font.Style = [fsBold]
+        ParentFont = False
+        TabOrder = 1
+      end
+      inline DrawingFrameXZ: TDrawingFrame
+        Left = 16
+        Height = 244
+        Width = 342
+        Align = alClient
+        ClientHeight = 244
+        ClientWidth = 342
+        TabOrder = 2
+        Visible = True
+        DesignLeft = 450
+        DesignTop = 155
+        inherited Panel1: TPanel
+          Top = 204
+          Width = 342
+          ClientWidth = 342
+          inherited Panel4: TPanel
+            Width = 302
+            ClientWidth = 302
+            inherited Ruler_XPB: TPaintBox
+              Width = 302
+            end
+          end
+        end
+        inherited Panel2: TPanel
+          Height = 204
+          ClientHeight = 204
+          inherited Ruler_YPB: TPaintBox
+            Height = 204
+          end
+        end
+        inherited Panel5: TPanel
+          Height = 204
+          Width = 302
+          ClientHeight = 204
+          ClientWidth = 302
+          inherited PaintBox1: TPaintBox
+            Height = 204
+            Width = 302
+          end
+        end
+      end
+    end
+    object Splitter2: TSplitter
+      Cursor = crVSplit
+      Left = 0
+      Height = 5
+      Top = 260
+      Width = 358
+      Align = alTop
+      Color = clBackground
+      ParentColor = False
+      ResizeAnchor = akTop
+    end
+    object Panel6: TPanel
+      Left = 0
+      Height = 354
+      Top = 265
+      Width = 16
+      Align = alLeft
+      BevelOuter = bvNone
+      Caption = 'Z'
+      Font.Height = -12
+      Font.Style = [fsBold]
+      ParentFont = False
+      TabOrder = 2
+    end
+    object Panel10: TPanel
+      Left = 0
+      Height = 16
+      Top = 619
+      Width = 358
+      Align = alBottom
+      BevelOuter = bvNone
+      Caption = 'Y'
+      Font.Height = -12
+      Font.Style = [fsBold]
+      ParentFont = False
+      TabOrder = 3
+    end
+    inline DrawingFrameYZ: TDrawingFrame
+      Left = 16
+      Height = 354
+      Top = 265
+      Width = 342
+      Align = alClient
+      ClientHeight = 354
+      ClientWidth = 342
+      TabOrder = 4
+      Visible = True
+      DesignLeft = 450
+      DesignTop = 155
+      inherited Panel1: TPanel
+        Top = 314
+        Width = 342
+        ClientWidth = 342
+        inherited Panel4: TPanel
+          Width = 302
+          ClientWidth = 302
+          inherited Ruler_XPB: TPaintBox
+            Width = 302
+          end
+        end
+      end
+      inherited Panel2: TPanel
+        Height = 314
+        ClientHeight = 314
+        inherited Ruler_YPB: TPaintBox
+          Height = 314
+        end
+      end
+      inherited Panel5: TPanel
+        Height = 314
+        Width = 302
+        ClientHeight = 314
+        ClientWidth = 302
+        inherited PaintBox1: TPaintBox
+          Height = 314
+          Width = 302
+        end
+      end
+    end
+  end
+end

@@ -1,0 +1,111 @@
+object AboutForm1: TAboutForm1
+  Left = 385
+  Height = 387
+  Top = 83
+  Width = 554
+  Caption = 'About'
+  ClientHeight = 387
+  ClientWidth = 554
+  OnCreate = FormCreate
+  LCLVersion = '0.9.30'
+  object Label1: TLabel
+    Left = 0
+    Height = 24
+    Top = 112
+    Width = 554
+    Alignment = taCenter
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = False
+    Caption = 'Copyright (c) 2012 by Donald R. Ziesig.  All Rights Reserved.'
+    ParentColor = False
+    WordWrap = True
+  end
+  object Label2: TLabel
+    Left = 0
+    Height = 37
+    Top = 27
+    Width = 554
+    Alignment = taCenter
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = False
+    Caption = 'Magic Tracks'
+    Font.CharSet = ANSI_CHARSET
+    Font.Color = clBlack
+    Font.Height = -27
+    Font.Name = 'DejaVu Sans'
+    Font.Pitch = fpVariable
+    Font.Quality = fqDraft
+    ParentColor = False
+    ParentFont = False
+  end
+  object Label3: TLabel
+    Left = 0
+    Height = 14
+    Top = 64
+    Width = 554
+    Alignment = taCenter
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = False
+    Caption = 'Version 0.0'
+    ParentColor = False
+  end
+  object Label4: TLabel
+    Left = 16
+    Height = 14
+    Top = 144
+    Width = 89
+    Caption = 'Configuration File:'
+    ParentColor = False
+  end
+  object ConfigFileName: TLabel
+    Left = 16
+    Height = 14
+    Top = 160
+    Width = 75
+    Caption = 'ConfigFileName'
+    ParentColor = False
+  end
+  object BitBtn1: TBitBtn
+    Left = 455
+    Height = 30
+    Top = 341
+    Width = 75
+    Anchors = [akRight, akBottom]
+    Caption = '&OK'
+    Default = True
+    Kind = bkOK
+    ModalResult = 1
+    OnClick = BitBtn1Click
+    TabOrder = 0
+  end
+  object BuildLabel: TLabel
+    Left = 0
+    Height = 14
+    Top = 88
+    Width = 559
+    Alignment = taCenter
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = False
+    Caption = 'BuildLabel'
+    ParentColor = False
+  end
+  object Memo1: TMemo
+    Left = 72
+    Height = 128
+    Top = 192
+    Width = 408
+    Lines.Strings = (
+      '    This program is free software: you can redistribute it and/or modify'
+      '    it under the terms of the GNU General Public License as published by'
+      '    the Free Software Foundation, either version 3 of the License, or'
+      '    (at your option) any later version.'
+      ''
+      '    This program is distributed in the hope that it will be useful,'
+      '    but WITHOUT ANY WARRANTY; without even the implied warranty of'
+      '    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the'
+      '    GNU General Public License for more details.'
+    )
+    ReadOnly = True
+    TabOrder = 1
+  end
+end

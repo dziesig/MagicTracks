@@ -1,0 +1,119 @@
+object DrawingFrame: TDrawingFrame
+  Left = 0
+  Height = 510
+  Top = 0
+  Width = 729
+  HorzScrollBar.Visible = False
+  ClientHeight = 510
+  ClientWidth = 729
+  TabOrder = 0
+  Visible = False
+  DesignLeft = 258
+  DesignTop = 116
+  object Panel1: TPanel
+    Left = 0
+    Height = 40
+    Top = 470
+    Width = 729
+    Align = alBottom
+    BevelOuter = bvNone
+    Caption = 'Panel1'
+    ClientHeight = 40
+    ClientWidth = 729
+    TabOrder = 0
+    object Panel3: TPanel
+      Left = 0
+      Height = 40
+      Top = 0
+      Width = 40
+      Align = alLeft
+      BevelOuter = bvNone
+      Color = clYellow
+      ParentColor = False
+      TabOrder = 0
+    end
+    object Panel4: TPanel
+      Left = 40
+      Height = 40
+      Top = 0
+      Width = 689
+      Align = alClient
+      BevelOuter = bvNone
+      ClientHeight = 40
+      ClientWidth = 689
+      TabOrder = 1
+      object Ruler_XPB: TPaintBox
+        Left = 0
+        Height = 40
+        Top = 0
+        Width = 689
+        Align = alClient
+        OnMouseDown = Ruler_XPBMouseDown
+        OnMouseMove = Ruler_XPBMouseMove
+        OnMouseUp = Ruler_XPBMouseUp
+        OnPaint = Ruler_XPBPaint
+      end
+    end
+  end
+  object Panel2: TPanel
+    Left = 0
+    Height = 470
+    Top = 0
+    Width = 40
+    Align = alLeft
+    BevelOuter = bvNone
+    ClientHeight = 470
+    ClientWidth = 40
+    TabOrder = 1
+    object Ruler_YPB: TPaintBox
+      Left = 0
+      Height = 470
+      Top = 0
+      Width = 40
+      Align = alClient
+      OnMouseDown = Ruler_YPBMouseDown
+      OnMouseMove = Ruler_YPBMouseMove
+      OnMouseUp = Ruler_YPBMouseUp
+      OnPaint = Ruler_YPBPaint
+    end
+  end
+  object Panel5: TPanel
+    Left = 40
+    Height = 470
+    Top = 0
+    Width = 689
+    Align = alClient
+    BevelOuter = bvNone
+    ClientHeight = 470
+    ClientWidth = 689
+    TabOrder = 2
+    object PaintBox1: TPaintBox
+      Left = 0
+      Height = 470
+      Top = 0
+      Width = 689
+      Align = alClient
+      Color = clSilver
+      ParentColor = False
+      OnMouseDown = PaintBox1MouseDown
+      OnMouseMove = PaintBox1MouseMove
+      OnMouseUp = PaintBox1MouseUp
+      OnMouseEnter = PaintBox1MouseEnter
+      OnMouseLeave = PaintBox1MouseLeave
+      OnPaint = PaintBox1Paint
+      OnResize = PaintBox1Resize
+    end
+  end
+  object PopupMenu1: TPopupMenu
+    left = 304
+    top = 215
+    object MenuItem1: TMenuItem
+      Caption = 'Guide 1 To Here'
+      OnClick = MenuItem1Click
+    end
+    object MenuItem2: TMenuItem
+      Caption = 'Guide 2 To Here'
+      OnClick = MenuItem2Click
+    end
+  end
+end

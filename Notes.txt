@@ -1,0 +1,107 @@
+0001.0    10 February 2012 - Friday
+
+0001.1    Working on the positional relationships between the various parts of
+          the two right panels (XZ and YZ).  They really should look identical
+          to the left (XY) panel.
+
+          From the Object Inspector
+
+          The PRIMARY XY drawing controls:
+
+          Panel3   { The underlying panel for XY - needed to handle Splitter1  }
+            Panel5 { The bottom caption panel "X" }
+            Panel6 { The right caption panel "Y" }
+            Panel7 { The intermediate panel for XY - see contents below }
+              ScrollBarXY_X { bottom of Panel 7 }
+              ScrollBarXY_Y { right of Panel 7 }
+              Panel12 { Contains the X and Y rulers ( X first }
+                XYRuler_XPB { X ruler's paint box }
+                XYRuler_YPB { Y ruler's paint box }
+                XYDrawingPB { The drawing paint box }
+
+          The lower right ZY drawing controls (as of 10:20 AM)
+
+          Panel2    { The underlying panel fo YZ - needed to handle Splitter2 }
+            Panel9  { The bottom caption panel "Y" }
+            Panel11 { The right caption panel "Z" }  <== Need intermediate panel
+            YZRuler_YPB { Y ruler's paint box }      <== Should be child of paint-box panel
+            YZRuler_ZPB { Z ruler's paint box }
+            ScrollBarYZ_Z
+            ScrollBarYZ_Y
+
+          The lower right YZ drawing controls as they should be.
+
+          Panel2    { The underlying panel fo YZ - needed to handle Splitter2 }
+            Panel9  { The bottom caption panel "Y" }
+            Panel11 { The right caption panel "Z" }
+              Panel13
+                ScrollBarYZ_Y
+                ScrollBarYZ_Y
+                  Panel12
+                    YZRuler_YPB { Y ruler's paint box }
+                    YZRuler_ZPB { Z ruler's paint box }
+                    YZDrawing
+
+0002.0  25 February 2012 - Sunday
+
+0002.1  Did total redesign of the drawing controls - Created a single frame
+        containing the drawing box and two rulers - eliminated the scroll bars
+        because they had insufficient resolution even at the pixel level.
+
+        Changed the scrolling capability to use the rulers.  Just click on ruler
+        and drag in the direction you want to move and the ruler (and drawing)
+        follows the cursor.  Much better design.  Also eliminates the need to
+        know the exact extents (minX, maxX, etc.) of the drawing.
+
+        Once I got the single frame working, I created a DrawingSetFrame that
+        has three DrawingFrames separated by splitters for XY, XZ and YZ axes.
+        Handled the resize event to keep the relative sizes of the DrawingFrames
+        constant.
+
+0002.2  Started working on the implementation of Layers.  Original concept was to
+        allow the user to generate his own layer labels and re-order them according
+        to the order in which he wanted to render them.
+
+        Decided to start off with a pre-defined set of layers with a fixed order
+        of rendering as in (in this list, the top layers are rendered first, the
+        lowest layers are rendered last.  This way the track layers have higher
+        priority than anything else.  Need to worry about rendering tunnels):
+
+           Building/Room
+           Framework
+           Scenery (elevation and vegetation).
+           Structures
+           Track 3
+           Track 2
+           Track 1
+
+        Layers themselves will be Objects with differing drawing abilities.
+        As in:
+
+           TLayer = class(TPersistentz)
+           TBuildingLayer = class(TLayer) ...
+           *
+           *
+           *
+           TTrack = class(TLayer).
+
+        Track rendering will be best effort based on Track Gauge, Scale (e.g. HO,
+        N, Z) and Drawing Zoom.  At highest zoom ratios they will be rendered as
+        single pixel lines.
+
+        Available thrack gauges will be:
+
+          5'0".    (Eastern European, Russia, etc.)
+          4'8.5"   (Standard Gauge)
+          3 m.     (Xnm)
+          3'0"     (Xn3)
+          2'6"     (Xn2.5)
+          2'0"     (Xn2 Maine 2 footers).
+
+          Make provisions for eventual dual gauge track rendering.
+
+0002.3  Design of the Layer editing GUI.
+
+
+
+

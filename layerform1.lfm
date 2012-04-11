@@ -1,0 +1,348 @@
+object LayerForm: TLayerForm
+  Left = 321
+  Height = 387
+  Top = 37
+  Width = 824
+  BorderStyle = bsDialog
+  Caption = 'Layers'
+  ClientHeight = 387
+  ClientWidth = 824
+  OnCreate = FormCreate
+  OnShow = FormShow
+  Position = poScreenCenter
+  LCLVersion = '0.9.30'
+  object ViewLayersCG: TCheckGroup
+    Left = 24
+    Height = 168
+    Top = 24
+    Width = 153
+    AutoFill = True
+    Caption = 'View Layers'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    Items.Strings = (
+      'Building'
+      'Framework'
+      'Electrical'
+      'Tracks'
+      'Scenery'
+      'Structures'
+    )
+    TabOrder = 0
+    Data = {
+      06000000020202020202
+    }
+  end
+  object EditLayerRG: TRadioGroup
+    Left = 200
+    Height = 168
+    Top = 24
+    Width = 137
+    AutoFill = True
+    Caption = 'Edit Layer'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    ClientHeight = 150
+    ClientWidth = 133
+    ItemIndex = 1
+    Items.Strings = (
+      'Building'
+      'Framework'
+      'Electrical'
+      'Tracks'
+      'Scenery'
+      'Structures'
+    )
+    OnClick = EditLayerRGClick
+    TabOrder = 1
+  end
+  object GroupBox1: TGroupBox
+    Left = 360
+    Height = 296
+    Top = 24
+    Width = 281
+    Caption = 'Lines'
+    ClientHeight = 278
+    ClientWidth = 277
+    TabOrder = 2
+    object LineColorListBox: TColorListBox
+      Left = 22
+      Height = 182
+      Top = 16
+      Width = 100
+      ItemHeight = 0
+      TabOrder = 0
+    end
+    object LineStyleCB: TComboBox
+      Left = 158
+      Height = 19
+      Top = 16
+      Width = 100
+      AutoDropDown = True
+      ItemHeight = 13
+      ItemIndex = 0
+      Items.Strings = (
+        'Solid'
+        'Dash'
+        'Dot'
+        'DashDot'
+        'DashDotDot'
+        '5'''
+        '4'' 8"'
+        '3'''
+        'Meter'
+        '2'' 5"'
+        '2'''
+      )
+      OnChange = LineStyleCBChange
+      OnDrawItem = LineStyleCBDrawItem
+      ReadOnly = True
+      Style = csOwnerDrawFixed
+      TabOrder = 1
+      Text = 'Solid'
+    end
+    object LineSizeCB: TComboBox
+      Left = 158
+      Height = 19
+      Top = 64
+      Width = 100
+      ItemHeight = 13
+      ItemIndex = 0
+      Items.Strings = (
+        '1'
+        '3'
+        '5'
+        '7'
+      )
+      OnChange = LineSizeCBChange
+      OnDrawItem = LineSizeCBDrawItem
+      ReadOnly = True
+      Style = csOwnerDrawFixed
+      TabOrder = 2
+      Text = '1'
+    end
+    object Label1: TLabel
+      Left = 22
+      Height = 14
+      Top = 0
+      Width = 26
+      Caption = 'Color'
+      ParentColor = False
+    end
+    object Label2: TLabel
+      Left = 158
+      Height = 14
+      Top = 0
+      Width = 82
+      Caption = 'Line Style/Gauge'
+      ParentColor = False
+    end
+    object SizeLabel: TLabel
+      Left = 158
+      Height = 14
+      Top = 48
+      Width = 20
+      Caption = 'Size'
+      ParentColor = False
+    end
+    object LineStartCB: TComboBox
+      Left = 158
+      Height = 19
+      Top = 112
+      Width = 100
+      ItemHeight = 13
+      ItemIndex = 0
+      Items.Strings = (
+        'Flat'
+        'Round'
+        'Tee'
+        'Point'
+        'Arrow'
+        'Dot'
+        'Square'
+        'Triangle'
+        ''
+      )
+      Style = csOwnerDrawFixed
+      TabOrder = 3
+      Text = 'Flat'
+    end
+    object LineStartLabel: TLabel
+      Left = 158
+      Height = 14
+      Top = 96
+      Width = 68
+      Caption = 'Line Start End'
+      ParentColor = False
+    end
+    object LineEndingCB: TComboBox
+      Left = 158
+      Height = 19
+      Top = 168
+      Width = 100
+      ItemHeight = 13
+      ItemIndex = 0
+      Items.Strings = (
+        'Flat'
+        'Round'
+        'Tee'
+        'Point'
+        'Arrow'
+        'Dot'
+        'Square'
+        'Triangle'
+        ''
+      )
+      Style = csOwnerDrawFixed
+      TabOrder = 4
+      Text = 'Flat'
+    end
+    object LineEndingLabel: TLabel
+      Left = 158
+      Height = 14
+      Top = 152
+      Width = 62
+      Caption = 'Line End End'
+      ParentColor = False
+    end
+    object PaintBox1: TPaintBox
+      Left = 22
+      Height = 33
+      Top = 223
+      Width = 236
+      OnPaint = PaintBox1Paint
+    end
+    object RailSizeCB: TComboBox
+      Left = 158
+      Height = 19
+      Top = 64
+      Width = 100
+      ItemHeight = 13
+      ItemIndex = 0
+      Items.Strings = (
+        'Code 40'
+        'Code 55'
+        'Code 70'
+        'Code 75'
+        'Code 80'
+        'Code 83'
+        'Code 100'
+        'Code 125'
+        'Code 200'
+        'Code 250'
+        'Code 332'
+      )
+      ReadOnly = True
+      Style = csOwnerDrawFixed
+      TabOrder = 5
+      Text = 'Code 40'
+      Visible = False
+    end
+    object RailLabel: TLabel
+      Left = 158
+      Height = 14
+      Top = 48
+      Width = 18
+      Caption = 'Rail'
+      ParentColor = False
+      Visible = False
+    end
+    object TrackTypeCB: TComboBox
+      Left = 158
+      Height = 19
+      Top = 112
+      Width = 100
+      ItemHeight = 13
+      ItemIndex = 0
+      Items.Strings = (
+        'Main Line'
+        'Siding'
+        'Yard'
+        'Logging'
+      )
+      Style = csOwnerDrawFixed
+      TabOrder = 6
+      Text = 'Main Line'
+      Visible = False
+    end
+  end
+  object OkBitBtn: TBitBtn
+    Left = 624
+    Height = 30
+    Top = 336
+    Width = 75
+    Caption = '&OK'
+    Default = True
+    Kind = bkOK
+    ModalResult = 1
+    OnClick = OkBitBtnClick
+    TabOrder = 3
+  end
+  object CancelBitBtn: TBitBtn
+    Left = 720
+    Height = 30
+    Top = 336
+    Width = 75
+    Cancel = True
+    Caption = 'Cancel'
+    Kind = bkCancel
+    ModalResult = 2
+    TabOrder = 4
+  end
+  object ViewAllLayersButton: TButton
+    Left = 24
+    Height = 25
+    Top = 204
+    Width = 120
+    Caption = 'View All Layers'
+    OnClick = ViewAllLayersButtonClick
+    TabOrder = 5
+  end
+  object TrackTypeLabel: TLabel
+    Left = 520
+    Height = 14
+    Top = 136
+    Width = 54
+    Caption = 'Track Type'
+    ParentColor = False
+    Visible = False
+  end
+  object GroupBox2: TGroupBox
+    Left = 656
+    Height = 288
+    Top = 32
+    Width = 145
+    Caption = 'Surface (2D/3D)'
+    ClientHeight = 270
+    ClientWidth = 141
+    TabOrder = 6
+    object SurfaceColorListBox: TColorListBox
+      Left = 22
+      Height = 243
+      Top = 16
+      Width = 100
+      ItemHeight = 0
+      TabOrder = 0
+    end
+    object Label3: TLabel
+      Left = 22
+      Height = 14
+      Top = 0
+      Width = 26
+      Caption = 'Color'
+      ParentColor = False
+    end
+  end
+end

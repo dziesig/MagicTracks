@@ -1,0 +1,42 @@
+object Form1: TForm1
+  Left = 510
+  Height = 240
+  Top = 150
+  Width = 320
+  Caption = 'Form1'
+  ClientHeight = 220
+  ClientWidth = 320
+  Menu = MainMenu1
+  LCLVersion = '0.9.30'
+  object Button1: TButton
+    Left = 88
+    Height = 25
+    Top = 64
+    Width = 75
+    Caption = 'Button1'
+    OnClick = Button1Click
+    TabOrder = 0
+  end
+  object Label1: TLabel
+    Left = 80
+    Height = 34
+    Top = 160
+    Width = 146
+    Caption = 'Hello Roark!'
+    Font.Height = -27
+    ParentColor = False
+    ParentFont = False
+    Visible = False
+  end
+  object MainMenu1: TMainMenu
+    left = 214
+    top = 97
+    object MenuItem1: TMenuItem
+      Caption = 'file'
+      object MenuItem2: TMenuItem
+        Caption = 'exit'
+        OnClick = MenuItem2Click
+      end
+    end
+  end
+end

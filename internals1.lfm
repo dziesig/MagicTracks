@@ -1,0 +1,812 @@
+object InternalsForm1: TInternalsForm1
+  Left = 547
+  Height = 495
+  Top = 106
+  Width = 600
+  Caption = 'Internals'
+  ClientHeight = 475
+  ClientWidth = 600
+  Menu = MainMenu1
+  OnCreate = FormCreate
+  OnResize = FormResize
+  LCLVersion = '0.9.30'
+  object PageControl1: TPageControl
+    Left = 0
+    Height = 475
+    Top = 0
+    Width = 600
+    ActivePage = TabSheet3
+    Align = alClient
+    TabIndex = 2
+    TabOrder = 0
+    OnChange = PageControl1Change
+    object TabSheet1: TTabSheet
+      Caption = 'Events'
+      ClientHeight = 386
+      ClientWidth = 592
+      object StringGrid1: TStringGrid
+        Left = 0
+        Height = 336
+        Top = 50
+        Width = 592
+        Align = alClient
+        ColCount = 2
+        FixedCols = 0
+        TabOrder = 0
+      end
+      object Panel1: TPanel
+        Left = 0
+        Height = 50
+        Top = 0
+        Width = 592
+        Align = alTop
+        ClientHeight = 50
+        ClientWidth = 592
+        TabOrder = 1
+        object Button1: TButton
+          Left = 12
+          Height = 25
+          Top = 10
+          Width = 75
+          Caption = 'Clear'
+          OnClick = Button1Click
+          TabOrder = 0
+        end
+      end
+    end
+    object TabSheet2: TTabSheet
+      Caption = 'Rulers'
+      ClientHeight = 386
+      ClientWidth = 592
+      object GroupBox1: TGroupBox
+        Left = 12
+        Height = 105
+        Top = 18
+        Width = 185
+        Caption = 'XY'
+        ClientHeight = 87
+        ClientWidth = 181
+        TabOrder = 0
+        object Label1: TLabel
+          Left = 14
+          Height = 14
+          Top = 8
+          Width = 31
+          Caption = 'fMinX:'
+          ParentColor = False
+        end
+        object Label2: TLabel
+          Left = 14
+          Height = 14
+          Top = 36
+          Width = 31
+          Caption = 'fMinY:'
+          ParentColor = False
+        end
+        object Label3: TLabel
+          Left = 14
+          Height = 14
+          Top = 64
+          Width = 31
+          Caption = 'fMinZ:'
+          ParentColor = False
+        end
+        object XYMinXEdit: TEdit
+          Left = 54
+          Height = 21
+          Top = 4
+          Width = 112
+          ReadOnly = True
+          TabOrder = 0
+        end
+        object XYMinYEdit: TEdit
+          Left = 54
+          Height = 21
+          Top = 32
+          Width = 112
+          ReadOnly = True
+          TabOrder = 1
+        end
+        object XYMinZEdit: TEdit
+          Left = 54
+          Height = 21
+          Top = 60
+          Width = 112
+          ReadOnly = True
+          TabOrder = 2
+        end
+      end
+      object GroupBox2: TGroupBox
+        Left = 12
+        Height = 105
+        Top = 130
+        Width = 185
+        Caption = 'XZ'
+        ClientHeight = 87
+        ClientWidth = 181
+        TabOrder = 1
+        object Label4: TLabel
+          Left = 14
+          Height = 14
+          Top = 8
+          Width = 31
+          Caption = 'fMinX:'
+          ParentColor = False
+        end
+        object Label5: TLabel
+          Left = 14
+          Height = 14
+          Top = 36
+          Width = 31
+          Caption = 'fMinY:'
+          ParentColor = False
+        end
+        object Label6: TLabel
+          Left = 14
+          Height = 14
+          Top = 64
+          Width = 31
+          Caption = 'fMinZ:'
+          ParentColor = False
+        end
+        object XZMinXEdit: TEdit
+          Left = 54
+          Height = 21
+          Top = 4
+          Width = 112
+          ReadOnly = True
+          TabOrder = 0
+        end
+        object XzMinYEdit: TEdit
+          Left = 54
+          Height = 21
+          Top = 32
+          Width = 112
+          ReadOnly = True
+          TabOrder = 1
+        end
+        object XZMinZEdit: TEdit
+          Left = 54
+          Height = 21
+          Top = 60
+          Width = 112
+          ReadOnly = True
+          TabOrder = 2
+        end
+      end
+      object GroupBox3: TGroupBox
+        Left = 12
+        Height = 105
+        Top = 242
+        Width = 185
+        Caption = 'YZ'
+        ClientHeight = 87
+        ClientWidth = 181
+        TabOrder = 2
+        object Label7: TLabel
+          Left = 14
+          Height = 14
+          Top = 8
+          Width = 31
+          Caption = 'fMinX:'
+          ParentColor = False
+        end
+        object Label8: TLabel
+          Left = 14
+          Height = 14
+          Top = 36
+          Width = 31
+          Caption = 'fMinY:'
+          ParentColor = False
+        end
+        object Label9: TLabel
+          Left = 14
+          Height = 14
+          Top = 64
+          Width = 31
+          Caption = 'fMinZ:'
+          ParentColor = False
+        end
+        object YZMinXEdit: TEdit
+          Left = 54
+          Height = 21
+          Top = 4
+          Width = 112
+          ReadOnly = True
+          TabOrder = 0
+        end
+        object YZMinYEdit: TEdit
+          Left = 54
+          Height = 21
+          Top = 32
+          Width = 112
+          ReadOnly = True
+          TabOrder = 1
+        end
+        object YZMinZEdit: TEdit
+          Left = 54
+          Height = 21
+          Top = 60
+          Width = 112
+          ReadOnly = True
+          TabOrder = 2
+        end
+      end
+      object GroupBox4: TGroupBox
+        Left = 243
+        Height = 105
+        Top = 18
+        Width = 185
+        Caption = 'Guides 1'
+        ClientHeight = 87
+        ClientWidth = 181
+        TabOrder = 3
+        object Label10: TLabel
+          Left = 14
+          Height = 14
+          Top = 8
+          Width = 11
+          Caption = 'X:'
+          ParentColor = False
+        end
+        object GuideX1Edit: TEdit
+          Left = 54
+          Height = 21
+          Top = 4
+          Width = 112
+          ReadOnly = True
+          TabOrder = 0
+        end
+        object Label11: TLabel
+          Left = 14
+          Height = 14
+          Top = 36
+          Width = 11
+          Caption = 'Y:'
+          ParentColor = False
+        end
+        object GuideY1Edit: TEdit
+          Left = 54
+          Height = 21
+          Top = 32
+          Width = 112
+          ReadOnly = True
+          TabOrder = 1
+        end
+        object Label12: TLabel
+          Left = 14
+          Height = 14
+          Top = 64
+          Width = 11
+          Caption = 'Z:'
+          ParentColor = False
+        end
+        object GuideZ1Edit: TEdit
+          Left = 54
+          Height = 21
+          Top = 60
+          Width = 112
+          ReadOnly = True
+          TabOrder = 2
+        end
+      end
+      object GroupBox5: TGroupBox
+        Left = 244
+        Height = 105
+        Top = 130
+        Width = 185
+        Caption = 'Guides 2'
+        ClientHeight = 87
+        ClientWidth = 181
+        TabOrder = 4
+        object Label13: TLabel
+          Left = 14
+          Height = 14
+          Top = 8
+          Width = 11
+          Caption = 'X:'
+          ParentColor = False
+        end
+        object GuideX2Edit: TEdit
+          Left = 54
+          Height = 21
+          Top = 4
+          Width = 112
+          ReadOnly = True
+          TabOrder = 0
+        end
+        object Label14: TLabel
+          Left = 14
+          Height = 14
+          Top = 36
+          Width = 11
+          Caption = 'Y:'
+          ParentColor = False
+        end
+        object GuideY2Edit: TEdit
+          Left = 54
+          Height = 21
+          Top = 32
+          Width = 112
+          ReadOnly = True
+          TabOrder = 1
+        end
+        object Label15: TLabel
+          Left = 14
+          Height = 14
+          Top = 64
+          Width = 11
+          Caption = 'Z:'
+          ParentColor = False
+        end
+        object GuideZ2Edit: TEdit
+          Left = 54
+          Height = 21
+          Top = 60
+          Width = 112
+          ReadOnly = True
+          TabOrder = 2
+        end
+      end
+    end
+    object TabSheet3: TTabSheet
+      Caption = 'Rect. Solid'
+      ClientHeight = 449
+      ClientWidth = 592
+      object GroupBox6: TGroupBox
+        Left = 28
+        Height = 105
+        Top = 6
+        Width = 160
+        Caption = 'Origin'
+        ClientHeight = 87
+        ClientWidth = 156
+        TabOrder = 0
+        object OriginXEdit: TEdit
+          Left = 62
+          Height = 21
+          Top = 4
+          Width = 80
+          ReadOnly = True
+          TabOrder = 0
+          Text = 'OriginXEdit'
+        end
+        object OriginYEdit: TEdit
+          Left = 62
+          Height = 21
+          Top = 32
+          Width = 80
+          ReadOnly = True
+          TabOrder = 1
+          Text = 'OriginYEdit'
+        end
+        object OriginZEdit: TEdit
+          Left = 62
+          Height = 21
+          Top = 60
+          Width = 80
+          ReadOnly = True
+          TabOrder = 2
+          Text = 'OriginZEdit'
+        end
+        object Label16: TLabel
+          Left = 14
+          Height = 14
+          Top = 8
+          Width = 8
+          Caption = 'X'
+          Font.Style = [fsBold]
+          ParentColor = False
+          ParentFont = False
+        end
+        object Label17: TLabel
+          Left = 14
+          Height = 14
+          Top = 36
+          Width = 8
+          Caption = 'Y'
+          Font.Style = [fsBold]
+          ParentColor = False
+          ParentFont = False
+        end
+        object Label18: TLabel
+          Left = 14
+          Height = 14
+          Top = 64
+          Width = 8
+          Caption = 'Z'
+          Font.Style = [fsBold]
+          ParentColor = False
+          ParentFont = False
+        end
+      end
+      object GroupBox7: TGroupBox
+        Left = 396
+        Height = 105
+        Top = 10
+        Width = 160
+        Caption = 'Offset'
+        ClientHeight = 87
+        ClientWidth = 156
+        TabOrder = 1
+        object OffsetXEdit: TEdit
+          Left = 62
+          Height = 21
+          Top = 4
+          Width = 80
+          ReadOnly = True
+          TabOrder = 0
+          Text = 'OriginXEdit'
+        end
+        object OffsetYEdit: TEdit
+          Left = 62
+          Height = 21
+          Top = 32
+          Width = 80
+          ReadOnly = True
+          TabOrder = 1
+          Text = 'OriginYEdit'
+        end
+        object OffsetZEdit: TEdit
+          Left = 62
+          Height = 21
+          Top = 60
+          Width = 80
+          ReadOnly = True
+          TabOrder = 2
+          Text = 'OriginZEdit'
+        end
+        object Label19: TLabel
+          Left = 14
+          Height = 14
+          Top = 8
+          Width = 8
+          Caption = 'X'
+          Font.Style = [fsBold]
+          ParentColor = False
+          ParentFont = False
+        end
+        object Label20: TLabel
+          Left = 14
+          Height = 14
+          Top = 36
+          Width = 8
+          Caption = 'Y'
+          Font.Style = [fsBold]
+          ParentColor = False
+          ParentFont = False
+        end
+        object Label21: TLabel
+          Left = 14
+          Height = 14
+          Top = 64
+          Width = 8
+          Caption = 'Z'
+          Font.Style = [fsBold]
+          ParentColor = False
+          ParentFont = False
+        end
+      end
+      object GroupBox8: TGroupBox
+        Left = 212
+        Height = 105
+        Top = 10
+        Width = 160
+        Caption = 'Object'
+        ClientHeight = 87
+        ClientWidth = 156
+        TabOrder = 2
+        object ObjectXEdit: TEdit
+          Left = 62
+          Height = 21
+          Top = 4
+          Width = 80
+          ReadOnly = True
+          TabOrder = 0
+          Text = 'OriginXEdit'
+        end
+        object ObjectYEdit: TEdit
+          Left = 62
+          Height = 21
+          Top = 32
+          Width = 80
+          ReadOnly = True
+          TabOrder = 1
+          Text = 'OriginYEdit'
+        end
+        object ObjectZEdit: TEdit
+          Left = 62
+          Height = 21
+          Top = 60
+          Width = 80
+          ReadOnly = True
+          TabOrder = 2
+          Text = 'OriginZEdit'
+        end
+        object Label22: TLabel
+          Left = 14
+          Height = 14
+          Top = 8
+          Width = 8
+          Caption = 'X'
+          Font.Style = [fsBold]
+          ParentColor = False
+          ParentFont = False
+        end
+        object Label23: TLabel
+          Left = 14
+          Height = 14
+          Top = 36
+          Width = 8
+          Caption = 'Y'
+          Font.Style = [fsBold]
+          ParentColor = False
+          ParentFont = False
+        end
+        object Label24: TLabel
+          Left = 14
+          Height = 14
+          Top = 64
+          Width = 8
+          Caption = 'Z'
+          Font.Style = [fsBold]
+          ParentColor = False
+          ParentFont = False
+        end
+      end
+      object GroupBox15: TGroupBox
+        Left = 28
+        Height = 92
+        Top = 138
+        Width = 250
+        Caption = 'XY'
+        ClientHeight = 74
+        ClientWidth = 246
+        TabOrder = 3
+        object X0Edit: TEdit
+          Left = 38
+          Height = 21
+          Top = 4
+          Width = 80
+          TabOrder = 0
+          Text = 'X0Edit'
+        end
+        object Y0Edit: TEdit
+          Left = 158
+          Height = 21
+          Top = 4
+          Width = 80
+          TabOrder = 1
+          Text = 'Y0Edit'
+        end
+        object Label25: TLabel
+          Left = 14
+          Height = 14
+          Top = 8
+          Width = 15
+          Caption = 'X0'
+          Font.Style = [fsBold]
+          ParentColor = False
+          ParentFont = False
+        end
+        object Label26: TLabel
+          Left = 134
+          Height = 14
+          Top = 8
+          Width = 15
+          Caption = 'Y0'
+          Font.Style = [fsBold]
+          ParentColor = False
+          ParentFont = False
+        end
+        object Label27: TLabel
+          Left = 14
+          Height = 14
+          Top = 40
+          Width = 15
+          Caption = 'X1'
+          Font.Style = [fsBold]
+          ParentColor = False
+          ParentFont = False
+        end
+        object X1Edit: TEdit
+          Left = 38
+          Height = 21
+          Top = 36
+          Width = 80
+          TabOrder = 2
+        end
+        object Label28: TLabel
+          Left = 134
+          Height = 14
+          Top = 40
+          Width = 15
+          Caption = 'Y1'
+          Font.Style = [fsBold]
+          ParentColor = False
+          ParentFont = False
+        end
+        object Y1Edit: TEdit
+          Left = 158
+          Height = 21
+          Top = 36
+          Width = 80
+          TabOrder = 3
+        end
+      end
+      object GroupBox16: TGroupBox
+        Left = 28
+        Height = 92
+        Top = 238
+        Width = 250
+        Caption = 'XZ'
+        ClientHeight = 74
+        ClientWidth = 246
+        TabOrder = 4
+        object X0Edit1: TEdit
+          Left = 38
+          Height = 21
+          Top = 4
+          Width = 80
+          TabOrder = 0
+          Text = 'X0Edit'
+        end
+        object Y0Edit1: TEdit
+          Left = 158
+          Height = 21
+          Top = 4
+          Width = 80
+          TabOrder = 1
+          Text = 'Y0Edit'
+        end
+        object Label29: TLabel
+          Left = 14
+          Height = 14
+          Top = 8
+          Width = 15
+          Caption = 'X0'
+          Font.Style = [fsBold]
+          ParentColor = False
+          ParentFont = False
+        end
+        object Label30: TLabel
+          Left = 134
+          Height = 14
+          Top = 8
+          Width = 15
+          Caption = 'Y0'
+          Font.Style = [fsBold]
+          ParentColor = False
+          ParentFont = False
+        end
+        object Label31: TLabel
+          Left = 14
+          Height = 14
+          Top = 40
+          Width = 15
+          Caption = 'X1'
+          Font.Style = [fsBold]
+          ParentColor = False
+          ParentFont = False
+        end
+        object X1Edit1: TEdit
+          Left = 38
+          Height = 21
+          Top = 36
+          Width = 80
+          TabOrder = 2
+        end
+        object Label32: TLabel
+          Left = 134
+          Height = 14
+          Top = 40
+          Width = 15
+          Caption = 'Y1'
+          Font.Style = [fsBold]
+          ParentColor = False
+          ParentFont = False
+        end
+        object Y1Edit1: TEdit
+          Left = 158
+          Height = 21
+          Top = 36
+          Width = 80
+          TabOrder = 3
+        end
+      end
+      object GroupBox17: TGroupBox
+        Left = 28
+        Height = 92
+        Top = 342
+        Width = 250
+        Caption = 'YZ'
+        ClientHeight = 74
+        ClientWidth = 246
+        TabOrder = 5
+        object X0Edit2: TEdit
+          Left = 38
+          Height = 21
+          Top = 4
+          Width = 80
+          TabOrder = 0
+          Text = 'X0Edit'
+        end
+        object Y0Edit2: TEdit
+          Left = 158
+          Height = 21
+          Top = 4
+          Width = 80
+          TabOrder = 1
+          Text = 'Y0Edit'
+        end
+        object Label33: TLabel
+          Left = 14
+          Height = 14
+          Top = 8
+          Width = 15
+          Caption = 'X0'
+          Font.Style = [fsBold]
+          ParentColor = False
+          ParentFont = False
+        end
+        object Label34: TLabel
+          Left = 134
+          Height = 14
+          Top = 8
+          Width = 15
+          Caption = 'Y0'
+          Font.Style = [fsBold]
+          ParentColor = False
+          ParentFont = False
+        end
+        object Label35: TLabel
+          Left = 14
+          Height = 14
+          Top = 40
+          Width = 15
+          Caption = 'X1'
+          Font.Style = [fsBold]
+          ParentColor = False
+          ParentFont = False
+        end
+        object X1Edit2: TEdit
+          Left = 38
+          Height = 21
+          Top = 36
+          Width = 80
+          TabOrder = 2
+        end
+        object Label36: TLabel
+          Left = 134
+          Height = 14
+          Top = 40
+          Width = 15
+          Caption = 'Y1'
+          Font.Style = [fsBold]
+          ParentColor = False
+          ParentFont = False
+        end
+        object Y1Edit2: TEdit
+          Left = 158
+          Height = 21
+          Top = 36
+          Width = 80
+          TabOrder = 3
+        end
+      end
+    end
+  end
+  object MainMenu1: TMainMenu
+    left = 192
+    top = 8
+    object MenuItem1: TMenuItem
+      Caption = 'View'
+      object MenuItem2: TMenuItem
+        AutoCheck = True
+        Caption = 'Always On Top'
+        ShowAlwaysCheckable = True
+        OnClick = MenuItem2Click
+      end
+    end
+  end
+end
