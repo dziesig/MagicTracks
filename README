@@ -1,5 +1,10 @@
 MagicTracks is a CAD-like program for use by Model Railroaders.
 
+It is being developed using FreePascal and Lazarus.  Currently, the implementation
+is limited to Windows due to the lack of certain primitives (specifically those
+that allow rotation of text) in the Lazarus Component Library.  I intend to
+remove that limitation, but not in the near future.
+
 The top-level data object is a Drawing, many of which may be opened simultaneously.
 
 Each Drawing consists of several layers, many of which may be viewed
@@ -12,7 +17,14 @@ A drawing object may be a drawing primitive, or a group of drawing objects.
 Drawing primitives are 3-dimensional objects.  As of April 11, 2012 the
 following Drawing Primitives are being developed:
 
-          Rectangular Solid (generalization of a cube)
-          Ellipsoid (generalization of a sphere)
-          Straight Line (from x0, y0, z0 to x1, y1, z1)
-          Bezier Curves (in 3 dimensions).
+          Rectangular Solid (generalization of a cube) - works without rotations
+          Ellipsoid (generalization of a sphere) - under development
+          Straight Line (from x0, y0, z0 to x1, y1, z1) - thinking about it
+          Bezier Curves (in 3 dimensions) - in the headache stage.
+
+I am taking an unusual path to developing the drawing primitives.  The active
+layer has two "Canvases".  One canvas it the normal Lazarus (Delphi) drawing
+canvas.  The second canvas has the same dimensions as the first, but the "pixels"
+are pointers to the Drawing Object (last drawn) that occupies that position.
+This makes the process of editing drawing objects much easier than if each
+drawing object needed to be interrogated for each mouse movement.
