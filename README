@@ -3,16 +3,16 @@ MagicTracks is a CAD-like program for use by Model Railroaders.
 It is being developed using FreePascal and Lazarus.  Currently, the implementation
 is limited to Windows due to the lack of certain primitives (specifically those
 that allow rotation of text) in the Lazarus Component Library.  I intend to
-remove that limitation, but not in the near future.
+remove that limitation, but not in the immediate future.
 
 The top-level data object is a Drawing, many of which may be opened simultaneously.
 
 Each Drawing consists of several layers, many of which may be viewed
 simultaneously, one of which may be edited at any given time.
 
-Each Layer consists of several drawing objects.
+Each Layer consists of no or more drawing objects.
 
-A drawing object may be a drawing primitive, or a group of drawing objects.
+A drawing object may be a drawing primitive or a group of drawing objects.
 
 Drawing primitives are 3-dimensional objects.  As of April 11, 2012 the
 following Drawing Primitives are being developed:
@@ -23,8 +23,17 @@ following Drawing Primitives are being developed:
           Bezier Curves (in 3 dimensions) - in the headache stage.
 
 I am taking an unusual path to developing the drawing primitives.  The active
-layer has two "Canvases".  One canvas it the normal Lazarus (Delphi) drawing
+layer has two "Canvases".  One canvas is the normal Lazarus (Delphi) drawing
 canvas.  The second canvas has the same dimensions as the first, but the "pixels"
 are pointers to the Drawing Object (last drawn) that occupies that position.
 This makes the process of editing drawing objects much easier than if each
 drawing object needed to be interrogated for each mouse movement.
+
+As each drawing object (on the active layer) is drawn, the pixel value (color,
+etc) is written to the drawing canvas and the object pointer is written to the
+object pointer.  This means that the algorithm for identifying the pixels
+must be separated from the internal canvas operations.  Consequently, I am
+implementing Bresham's Line Drawing Algorithm and other similar algorithms
+for spheres and Bezier curves.
+
+
