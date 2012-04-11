@@ -1,0 +1,18 @@
+MagicTracks is a CAD-like program for use by Model Railroaders.
+
+The top-level data object is a Drawing, many of which may be opened simultaneously.
+
+Each Drawing consists of several layers, many of which may be viewed
+simultaneously, one of which may be edited at any given time.
+
+Each Layer consists of several drawing objects.
+
+A drawing object may be a drawing primitive, or a group of drawing objects.
+
+Drawing primitives are 3-dimensional objects.  As of April 11, 2012 the
+following Drawing Primitives are being developed:
+
+          Rectangular Solid (generalization of a cube)
+          Ellipsoid (generalization of a sphere)
+          Straight Line (from x0, y0, z0 to x1, y1, z1)
+          Bezier Curves (in 3 dimensions).

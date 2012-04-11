@@ -38,7 +38,7 @@
         <PackageName Value="LCL"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="34">
+    <Units Count="35">
       <Unit0>
         <Filename Value="MagicTracks.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -189,7 +189,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="112"/>
         <CursorPos X="48" Y="133"/>
-        <UsageCount Value="180"/>
+        <UsageCount Value="181"/>
       </Unit15>
       <Unit16>
         <Filename Value="Notes.txt"/>
@@ -222,7 +222,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="96"/>
         <CursorPos X="1" Y="122"/>
-        <UsageCount Value="167"/>
+        <UsageCount Value="168"/>
       </Unit19>
       <Unit20>
         <Filename Value="internals1.pas"/>
@@ -233,7 +233,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="244"/>
         <CursorPos X="1" Y="251"/>
-        <UsageCount Value="131"/>
+        <UsageCount Value="132"/>
       </Unit20>
       <Unit21>
         <Filename Value="C:\lazarus\lcl\grids.pas"/>
@@ -265,7 +265,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="206"/>
         <CursorPos X="1" Y="228"/>
-        <UsageCount Value="88"/>
+        <UsageCount Value="89"/>
       </Unit24>
       <Unit25>
         <Filename Value="drawingcommon1.pas"/>
@@ -274,7 +274,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="30" Y="11"/>
-        <UsageCount Value="88"/>
+        <UsageCount Value="89"/>
       </Unit25>
       <Unit26>
         <Filename Value="rectangularsolid1.pas"/>
@@ -283,18 +283,17 @@
         <WindowIndex Value="0"/>
         <TopLine Value="67"/>
         <CursorPos X="27" Y="82"/>
-        <UsageCount Value="82"/>
+        <UsageCount Value="83"/>
       </Unit26>
       <Unit27>
         <Filename Value="sphere1.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="Sphere1"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="0"/>
         <WindowIndex Value="0"/>
         <TopLine Value="103"/>
-        <CursorPos X="1" Y="126"/>
-        <UsageCount Value="72"/>
+        <CursorPos X="63" Y="109"/>
+        <UsageCount Value="73"/>
         <Loaded Value="True"/>
       </Unit27>
       <Unit28>
@@ -330,24 +329,35 @@
         <Filename Value="common1.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="Common1"/>
-        <EditorIndex Value="1"/>
+        <EditorIndex Value="2"/>
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="30" Y="26"/>
-        <UsageCount Value="20"/>
+        <UsageCount Value="21"/>
         <Loaded Value="True"/>
       </Unit32>
       <Unit33>
         <Filename Value="Persistent1.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="Persistent1"/>
-        <EditorIndex Value="2"/>
+        <EditorIndex Value="3"/>
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="1" Y="1"/>
-        <UsageCount Value="20"/>
+        <UsageCount Value="21"/>
         <Loaded Value="True"/>
       </Unit33>
+      <Unit34>
+        <Filename Value="README"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="1"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="43" Y="18"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+        <DefaultSyntaxHighlighter Value="None"/>
+      </Unit34>
     </Units>
     <JumpHistory Count="8" HistoryIndex="7">
       <Position1>
