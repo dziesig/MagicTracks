@@ -25,7 +25,7 @@ interface
 
 uses
   Classes, SysUtils, Persistent1, Preferences1, ExtCtrls, DrawingCommon1,
-  Layers1, Graphics;
+  Layers1, Graphics, Forms;
 
 type
   TDrawingMins = array [TDrawingBox] of Double;
@@ -86,11 +86,12 @@ type
 
       function IsModified : Boolean; override;
 
-      procedure MakeNew; override;
-
     public
       constructor Create( AParent : TPersistentZ = nil ); override;
       destructor  Destroy; override;
+
+      procedure MakeNew; override;
+
       procedure SetFullPath( Value : String );
 
       procedure Save(var F : TextFile ); override;
@@ -105,8 +106,7 @@ type
       procedure DecZoom;
       procedure SetZoom( Index : Integer );
 
-      procedure Draw( PB : TPaintBox; Box : TDrawingBox );
-//      procedure Draw( Canvas : TCanvas; Box : TDrawingBox );
+      procedure Draw( Frame : TFrame );
 
       procedure Update( var Data : TLayer; NewValue : TLayer );  overload;
 
@@ -468,14 +468,14 @@ begin
   Data := NewValue;
 end;
 
-procedure TDrawing.Draw(PB : TPaintBox; Box : TDrawingBox );
+procedure TDrawing.Draw(Frame: TFrame);
 var
   I : TLayerKinds;
 begin
 //  InternalsForm1.PutEvent('Draw','Drawing Box:  ' + IntToStr(ord(Box)));
   for I in TLayerKinds do
     if I in Layers.ViewLayers then
-      TLayer(Layers[ord(I)]).Draw( PB, Box, Preferences );
+      TLayer(Layers[ord(I)]).Draw( Frame, Preferences, I = Layers.ActiveLayerKind );
 end;
 
 

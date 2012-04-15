@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Persistent1, DrawingCommon1, Graphics, Preferences1,
-  ExtCtrls, ThreePoint1;
+  ExtCtrls, ThreePoint1, Forms;
 
 type
   TDrawingObjects = class;
@@ -54,9 +54,13 @@ type
     function MicronsY( Value : T3Point;
                        Box   : TDrawingBox ) : Double;
 
-    procedure Draw( PaintBox : TPaintBox;
-                    Box : TDrawingBox;
-                    Preferences : TPreferences); virtual; abstract;
+    //procedure Draw( PaintBox : TPaintBox;
+    //                Box : TDrawingBox;
+    //                Preferences : TPreferences); virtual; abstract;
+    //
+    procedure Draw( Frame       : TFrame;
+                    Preferences : TPreferences;
+                    ActiveLayer : Boolean ) virtual; abstract;
 
     function Drawing : TObject;
 

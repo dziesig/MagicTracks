@@ -38,7 +38,7 @@
         <PackageName Value="LCL"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="37">
+    <Units Count="38">
       <Unit0>
         <Filename Value="MagicTracks.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -54,22 +54,21 @@
         <ComponentName Value="MainForm"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="Main1"/>
-        <EditorIndex Value="0"/>
         <WindowIndex Value="0"/>
         <TopLine Value="441"/>
         <CursorPos X="62" Y="455"/>
         <UsageCount Value="200"/>
-        <Loaded Value="True"/>
-        <LoadedDesigner Value="True"/>
       </Unit1>
       <Unit2>
         <Filename Value="Drawing1.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="Drawing1"/>
+        <EditorIndex Value="6"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="1" Y="206"/>
+        <TopLine Value="457"/>
+        <CursorPos X="68" Y="478"/>
         <UsageCount Value="200"/>
+        <Loaded Value="True"/>
       </Unit2>
       <Unit3>
         <Filename Value="..\MagicLibraries\Persistent1.pas"/>
@@ -77,7 +76,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="101"/>
         <CursorPos X="1" Y="125"/>
-        <UsageCount Value="204"/>
+        <UsageCount Value="203"/>
       </Unit3>
       <Unit4>
         <Filename Value="About1.pas"/>
@@ -125,7 +124,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="64"/>
         <CursorPos X="1" Y="92"/>
-        <UsageCount Value="200"/>
+        <UsageCount Value="199"/>
       </Unit8>
       <Unit9>
         <Filename Value="Ruler1.pas"/>
@@ -151,17 +150,21 @@
         <ComponentName Value="DrawingFrame"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="DrawingFrame1"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="0"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="1" Y="20"/>
+        <TopLine Value="448"/>
+        <CursorPos X="13" Y="456"/>
         <UsageCount Value="201"/>
+        <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
       </Unit11>
       <Unit12>
         <Filename Value="C:\lazarus\lcl\include\control.inc"/>
         <WindowIndex Value="0"/>
         <TopLine Value="3176"/>
         <CursorPos X="1" Y="3192"/>
-        <UsageCount Value="13"/>
+        <UsageCount Value="12"/>
       </Unit12>
       <Unit13>
         <Filename Value="drawingsetframe1.pas"/>
@@ -178,12 +181,10 @@
         <Filename Value="threepoint1.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="ThreePoint1"/>
-        <EditorIndex Value="5"/>
         <WindowIndex Value="0"/>
         <TopLine Value="68"/>
         <CursorPos X="1" Y="84"/>
         <UsageCount Value="200"/>
-        <Loaded Value="True"/>
       </Unit14>
       <Unit15>
         <Filename Value="layerform1.pas"/>
@@ -194,14 +195,14 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="1" Y="20"/>
-        <UsageCount Value="187"/>
+        <UsageCount Value="195"/>
       </Unit15>
       <Unit16>
         <Filename Value="Notes.txt"/>
         <WindowIndex Value="0"/>
         <TopLine Value="81"/>
         <CursorPos X="41" Y="103"/>
-        <UsageCount Value="32"/>
+        <UsageCount Value="31"/>
         <DefaultSyntaxHighlighter Value="None"/>
       </Unit16>
       <Unit17>
@@ -210,7 +211,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="247"/>
         <CursorPos X="37" Y="254"/>
-        <UsageCount Value="8"/>
+        <UsageCount Value="7"/>
       </Unit17>
       <Unit18>
         <Filename Value="C:\lazarus\lcl\lcltype.pp"/>
@@ -218,16 +219,18 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1067"/>
         <CursorPos X="3" Y="1074"/>
-        <UsageCount Value="8"/>
+        <UsageCount Value="7"/>
       </Unit18>
       <Unit19>
         <Filename Value="layers1.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="Layers1"/>
+        <EditorIndex Value="7"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="1" Y="20"/>
-        <UsageCount Value="174"/>
+        <TopLine Value="6"/>
+        <CursorPos X="45" Y="77"/>
+        <UsageCount Value="182"/>
+        <Loaded Value="True"/>
       </Unit19>
       <Unit20>
         <Filename Value="internals1.pas"/>
@@ -238,7 +241,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="113"/>
         <CursorPos X="1" Y="20"/>
-        <UsageCount Value="138"/>
+        <UsageCount Value="146"/>
       </Unit20>
       <Unit21>
         <Filename Value="C:\lazarus\lcl\grids.pas"/>
@@ -246,7 +249,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="8219"/>
         <CursorPos X="1" Y="8230"/>
-        <UsageCount Value="7"/>
+        <UsageCount Value="6"/>
       </Unit21>
       <Unit22>
         <Filename Value="C:\lazarus\lcl\extctrls.pp"/>
@@ -254,24 +257,24 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1126"/>
         <CursorPos X="22" Y="1145"/>
-        <UsageCount Value="6"/>
+        <UsageCount Value="5"/>
       </Unit22>
       <Unit23>
         <Filename Value="C:\lazarus\lcl\include\tabcontrol.inc"/>
         <WindowIndex Value="0"/>
         <TopLine Value="465"/>
         <CursorPos X="1" Y="476"/>
-        <UsageCount Value="3"/>
+        <UsageCount Value="2"/>
       </Unit23>
       <Unit24>
         <Filename Value="drawingobject1.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="DrawingObject1"/>
-        <EditorIndex Value="1"/>
+        <EditorIndex Value="2"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="303"/>
-        <CursorPos X="1" Y="321"/>
-        <UsageCount Value="95"/>
+        <TopLine Value="44"/>
+        <CursorPos X="43" Y="63"/>
+        <UsageCount Value="103"/>
         <Loaded Value="True"/>
       </Unit24>
       <Unit25>
@@ -281,27 +284,29 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="1" Y="20"/>
-        <UsageCount Value="95"/>
+        <UsageCount Value="103"/>
       </Unit25>
       <Unit26>
         <Filename Value="rectangularsolid1.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="RectangularSolid1"/>
-        <EditorIndex Value="2"/>
+        <EditorIndex Value="3"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="1" Y="20"/>
-        <UsageCount Value="89"/>
+        <TopLine Value="80"/>
+        <CursorPos X="57" Y="95"/>
+        <UsageCount Value="97"/>
         <Loaded Value="True"/>
       </Unit26>
       <Unit27>
         <Filename Value="sphere1.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="Sphere1"/>
+        <EditorIndex Value="4"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="1" Y="20"/>
-        <UsageCount Value="79"/>
+        <TopLine Value="172"/>
+        <CursorPos X="47" Y="181"/>
+        <UsageCount Value="87"/>
+        <Loaded Value="True"/>
       </Unit27>
       <Unit28>
         <Filename Value="C:\lazarus\lcl\menus.pp"/>
@@ -309,28 +314,28 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="1" Y="1"/>
-        <UsageCount Value="11"/>
+        <UsageCount Value="10"/>
       </Unit28>
       <Unit29>
         <Filename Value="C:\lazarus\lcl\interfaces\win32\win32object.inc"/>
         <WindowIndex Value="0"/>
         <TopLine Value="447"/>
         <CursorPos X="1" Y="458"/>
-        <UsageCount Value="7"/>
+        <UsageCount Value="6"/>
       </Unit29>
       <Unit30>
         <Filename Value="C:\lazarus\lcl\include\graphiccontrol.inc"/>
         <WindowIndex Value="0"/>
         <TopLine Value="86"/>
         <CursorPos X="1" Y="97"/>
-        <UsageCount Value="7"/>
+        <UsageCount Value="6"/>
       </Unit30>
       <Unit31>
         <Filename Value="C:\lazarus\fpc\2.4.2\source\rtl\objpas\classes\classesh.inc"/>
         <WindowIndex Value="0"/>
         <TopLine Value="1667"/>
         <CursorPos X="14" Y="1678"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit31>
       <Unit32>
         <Filename Value="common1.pas"/>
@@ -339,7 +344,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="25" Y="18"/>
-        <UsageCount Value="27"/>
+        <UsageCount Value="35"/>
       </Unit32>
       <Unit33>
         <Filename Value="Persistent1.pas"/>
@@ -348,160 +353,167 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="1" Y="20"/>
-        <UsageCount Value="27"/>
+        <UsageCount Value="35"/>
       </Unit33>
       <Unit34>
         <Filename Value="README"/>
         <WindowIndex Value="0"/>
         <TopLine Value="6"/>
         <CursorPos X="41" Y="26"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
         <DefaultSyntaxHighlighter Value="None"/>
       </Unit34>
       <Unit35>
         <Filename Value="straightline1.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="StraightLine1"/>
-        <EditorIndex Value="3"/>
+        <EditorIndex Value="5"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="89"/>
-        <CursorPos X="66" Y="101"/>
-        <UsageCount Value="25"/>
+        <TopLine Value="84"/>
+        <CursorPos X="24" Y="97"/>
+        <UsageCount Value="33"/>
         <Loaded Value="True"/>
       </Unit35>
       <Unit36>
         <Filename Value="breshenham1.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="Breshenham1"/>
-        <IsVisibleTab Value="True"/>
-        <EditorIndex Value="4"/>
         <WindowIndex Value="0"/>
         <TopLine Value="47"/>
         <CursorPos X="14" Y="55"/>
-        <UsageCount Value="22"/>
-        <Loaded Value="True"/>
+        <UsageCount Value="30"/>
       </Unit36>
+      <Unit37>
+        <Filename Value="C:\lazarus\lcl\forms.pp"/>
+        <UnitName Value="Forms"/>
+        <EditorIndex Value="1"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="277"/>
+        <CursorPos X="3" Y="290"/>
+        <UsageCount Value="11"/>
+        <Loaded Value="True"/>
+      </Unit37>
     </Units>
     <JumpHistory Count="30" HistoryIndex="29">
       <Position1>
-        <Filename Value="breshenham1.pas"/>
-        <Caret Line="37" Column="55" TopLine="12"/>
+        <Filename Value="rectangularsolid1.pas"/>
+        <Caret Line="28" Column="45" TopLine="4"/>
       </Position1>
       <Position2>
-        <Filename Value="breshenham1.pas"/>
-        <Caret Line="50" Column="3" TopLine="37"/>
+        <Filename Value="straightline1.pas"/>
+        <Caret Line="9" Column="48" TopLine="6"/>
       </Position2>
       <Position3>
-        <Filename Value="breshenham1.pas"/>
-        <Caret Line="75" Column="1" TopLine="50"/>
+        <Filename Value="straightline1.pas"/>
+        <Caret Line="33" Column="1" TopLine="20"/>
       </Position3>
       <Position4>
-        <Filename Value="breshenham1.pas"/>
-        <Caret Line="42" Column="10" TopLine="22"/>
+        <Filename Value="drawingframe1.pas"/>
+        <Caret Line="112" Column="37" TopLine="101"/>
       </Position4>
       <Position5>
-        <Filename Value="breshenham1.pas"/>
-        <Caret Line="53" Column="27" TopLine="38"/>
+        <Filename Value="Drawing1.pas"/>
+        <Caret Line="108" Column="3" TopLine="106"/>
       </Position5>
       <Position6>
-        <Filename Value="breshenham1.pas"/>
-        <Caret Line="74" Column="1" TopLine="48"/>
+        <Filename Value="Drawing1.pas"/>
+        <Caret Line="488" Column="41" TopLine="467"/>
       </Position6>
       <Position7>
-        <Filename Value="breshenham1.pas"/>
-        <Caret Line="53" Column="27" TopLine="38"/>
+        <Filename Value="layers1.pas"/>
+        <Caret Line="177" Column="1" TopLine="162"/>
       </Position7>
       <Position8>
-        <Filename Value="breshenham1.pas"/>
-        <Caret Line="64" Column="10" TopLine="49"/>
+        <Filename Value="straightline1.pas"/>
+        <Caret Line="118" Column="45" TopLine="93"/>
       </Position8>
       <Position9>
-        <Filename Value="breshenham1.pas"/>
-        <Caret Line="45" Column="17" TopLine="42"/>
+        <Filename Value="straightline1.pas"/>
+        <Caret Line="42" Column="26" TopLine="33"/>
       </Position9>
       <Position10>
-        <Filename Value="breshenham1.pas"/>
-        <Caret Line="54" Column="27" TopLine="39"/>
+        <Filename Value="straightline1.pas"/>
+        <Caret Line="118" Column="33" TopLine="105"/>
       </Position10>
       <Position11>
-        <Filename Value="breshenham1.pas"/>
-        <Caret Line="37" Column="31" TopLine="16"/>
+        <Filename Value="straightline1.pas"/>
+        <Caret Line="133" Column="37" TopLine="115"/>
       </Position11>
       <Position12>
-        <Filename Value="breshenham1.pas"/>
-        <Caret Line="54" Column="20" TopLine="39"/>
+        <Filename Value="straightline1.pas"/>
+        <Caret Line="113" Column="1" TopLine="87"/>
       </Position12>
       <Position13>
-        <Filename Value="breshenham1.pas"/>
-        <Caret Line="37" Column="36" TopLine="31"/>
+        <Filename Value="straightline1.pas"/>
+        <Caret Line="135" Column="20" TopLine="122"/>
       </Position13>
       <Position14>
-        <Filename Value="breshenham1.pas"/>
-        <Caret Line="54" Column="22" TopLine="39"/>
+        <Filename Value="sphere1.pas"/>
+        <Caret Line="199" Column="3" TopLine="197"/>
       </Position14>
       <Position15>
-        <Filename Value="breshenham1.pas"/>
-        <Caret Line="84" Column="24" TopLine="62"/>
+        <Filename Value="sphere1.pas"/>
+        <Caret Line="56" Column="3" TopLine="43"/>
       </Position15>
       <Position16>
-        <Filename Value="breshenham1.pas"/>
-        <Caret Line="61" Column="17" TopLine="23"/>
+        <Filename Value="sphere1.pas"/>
+        <Caret Line="188" Column="63" TopLine="174"/>
       </Position16>
       <Position17>
-        <Filename Value="breshenham1.pas"/>
-        <Caret Line="56" Column="35" TopLine="43"/>
+        <Filename Value="sphere1.pas"/>
+        <Caret Line="71" Column="22" TopLine="52"/>
       </Position17>
       <Position18>
-        <Filename Value="straightline1.pas"/>
-        <Caret Line="101" Column="66" TopLine="89"/>
+        <Filename Value="sphere1.pas"/>
+        <Caret Line="195" Column="17" TopLine="176"/>
       </Position18>
       <Position19>
-        <Filename Value="breshenham1.pas"/>
-        <Caret Line="52" Column="1" TopLine="40"/>
+        <Filename Value="rectangularsolid1.pas"/>
+        <Caret Line="70" Column="28" TopLine="67"/>
       </Position19>
       <Position20>
-        <Filename Value="breshenham1.pas"/>
-        <Caret Line="61" Column="1" TopLine="41"/>
+        <Filename Value="rectangularsolid1.pas"/>
+        <Caret Line="59" Column="1" TopLine="43"/>
       </Position20>
       <Position21>
-        <Filename Value="breshenham1.pas"/>
-        <Caret Line="62" Column="1" TopLine="42"/>
+        <Filename Value="Drawing1.pas"/>
+        <Caret Line="471" Column="1" TopLine="457"/>
       </Position21>
       <Position22>
-        <Filename Value="breshenham1.pas"/>
-        <Caret Line="63" Column="1" TopLine="43"/>
+        <Filename Value="Drawing1.pas"/>
+        <Caret Line="478" Column="76" TopLine="457"/>
       </Position22>
       <Position23>
-        <Filename Value="breshenham1.pas"/>
-        <Caret Line="64" Column="1" TopLine="44"/>
+        <Filename Value="sphere1.pas"/>
+        <Caret Line="198" Column="1" TopLine="186"/>
       </Position23>
       <Position24>
-        <Filename Value="breshenham1.pas"/>
-        <Caret Line="65" Column="1" TopLine="45"/>
+        <Filename Value="sphere1.pas"/>
+        <Caret Line="56" Column="1" TopLine="45"/>
       </Position24>
       <Position25>
-        <Filename Value="breshenham1.pas"/>
-        <Caret Line="66" Column="1" TopLine="46"/>
+        <Filename Value="rectangularsolid1.pas"/>
+        <Caret Line="152" Column="9" TopLine="126"/>
       </Position25>
       <Position26>
-        <Filename Value="breshenham1.pas"/>
-        <Caret Line="70" Column="1" TopLine="50"/>
+        <Filename Value="rectangularsolid1.pas"/>
+        <Caret Line="56" Column="1" TopLine="47"/>
       </Position26>
       <Position27>
-        <Filename Value="breshenham1.pas"/>
-        <Caret Line="52" Column="1" TopLine="47"/>
+        <Filename Value="straightline1.pas"/>
+        <Caret Line="35" Column="43" TopLine="17"/>
       </Position27>
       <Position28>
-        <Filename Value="breshenham1.pas"/>
-        <Caret Line="53" Column="1" TopLine="47"/>
+        <Filename Value="layers1.pas"/>
+        <Caret Line="165" Column="1" TopLine="100"/>
       </Position28>
       <Position29>
-        <Filename Value="breshenham1.pas"/>
-        <Caret Line="54" Column="1" TopLine="47"/>
+        <Filename Value="layers1.pas"/>
+        <Caret Line="177" Column="43" TopLine="152"/>
       </Position29>
       <Position30>
-        <Filename Value="breshenham1.pas"/>
-        <Caret Line="55" Column="1" TopLine="47"/>
+        <Filename Value="layers1.pas"/>
+        <Caret Line="167" Column="47" TopLine="154"/>
       </Position30>
     </JumpHistory>
   </ProjectOptions>

@@ -25,7 +25,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, ExtCtrls, StdCtrls, Menus,
-  DrawingCommon1, Drawing1;
+  DrawingCommon1, Drawing1, DrawingObject1;
 
 type
 
@@ -102,6 +102,8 @@ type
     vMouseDownX,
     vMouseDownY : Integer;
 
+    vDrawingObjects : array of TDrawingObject;
+
     function GetGuide1X: Double;
     function GetGuide1Y: Double;
     function GetGuide2X: Double;
@@ -126,6 +128,8 @@ type
 
     procedure PositionLowerLeft;
     procedure Invalidate; override;
+
+    function DrawingObject( X, Y : Integer ) : TDrawingObject;
 
     property BoxType : TDrawingBox read fBoxType write SetBoxType;
     property Drawing : TDrawing read fDrawing write SetDrawing;
@@ -277,7 +281,7 @@ begin
 
   // Draw the Active Layers of the Drawing;
 
-  Drawing.Draw( PaintBox1, BoxType );
+  Drawing.Draw( Self );
 
 end;
 
@@ -290,6 +294,7 @@ end;
 procedure TDrawingFrame.PaintBox1Resize(Sender: TObject);
 begin
   InternalsForm1.PutEvent('Resize ' + Name,Height);
+  SetLength( vDrawingObjects, Width * Height)
 end;
 
 function TDrawingFrame.GetGuide1X: Double;
@@ -331,6 +336,11 @@ end;
 procedure TDrawingFrame.Invalidate;
 begin
   PaintBox1.Invalidate;
+end;
+
+function TDrawingFrame.DrawingObject(X, Y: Integer): TDrawingObject;
+begin
+  Result := vDrawingObjects[ X * Y ];
 end;
 
 procedure TDrawingFrame.MenuItem1Click(Sender: TObject);
@@ -443,7 +453,7 @@ end;
 procedure TDrawingFrame.PaintBox1MouseMove(Sender: TObject; Shift: TShiftState;
   X, Y: Integer);
 const
-  Thresh = 3; // Temp for development
+  Thresh = 1; // Temp for development
 var
   PM : TPenMode;
 
@@ -527,6 +537,9 @@ begin
   else
     PaintBox1.Cursor := crDefault;
 
+  //if DrawingObject( vMouseLastX, vMouseLastY) <> nil then
+  //  PaintBox1.Cursor := crHandPoint;
+
   if ssLeft in Shift then
     begin
       if vMouseGuide1XTracking then
@@ -537,7 +550,7 @@ begin
         Guide2X := vMouseLastX
       else if vMouseGuide2YTracking then
         Guide2Y := vMouseLastY;
-        TDrawingSetFrame(Owner).Invalidate;
+      TDrawingSetFrame(Owner).Invalidate;
 
       Application.ProcessMessages;
     end;

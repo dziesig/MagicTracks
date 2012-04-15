@@ -25,7 +25,7 @@ interface
 
 uses
   Classes, SysUtils, Graphics, Persistent1, DrawingObject1, DrawingCommon1,
-  Preferences1, ExtCtrls;
+  Preferences1, ExtCtrls, Forms;
 
 type
 
@@ -63,7 +63,7 @@ type
       procedure SetTrackType(const AValue: Integer);
     public
 
-      constructor Create( AParent : TPersistentz = nil ); virtual;
+      constructor Create( AParent : TPersistentz = nil ); override;
       procedure PutToConfig( ConfigFileName : String );
       procedure GetFromConfig( ConfigFile : String );
 
@@ -72,7 +72,9 @@ type
       procedure Load( var F : TextFile ); override;
       procedure Save( var F : TextFile ); override;
 
-      procedure Draw(Paintbox :  TPaintBox; Box : TDrawingBox; Preferences : TPreferences );
+      procedure Draw( Frame       : TFrame;
+                      Preferences : TPreferences;
+                      ActiveLayer : Boolean );
 
       function Drawing : TObject;
 
@@ -130,7 +132,7 @@ const
 implementation
 
 uses
-  IniFiles, Main1;
+  IniFiles, Main1, DrawingFrame1;
 
 { TLayers }
 
@@ -162,15 +164,19 @@ begin
   fDrawingObjects := TDrawingObjects.Create( AParent );
 end;
 
-procedure TLayer.Draw(PaintBox: TPaintBox; Box: TDrawingBox; Preferences : TPreferences);
+procedure TLayer.Draw(  Frame       : TFrame;
+                        Preferences : TPreferences;
+                        ActiveLayer : Boolean );
 var
+  DF : TDrawingFrame;
   I : Integer;
   O : TDrawingObject;
 begin
+  DF := Frame as TDrawingFrame;
   for I := 0 to pred(fDrawingObjects.Count) do
     begin
       O := TDrawingObject(fDrawingObjects.Items[I]);
-      O.Draw( PaintBox, Box, Preferences );
+      O.Draw( DF, Preferences, ActiveLayer );
     end;
 end;
 

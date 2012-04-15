@@ -25,7 +25,7 @@ interface
 
 uses
   Classes, SysUtils, Graphics, DrawingCommon1, DrawingObject1, Persistent1,
-  Preferences1, ExtCtrls, ThreePoint1;
+  Preferences1, ExtCtrls, ThreePoint1, Forms;
 
 type
 
@@ -53,7 +53,9 @@ type
     procedure Load( var F : TextFile ); override;
     procedure Assign( Source : TPersistentZ ); override;
 
-    procedure Draw( PaintBox : TPaintBox; Box : TDrawingBox; Preferences : TPreferences ); override;
+    procedure Draw( Frame       : TFrame;
+                    Preferences : TPreferences;
+                    ActiveLayer : Boolean ); override;
 
     property Radii : T3Point read fRadii write SetRadii;
     //property RX : Double read fRX write SetRX;
@@ -66,7 +68,7 @@ type
 implementation
 
 uses
-  Math;
+  Math, DrawingFrame1;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Code to draw rotated elipse http://www.angusj.com/delphitips/ellipses.php
@@ -174,21 +176,24 @@ begin
   inherited Destroy;
 end;
 
-procedure TSphere.Draw(PaintBox: TPaintBox; Box: TDrawingBox;
-  Preferences: TPreferences);
+procedure TSphere.Draw( Frame       : TFrame;
+                        Preferences : TPreferences;
+                        ActiveLayer : Boolean );
 var
+  DF : TDrawingFrame;
   XX, YY, xRX, xRY : Integer;
   OldSIze : Integer;
 begin
-  XX := PixelsX( Origin, Box, Preferences, PaintBox );
-  YY := PixelsY( Origin, Box, Preferences, PaintBox );
-  OldSize := PaintBox.Canvas.Pen.Width;
+  DF := Frame as TDrawingFrame;
+  XX := PixelsX( Origin, DF.BoxType, Preferences, DF.PaintBox1 );
+  YY := PixelsY( Origin, DF.BoxType, Preferences, DF.PaintBox1 );
+  OldSize := DF.PaintBox1.Canvas.Pen.Width;
   try
-    PaintBox.Canvas.Pen.Width := 1;
-    PaintBox.Canvas.MoveTo( XX-1,YY-1 );
-    PaintBox.Canvas.LineTo( XX+1,YY+1 );
+    DF.PaintBox1.Canvas.Pen.Width := 1;
+    DF.PaintBox1.Canvas.MoveTo( XX-1,YY-1 );
+    DF.PaintBox1.Canvas.LineTo( XX+1,YY+1 );
   finally
-    PaintBox.Canvas.Pen.Width := OldSize;
+    DF.PaintBox1.Canvas.Pen.Width := OldSize;
   end;
 end;
 

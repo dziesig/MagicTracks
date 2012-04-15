@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Persistent1, DrawingCommon1, DrawingObject1, ExtCtrls,
-  Preferences1, ThreePoint1, Breshenham1;
+  Preferences1, ThreePoint1, Breshenham1, Forms;
 
 type
 
@@ -14,9 +14,9 @@ type
 
   TStraightLine = class(TDrawingObject)
   protected
+    procedure LoadCommon( var F : TextFile ); override;
   private
     fLineEnd : T3Point;
-    procedure LoadCommon( var F : TextFile ); override;
   public
     constructor Create( aParent : TPersistentZ = nil); override;
     constructor Create( var F    : TextFile;
@@ -26,9 +26,13 @@ type
     procedure Load( var F : TextFile ); override;
     procedure Assign( Source : TPersistentZ ); override;
 
-    procedure Draw( PaintBox    : TPaintBox;
-                    Box         : TDrawingBox;
-                    Preferences : TPreferences ); override;
+    //procedure Draw( PaintBox    : TPaintBox;
+    //                Box         : TDrawingBox;
+    //                Preferences : TPreferences ); override;
+
+    procedure Draw( Frame       : TFrame;
+                    Preferences : TPreferences;
+                    ActiveLayer : Boolean ); override;
 
     procedure SetLineEnd( XX, YY, ZZ : Double );
     property LineEnd : T3Point read fLineEnd;
@@ -37,7 +41,7 @@ type
 implementation
 
 uses
-  Graphics;
+  Graphics, DrawingFrame1;
 
 { TStraightLine }
 
@@ -62,48 +66,43 @@ begin
   MakeNew;
 end;
 
-procedure TStraightLine.Draw(PaintBox: TPaintBox; Box: TDrawingBox;
-  Preferences: TPreferences);
+procedure TStraightLine.Draw( Frame       : TFrame;
+                              Preferences : TPreferences;
+                              ActiveLayer : Boolean );
 var
+  DF : TDrawingFrame;
   Offset : T3Point;
   XX0, XX1 : Integer;
   YY0, YY1 : Integer;
-  OldWidth : Integer;
-  OldStyle : TPenStyle;
   BLine    : TPlotPoints;
   Len   : Integer;
   I : Integer;
+  TempColor : TColor;
 begin
+  DF := Frame as TDrawingFrame;
   Offset := T3Point.Create;
   Offset.Add(Origin);
   Offset.Add(fLineEnd);
 
-  XX0 := PixelsX( Origin, Box, Preferences, PaintBox);
-  XX1 := PixelsX( Offset, Box, Preferences, PaintBox);
-  YY0 := PixelsY( Origin, Box, Preferences, PaintBox);
-  YY1 := PixelsY( Offset, Box, Preferences, PaintBox);
+  XX0 := PixelsX( Origin, DF.BoxType, Preferences, DF.PaintBox1);
+  XX1 := PixelsX( Offset, DF.BoxType, Preferences, DF.PaintBox1);
+  YY0 := PixelsY( Origin, DF.BoxType, Preferences, DF.PaintBox1);
+  YY1 := PixelsY( Offset, DF.BoxType, Preferences, DF.PaintBox1);
 
-  with PaintBox.Canvas do
+  // Code to help test drawing of active vs. inactive layers;
+
+  if ActiveLayer then
+    TempColor := clBlack
+  else
+    TempColor := clRed;
+
+
+  with DF.PaintBox1.Canvas do
     begin
-      OldWidth := Pen.Width;
-      OldStyle := Pen.Style;
-      try
-        Pen.Width := 3;
-        Pen.Style := psSolid;
-{$ifdef Canvas}
-        MoveTo(XX0,YY0);
-        LineTo(XX1,YY1);
-{$else}
- //       SetLength( BLine, 1);
         BreshenhamLine( BLine, XX0, YY0, XX1, YY1 );
         Len := Length( BLine );
         for I := 0 to pred(Len) do
-          PaintBox.Canvas.Pixels[BLine[I].X, BLine[I].Y] := clRed;
-{$endif}
-      finally
-        Pen.Width := OldWidth;
-        Pen.Style := OldStyle;
-      end;
+          DF.PaintBox1.Canvas.Pixels[BLine[I].X, BLine[I].Y] := TempColor;
     end;
   Offset.free;
 end;

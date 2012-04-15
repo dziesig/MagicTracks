@@ -25,7 +25,7 @@ interface
 
 uses
   Classes, SysUtils, Graphics, Persistent1, DrawingCommon1, DrawingObject1,
-  Preferences1, ExtCtrls, ThreePoint1;
+  Preferences1, ExtCtrls, ThreePoint1, Forms;
 
 type
 
@@ -53,9 +53,9 @@ type
     procedure Load( var F : TextFile ); override;
     procedure Assign( Source : TPersistentZ ); override;
 
-    procedure Draw( PaintBox    : TPaintBox;
-                    Box         : TDrawingBox;
-                    Preferences : TPreferences ); override;
+    procedure Draw( Frame       : TFrame;
+                    Preferences : TPreferences;
+                    ActiveLayer : Boolean ); override;
 
     property Length : Double read GetLength write SetLength;
     property Width  : Double read GetWidth  write SetWidth;
@@ -65,7 +65,7 @@ type
 implementation
 
 uses
-  Internals1;
+  Internals1, DrawingFrame1;
 
 { RectangularSolid }
 
@@ -90,16 +90,18 @@ begin
   MakeNew;
 end;
 
-procedure TRectangularSolid.Draw( PaintBox: TPaintBox;
-                                  Box: TDrawingBox;
-                                  Preferences : TPreferences );
+procedure TRectangularSolid.Draw( Frame       : TFrame;
+                                  Preferences : TPreferences;
+                                  ActiveLayer : Boolean );
 var
+  DF : TDrawingFrame;
   Offset : T3Point;
   XX0, XX1 : Integer;
   YY0, YY1 : Integer;
   OldWidth : Integer;
   OldStyle : TPenStyle;
 begin
+  DF := Frame as TDrawingFrame;
   Offset := T3Point.Create;
   Offset.X := Origin.X + Length;
   Offset.Y := Origin.Y + Width;
@@ -109,14 +111,14 @@ begin
   //InternalsForm1.PutRectOffset( Offset, Box, Preferences );
   //InternalsForm1.PutRectLength( fSize, Box,Preferences );
 
-  XX0 := PixelsX( Origin, Box, Preferences, PaintBox);
-  XX1 := PixelsX( Offset, Box, Preferences, PaintBox);
-  YY0 := PixelsY( Origin, Box, Preferences, PaintBox);
-  YY1 := PixelsY( Offset, Box, Preferences, PaintBox);
+  XX0 := PixelsX( Origin, DF.BoxType, Preferences, DF.PaintBox1);
+  XX1 := PixelsX( Offset, DF.BoxType, Preferences, DF.PaintBox1);
+  YY0 := PixelsY( Origin, DF.BoxType, Preferences, DF.PaintBox1);
+  YY1 := PixelsY( Offset, DF.BoxType, Preferences, DF.PaintBox1);
 
 //  InternalsForm1.PutRectPixels( XX0, YY0, XX1, YY1, Box );
 
-  with PaintBox.Canvas do
+  with DF.PaintBox1.Canvas do
     begin
       OldWidth := Pen.Width;
       OldStyle := Pen.Style;
@@ -140,6 +142,13 @@ begin
     Offset.free;
 end;
 
+//procedure TRectangularSolid.Draw(Frame: TFrame; Preferences: TPreferences);
+//var
+//  DF : TDrawingFrame;
+//begin
+////  inherited Draw(Frame, Preferences);
+//end;
+//
 function TRectangularSolid.GetHeight: Double;
 begin
   Result := fSize.Z;
