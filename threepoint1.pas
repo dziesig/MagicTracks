@@ -43,6 +43,8 @@ type
     constructor Create( vX, vY, vZ : Double; aParent : TPersistentZ = nil ); virtual;
     constructor Create( From : T3Point; aParent : TPersistentZ = nil ); virtual;
 
+    procedure Add( const Value : T3Point );
+
     procedure Save(var F : TextFile ); override;
     procedure Load(var F : TextFile ); override;
 
@@ -89,6 +91,13 @@ end;
 procedure T3Point.SetZ(const AValue: Double);
 begin
   Update(fZ,AValue);
+end;
+
+procedure T3Point.Add(const Value: T3Point);
+begin
+  Update( fX, fX + Value.X );
+  Update( fY, fY + Value.Y );
+  Update( fZ, fZ + Value.Z );
 end;
 
 procedure T3Point.Assign(From: T3Point);

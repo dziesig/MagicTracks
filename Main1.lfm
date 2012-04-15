@@ -1061,7 +1061,7 @@ object MainForm: TMainForm
       Caption = 'Objects'
       object MenuItem35: TMenuItem
         Caption = 'Create from Guides'
-        object MenuItem37: TMenuItem
+        object GuidesStraightLine: TMenuItem
           Action = GuidesToLine
         end
         object MenuItem36: TMenuItem
@@ -1359,6 +1359,7 @@ object MainForm: TMainForm
     object GuidesToLine: TAction
       Category = 'Guides'
       Caption = 'Straight Line'
+      OnExecute = GuidesToLineExecute
     end
   end
   object ImageList1: TImageList

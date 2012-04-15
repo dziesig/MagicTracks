@@ -53,7 +53,9 @@ type
     procedure Load( var F : TextFile ); override;
     procedure Assign( Source : TPersistentZ ); override;
 
-    procedure Draw( PaintBox : TPaintBox; Box : TDrawingBox; Preferences : TPreferences ); override;
+    procedure Draw( PaintBox    : TPaintBox;
+                    Box         : TDrawingBox;
+                    Preferences : TPreferences ); override;
 
     property Length : Double read GetLength write SetLength;
     property Width  : Double read GetWidth  write SetWidth;

@@ -45,7 +45,7 @@ type
     MenuItem34: TMenuItem;
     MenuItem35: TMenuItem;
     MenuItem36: TMenuItem;
-    MenuItem37: TMenuItem;
+    GuidesStraightLine: TMenuItem;
     MenuItem38: TMenuItem;
     VisibleLayerPanel: TPanel;
     ActiveLayerPanel: TPanel;
@@ -166,6 +166,7 @@ type
     procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure FormCreate(Sender: TObject);
     procedure FormResize(Sender: TObject);
+    procedure GuidesToLineExecute(Sender: TObject);
     procedure GuidesToRectangularSolidExecute(Sender: TObject);
     procedure GuidesToSphereExecute(Sender: TObject);
     procedure HelpAboutExecute(Sender: TObject);
@@ -219,7 +220,7 @@ implementation
 
 uses
   About1, PreferencesForm1, LayerForm1, Internals1, Sphere1, DrawingObject1,
-  RectangularSolid1, ThreePoint1;
+  RectangularSolid1, ThreePoint1, StraightLine1;
 
 { TMainForm }
 
@@ -436,6 +437,27 @@ end;
 
 procedure TMainForm.FormResize(Sender: TObject);
 begin
+end;
+
+procedure TMainForm.GuidesToLineExecute(Sender: TObject);
+var
+  S : TStraightLine;
+  O : TDrawingObjects;
+  D : TDrawing;
+  L : TLayer;
+begin
+  S := TStraightLine.Create( ActiveDrawing.ActiveLayer );
+  S.X := ActiveDrawing.Guide2X;
+  S.Y := ActiveDrawing.Guide2Y;
+  S.Z := ActiveDrawing.Guide2Z;
+  S.SetLineEnd( ActiveDrawing.Guide1X - ActiveDrawing.Guide2X,
+                ActiveDrawing.Guide1Y - ActiveDrawing.Guide2Y,
+                ActiveDrawing.Guide1Z - ActiveDrawing.Guide2Z );
+  D := ActiveDrawing;
+  L := D.ActiveLayer;
+  O := L.DrawingObjects;
+  O.Add( S );
+  DrawingSetFrame1.Invalidate;
 end;
 
 procedure TMainForm.GuidesToRectangularSolidExecute(Sender: TObject);

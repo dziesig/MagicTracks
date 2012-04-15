@@ -86,7 +86,8 @@ type
 implementation
 
 uses
-  Main1, Internals1, Drawing1, UnitConversion1, RectangularSolid1, Sphere1;
+  Main1, Internals1, Drawing1, UnitConversion1, RectangularSolid1, Sphere1,
+  StraightLine1;
 
 const
   CurrentVersion = 1;
@@ -122,6 +123,8 @@ begin
             O := TRectangularSolid.Create(F,self)
           else if S = '<Sphere>' then
             O := TSphere.Create(F,Self)
+          else if S = '<Straight Line>' then
+            O := TStraightLine.Create(F,self)
           else
             raise Exception.Create('Drawing Object List Error or unknown Drawing Object: ' + S);
           Add(O);
