@@ -130,6 +130,7 @@ type
     procedure Invalidate; override;
 
     function DrawingObject( X, Y : Integer ) : TDrawingObject;
+    procedure SetDrawingObject( X, Y : Integer; Obj : TDrawingObject);
 
     property BoxType : TDrawingBox read fBoxType write SetBoxType;
     property Drawing : TDrawing read fDrawing write SetDrawing;
@@ -283,6 +284,11 @@ begin
 
   Drawing.Draw( Self );
 
+  for X := 0 to PaintBox1.Canvas.Width - 1 do
+    for Y := 0 to PaintBox1.Canvas.Height - 1 do
+      if DrawingObject(X, Y) <> nil then
+        PaintBox1.Canvas.Pixels[X,Y] := clGreen;
+
 end;
 
 procedure TDrawingFrame.PaintBox1Paint(Sender: TObject);
@@ -294,7 +300,7 @@ end;
 procedure TDrawingFrame.PaintBox1Resize(Sender: TObject);
 begin
   InternalsForm1.PutEvent('Resize ' + Name,Height);
-  SetLength( vDrawingObjects, Width * Height)
+  SetLength( vDrawingObjects, PaintBox1.Canvas.Width * PaintBox1.Canvas.Height)
 end;
 
 function TDrawingFrame.GetGuide1X: Double;
@@ -339,8 +345,20 @@ begin
 end;
 
 function TDrawingFrame.DrawingObject(X, Y: Integer): TDrawingObject;
+var
+  H, W, L, S : Integer;
 begin
+  Result := nil;
+  H := Height; W := Width; L := Length(vDrawingObjects);
+  S := X * Y;
+  if ((X * Y) < 0) or ((X * Y) > L) then exit;
+//    raise Exception.Create('Drawing object bounds check');
   Result := vDrawingObjects[ X * Y ];
+end;
+
+procedure TDrawingFrame.SetDrawingObject(X, Y: Integer; Obj: TDrawingObject);
+begin
+  vDrawingObjects[ X * Y ] := Obj;
 end;
 
 procedure TDrawingFrame.MenuItem1Click(Sender: TObject);
@@ -537,9 +555,6 @@ begin
   else
     PaintBox1.Cursor := crDefault;
 
-  //if DrawingObject( vMouseLastX, vMouseLastY) <> nil then
-  //  PaintBox1.Cursor := crHandPoint;
-
   if ssLeft in Shift then
     begin
       if vMouseGuide1XTracking then
@@ -554,6 +569,13 @@ begin
 
       Application.ProcessMessages;
     end;
+
+  if DrawingObject( X, Y) <> nil then
+    begin
+      PaintBox1.Cursor := crHandPoint;
+      PaintBox1.Canvas.Pixels[X, Y] := clRed;
+    end;
+
 end;
 
 procedure TDrawingFrame.PaintBox1MouseUp(Sender: TObject; Button: TMouseButton;

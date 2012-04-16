@@ -97,13 +97,15 @@ begin
     TempColor := clRed;
 
 
-  with DF.PaintBox1.Canvas do
-    begin
+  //with DF.PaintBox1.Canvas do
+  //  begin
         BreshenhamLine( BLine, XX0, YY0, XX1, YY1 );
         Len := Length( BLine );
         for I := 0 to pred(Len) do
-          DF.PaintBox1.Canvas.Pixels[BLine[I].X, BLine[I].Y] := TempColor;
-    end;
+          DF.PaintBox1.Canvas.Pixels[BLine[I].X, BLine[I].Y] := clBlack;
+        for I := 0 to pred(Len) do
+          DF.SetDrawingObject(BLine[I].X, BLine[I].Y, Self);
+//    end;
   Offset.free;
 end;
 
