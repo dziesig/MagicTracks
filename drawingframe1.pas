@@ -284,10 +284,10 @@ begin
 
   Drawing.Draw( Self );
 
-  for X := 0 to PaintBox1.Canvas.Width - 1 do
-    for Y := 0 to PaintBox1.Canvas.Height - 1 do
-      if DrawingObject(X, Y) <> nil then
-        PaintBox1.Canvas.Pixels[X,Y] := clGreen;
+  //for X := 0 to PaintBox1.Canvas.Width - 1 do
+  //  for Y := 0 to PaintBox1.Canvas.Height - 1 do
+  //    if DrawingObject(X, Y) <> nil then
+  //      PaintBox1.Canvas.Pixels[X,Y] := clGreen;
 
 end;
 
@@ -298,9 +298,13 @@ begin
 end;
 
 procedure TDrawingFrame.PaintBox1Resize(Sender: TObject);
+var
+  L : Integer;
 begin
   InternalsForm1.PutEvent('Resize ' + Name,Height);
-  SetLength( vDrawingObjects, PaintBox1.Canvas.Width * PaintBox1.Canvas.Height)
+  L := PaintBox1.Canvas.Width * PaintBox1.Canvas.Height;
+  SetLength( vDrawingObjects, L );
+  L := Length( VDrawingObjects);
 end;
 
 function TDrawingFrame.GetGuide1X: Double;
@@ -346,19 +350,33 @@ end;
 
 function TDrawingFrame.DrawingObject(X, Y: Integer): TDrawingObject;
 var
-  H, W, L, S : Integer;
+  H, W : Integer;
 begin
   Result := nil;
-  H := Height; W := Width; L := Length(vDrawingObjects);
-  S := X * Y;
-  if ((X * Y) < 0) or ((X * Y) > L) then exit;
-//    raise Exception.Create('Drawing object bounds check');
-  Result := vDrawingObjects[ X * Y ];
+  H := PaintBox1.Height;
+  W := PaintBox1.Width;
+  if (X < 0) or (Y < 0) or (X >= W) or (Y >= H) then
+    raise Exception.Create('Drawing object bounds check');
+  Result := vDrawingObjects[ X + Y * W];
 end;
 
 procedure TDrawingFrame.SetDrawingObject(X, Y: Integer; Obj: TDrawingObject);
+var
+  H, W, L, I : Integer;
+  S : String;
 begin
-  vDrawingObjects[ X * Y ] := Obj;
+  H := PaintBox1.Height;
+  W := PaintBox1.Width;
+  L := Length(vDrawingObjects);
+  I := X + (Y*W);
+  if (X < 0) or (Y < 0) or (X >= W) or (Y >= H) then
+    raise Exception.Create('Drawing object bounds check');
+  try
+    vDrawingObjects[ X + Y * W] := Obj;
+
+  except
+    S := IntToStr(X) + ' ' + IntToStr(Y) + ' ' + IntToStr(H) + ' ' + IntToStr(W);
+  end;
 end;
 
 procedure TDrawingFrame.MenuItem1Click(Sender: TObject);
