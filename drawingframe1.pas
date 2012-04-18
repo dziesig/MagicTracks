@@ -102,7 +102,7 @@ type
     vMouseDownX,
     vMouseDownY : Integer;
 
-    vDrawingObjects : array of TDrawingObject;
+    vDrawingObjects : TDrawingObjectRaster;
 
     function GetGuide1X: Double;
     function GetGuide1Y: Double;
@@ -110,6 +110,7 @@ type
     function GetGuide2Y: Double;
     procedure PaintRulerBackground( RulerPB : TPaintBox );
     procedure PaintDrawingBackground;
+    procedure PaintDrawing;
     procedure SetBoxType(const AValue: TDrawingBox);
     procedure SetDrawing(const AValue: TDrawing);
 
@@ -126,11 +127,14 @@ type
   public
     { public declarations }
 
+    constructor Create(TheOwner: TComponent); override;
+    destructor Destroy; override;
+
     procedure PositionLowerLeft;
     procedure Invalidate; override;
 
-    function DrawingObject( X, Y : Integer ) : TDrawingObject;
-    procedure SetDrawingObject( X, Y : Integer; Obj : TDrawingObject);
+    function  DrawingObject( X, Y : Integer) : TDrawingObject; overload;
+    procedure DrawingObject( X, Y : Integer; Obj : TDrawingObject ); overload;
 
     property BoxType : TDrawingBox read fBoxType write SetBoxType;
     property Drawing : TDrawing read fDrawing write SetDrawing;
@@ -280,31 +284,65 @@ begin
   PaintBox1.Canvas.MoveTo( 0, Y-J);
   PaintBox1.Canvas.LineTo( X, Y-J);
 
-  // Draw the Active Layers of the Drawing;
-
-  Drawing.Draw( Self );
-
-  //for X := 0 to PaintBox1.Canvas.Width - 1 do
-  //  for Y := 0 to PaintBox1.Canvas.Height - 1 do
-  //    if DrawingObject(X, Y) <> nil then
-  //      PaintBox1.Canvas.Pixels[X,Y] := clGreen;
-
 end;
 
 procedure TDrawingFrame.PaintBox1Paint(Sender: TObject);
 begin
   if Drawing = nil then exit;
   PaintDrawingBackground;
+  PaintDrawing;
 end;
 
 procedure TDrawingFrame.PaintBox1Resize(Sender: TObject);
 var
+  W, H : Integer;
   L : Integer;
 begin
-  InternalsForm1.PutEvent('Resize ' + Name,Height);
-  L := PaintBox1.Canvas.Width * PaintBox1.Canvas.Height;
-  SetLength( vDrawingObjects, L );
-  L := Length( VDrawingObjects);
+  W := PaintBox1.Width;
+  H := PaintBox1.Height;
+  InternalsForm1.PutEvent('Resize ' + Name, 'W x H:  ' + IntToStr(W) + ' x ' + IntToStr(H));
+  L := H * W;
+  InternalsForm1.PutEvent('Paintbox size ' + Name, IntToStr(L));
+  vDrawingObjects.Resize( W, H );
+  //SetLength( vDrawingObjects, L );
+  //L := Length( VDrawingObjects);
+end;
+
+procedure TDrawingFrame.PaintDrawing;
+var
+  X, Y : Integer;
+begin
+  // Draw the Active Layers of the Drawing;
+
+  Drawing.Draw( Self );
+
+  for X := 0 to vDrawingObjects.Width - 1 do
+    for Y := 0 to vDrawingObjects.Height - 1 do
+      if DrawingObject(X, Y) = nil then
+        PaintBox1.Canvas.Pixels[X,Y] := clGreen;
+
+end;
+
+constructor TDrawingFrame.Create(TheOwner: TComponent);
+begin
+  inherited Create(TheOwner);
+  vDrawingObjects := TDrawingObjectRaster.Create;
+end;
+
+destructor TDrawingFrame.Destroy;
+begin
+  vDrawingObjects.Free;
+  inherited Destroy;
+end;
+
+function TDrawingFrame.DrawingObject(X, Y: Integer): TDrawingObject;
+begin
+  Result := vDrawingObjects.DrawingObject( X, Y );
+end;
+
+procedure TDrawingFrame.DrawingObject(X, Y: Integer;  Obj : TDrawingObject );
+begin
+  vDrawingObjects.DrawingObject( X, Y, Obj );
 end;
 
 function TDrawingFrame.GetGuide1X: Double;
@@ -348,37 +386,37 @@ begin
   PaintBox1.Invalidate;
 end;
 
-function TDrawingFrame.DrawingObject(X, Y: Integer): TDrawingObject;
-var
-  H, W : Integer;
-begin
-  Result := nil;
-  H := PaintBox1.Height;
-  W := PaintBox1.Width;
-  if (X < 0) or (Y < 0) or (X >= W) or (Y >= H) then
-    raise Exception.Create('Drawing object bounds check');
-  Result := vDrawingObjects[ X + Y * W];
-end;
+//function TDrawingFrame.DrawingObject(X, Y: Integer): TDrawingObject;
+//var
+//  H, W : Integer;
+//begin
+//  Result := nil;
+//  H := PaintBox1.Height;
+//  W := PaintBox1.Width;
+//  if (X < 0) or (Y < 0) or (X >= W) or (Y >= H) then
+//    raise Exception.Create('Drawing object bounds check');
+//  Result := vDrawingObjects[ X + Y * W];
+//end;
 
-procedure TDrawingFrame.SetDrawingObject(X, Y: Integer; Obj: TDrawingObject);
-var
-  H, W, L, I : Integer;
-  S : String;
-begin
-  H := PaintBox1.Height;
-  W := PaintBox1.Width;
-  L := Length(vDrawingObjects);
-  I := X + (Y*W);
-  if (X < 0) or (Y < 0) or (X >= W) or (Y >= H) then
-    raise Exception.Create('Drawing object bounds check');
-  try
-    vDrawingObjects[ X + Y * W] := Obj;
-
-  except
-    S := IntToStr(X) + ' ' + IntToStr(Y) + ' ' + IntToStr(H) + ' ' + IntToStr(W);
-  end;
-end;
-
+//procedure TDrawingFrame.SetDrawingObject(X, Y: Integer; Obj: TDrawingObject);
+//var
+//  H, W, L, I : Integer;
+//  S : String;
+//begin
+//  H := PaintBox1.Height;
+//  W := PaintBox1.Width;
+//  L := Length(vDrawingObjects);
+//  I := X + (Y*W);
+//  if (X < 0) or (Y < 0) or (X >= W) or (Y >= H) then
+//    raise Exception.Create('Drawing object bounds check');
+//  try
+//    vDrawingObjects[ X + Y * W] := Obj;
+//
+//  except
+//    S := IntToStr(X) + ' ' + IntToStr(Y) + ' ' + IntToStr(H) + ' ' + IntToStr(W);
+//  end;
+//end;
+//
 procedure TDrawingFrame.MenuItem1Click(Sender: TObject);
 begin
   Guide1X := MouseX( vMouseDownX );
@@ -588,10 +626,10 @@ begin
       Application.ProcessMessages;
     end;
 
-  if DrawingObject( X, Y) <> nil then
+  if DrawingObject( vMouseXPixels, vMouseYPixels) <> nil then
     begin
       PaintBox1.Cursor := crHandPoint;
-      PaintBox1.Canvas.Pixels[X, Y] := clRed;
+//      PaintBox1.Canvas.Pixels[X, Y] := clRed;
     end;
 
 end;

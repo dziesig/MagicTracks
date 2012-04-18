@@ -54,10 +54,6 @@ type
     function MicronsY( Value : T3Point;
                        Box   : TDrawingBox ) : Double;
 
-    //procedure Draw( PaintBox : TPaintBox;
-    //                Box : TDrawingBox;
-    //                Preferences : TPreferences); virtual; abstract;
-    //
     procedure Draw( Frame       : TFrame;
                     Preferences : TPreferences;
                     ActiveLayer : Boolean ) virtual; abstract;
@@ -87,6 +83,29 @@ type
                     Box : TDrawingBox ); virtual; abstract;
   end;
 
+  { TDrawingObjectRaster }
+
+  TDrawingObjectRaster = class
+  private
+    vRaster : array of TDrawingObject;
+    fHeight : Integer;
+    fWidth  : Integer;
+
+    procedure ValidateCoordinates( X, Y : Integer );
+  public
+    constructor Create;
+    destructor  Destroy;
+
+    procedure Resize( aWidth, aHeight : Integer );
+
+    function DrawingObject( X, Y : Integer) : TDrawingObject;
+    procedure DrawingObject( X, Y : Integer; Obj : TDrawingObject);
+
+    property Height : Integer read fHeight;
+    property Width  : Integer read fWidth;
+
+  end;
+
 implementation
 
 uses
@@ -96,6 +115,60 @@ uses
 const
   CurrentVersion = 1;
   CurrentListVersion = 1;
+
+{ TDrawingObjectRaster }
+
+constructor TDrawingObjectRaster.Create;
+begin
+  SetLength(vRaster,0);
+  fHeight := 0;
+  fWidth  := 0;
+end;
+
+destructor TDrawingObjectRaster.Destroy;
+begin
+  SetLength(vRaster,0);
+end;
+
+function TDrawingObjectRaster.DrawingObject(X, Y: Integer): TDrawingObject;
+var
+  Index : Integer;
+begin
+  ValidateCoordinates( X, Y );
+  Index := Y * Width + X;
+  Result := vRaster[Index];
+end;
+
+procedure TDrawingObjectRaster.ValidateCoordinates(X, Y: Integer);
+begin
+  if X < 0 then
+    raise Exception.create('DrawingObjectRaster X < 0');
+  if Y < 0 then
+    raise Exception.create('DrawingObjectRaster Y < 0');
+  if X >= fWidth then
+    raise exception.create('DrawingObjectRaster X(' + IntToStr(X) + ') >= ' + IntToStr(fWidth) );
+  if Y >= fHeight then
+    raise exception.create('DrawingObjectRaster Y(' + IntToStr(Y) + ') >= ' + IntToStr(fHeight) );
+
+end;
+
+procedure TDrawingObjectRaster.DrawingObject(X, Y: Integer; Obj: TDrawingObject
+  );
+var
+  Index : Integer;
+begin
+  ValidateCoordinates( X, Y );
+  Index := Y * fWidth + X;
+  vRaster[Index] := Obj;
+end;
+
+procedure TDrawingObjectRaster.Resize(aWidth, aHeight: Integer);
+begin
+  SetLength(vRaster,0);
+  fWidth := aWidth;
+  fHeight := aHeight;
+  SetLength(vRaster, fWidth * fHeight );
+end;
 
 { TDrawingObjects }
 

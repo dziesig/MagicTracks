@@ -34,6 +34,7 @@ type
 
   TInternalsForm1 = class(TForm)
     Button1: TButton;
+    Button2: TButton;
     GroupBox16: TGroupBox;
     GroupBox17: TGroupBox;
     Label29: TLabel;
@@ -44,6 +45,7 @@ type
     Label34: TLabel;
     Label35: TLabel;
     Label36: TLabel;
+    Memo1: TMemo;
     X0Edit: TEdit;
     X0Edit1: TEdit;
     X0Edit2: TEdit;
@@ -110,7 +112,6 @@ type
     MenuItem2: TMenuItem;
     PageControl1: TPageControl;
     Panel1: TPanel;
-    StringGrid1: TStringGrid;
     TabSheet1: TTabSheet;
     TabSheet2: TTabSheet;
     GuideX1Edit: TEdit;
@@ -127,6 +128,7 @@ type
     XZMinZEdit: TEdit;
     YZMinZEdit: TEdit;
     procedure Button1Click(Sender: TObject);
+    procedure Button2Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormResize(Sender: TObject);
     procedure Label45Click(Sender: TObject);
@@ -164,24 +166,21 @@ uses
 
 procedure TInternalsForm1.Button1Click(Sender: TObject);
 begin
-  StringGrid1.RowCount := 1;
+  Memo1.Lines.Clear;;
+end;
+
+procedure TInternalsForm1.Button2Click(Sender: TObject);
+begin
+  Memo1.Lines.Add('=========================');
 end;
 
 procedure TInternalsForm1.FormCreate(Sender: TObject);
 begin
-  Application.ProcessMessages;
-  StringGrid1.Cells[0,0] := 'Events';
-  StringGrid1.Cells[1,0] := 'Value';
-  StringGrid1.ColWidths[0] := 120;
-  StringGrid1.ColWidths[1] := StringGrid1.Width - 141;
-  Application.ProcessMessages;
-  StringGrid1.RowCount := 1;
+  Memo1.Lines.Clear;
 end;
 
 procedure TInternalsForm1.FormResize(Sender: TObject);
 begin
-  StringGrid1.ColWidths[0] := 120;
-  StringGrid1.ColWidths[1] := StringGrid1.Width - 141;
 end;
 
 procedure TInternalsForm1.Label45Click(Sender: TObject);
@@ -203,27 +202,39 @@ begin
 end;
 
 procedure TInternalsForm1.PutEvent(const Event: String; Value: Double);
+var
+  S : String;
 begin
-  StringGrid1.RowCount := StringGrid1.RowCount + 1;
+  S := Event + ':  ' + FloatToStr( Value );
+  Memo1.Lines.Add( S );
+//  StringGrid1.RowCount := StringGrid1.RowCount + 1;
   Application.ProcessMessages;
-  StringGrid1.Cells[0,StringGrid1.RowCount-1] := Event;
-  StringGrid1.Cells[1,StringGrid1.RowCount-1] := FloatToStr(Value);
+  //StringGrid1.Cells[0,StringGrid1.RowCount-1] := Event;
+  //StringGrid1.Cells[1,StringGrid1.RowCount-1] := FloatToStr(Value);
 end;
 
 procedure TInternalsForm1.PutEvent(const Event: String; Value: Integer);
+var
+  S : String;
 begin
-  StringGrid1.RowCount := StringGrid1.RowCount + 1;
+  S := Event + ':  ' + IntToStr( Value );
+  Memo1.Lines.Add( S );
+//  StringGrid1.RowCount := StringGrid1.RowCount + 1;
   Application.ProcessMessages;
-  StringGrid1.Cells[0,StringGrid1.RowCount-1] := Event;
-  StringGrid1.Cells[1,StringGrid1.RowCount-1] := IntToStr(Value);
+  //StringGrid1.Cells[0,StringGrid1.RowCount-1] := Event;
+  //StringGrid1.Cells[1,StringGrid1.RowCount-1] := IntToStr(Value);
 end;
 
 procedure TInternalsForm1.PutEvent(const Event: String; Value: String);
+var
+  S : String;
 begin
-  StringGrid1.RowCount := StringGrid1.RowCount + 1;
+  S := Event + ':  ' + Value;
+  Memo1.Lines.Add( S );
+//  StringGrid1.RowCount := StringGrid1.RowCount + 1;
   Application.ProcessMessages;
-  StringGrid1.Cells[0,StringGrid1.RowCount-1] := Event;
-  StringGrid1.Cells[1,StringGrid1.RowCount-1] := Value;
+  //StringGrid1.Cells[0,StringGrid1.RowCount-1] := Event;
+  //StringGrid1.Cells[1,StringGrid1.RowCount-1] := Value;
 end;
 
 procedure TInternalsForm1.PutGuides(const Guide1X, Guide1Y, Guide1Z, Guide2X,
