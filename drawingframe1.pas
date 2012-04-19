@@ -319,7 +319,9 @@ begin
   for X := 0 to vDrawingObjects.Width - 1 do
     for Y := 0 to vDrawingObjects.Height - 1 do
       if DrawingObject(X, Y) = nil then
-        PaintBox1.Canvas.Pixels[X,Y] := clGreen;
+        PaintBox1.Canvas.Pixels[X,Y] := clGreen
+      else
+        PaintBox1.Canvas.Pixels[X,Y] := clYellow;
 
 end;
 
@@ -536,6 +538,8 @@ var
   DG2X, DG2Y : Double;
 
   DX1, DX2, DY1, DY2 : Double;
+
+  YPrime : Integer;
 begin
   if fDrawing = nil then exit;
   OldColor := Ruler_XPB.Canvas.Pen.Color;
@@ -566,8 +570,8 @@ begin
   Ruler_XPB.Canvas.LineTo(vMouseXPixels,Ruler_XPB.Height);
   Ruler_XPB.Canvas.Pen.Mode := PM;
 
-  Y := pred(PaintBox1.Height) - Y;
-  vMouseLastY := MouseY( Y );
+  YPrime := pred(PaintBox1.Height) - Y;
+  vMouseLastY := MouseY( YPrime );
 
   vMouseYPixels := MicronsToPixels( vMouseLastY - fDrawing.MinY[fBoxType], fDrawing.Preferences );
   PM := Ruler_YPB.Canvas.Pen.Mode;
@@ -626,9 +630,15 @@ begin
       Application.ProcessMessages;
     end;
 
-  if DrawingObject( vMouseXPixels, vMouseYPixels) <> nil then
+  //Y := MicronsToPixels(vMouseLastY, fDrawing.Preferences );
+  //Y := pred(PaintBox1.Height) - Y;
+  //
+  if DrawingObject( X, Y) <> nil then
     begin
+      InternalsForm1.PutEvent('OBJ:  X, Y = ', IntToStr( X ) +  ',' +
+                                               IntToStr( Y ) );
       PaintBox1.Cursor := crHandPoint;
+      Application.ProcessMessages;
 //      PaintBox1.Canvas.Pixels[X, Y] := clRed;
     end;
 
