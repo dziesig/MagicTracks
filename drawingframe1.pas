@@ -304,8 +304,6 @@ begin
   L := H * W;
   InternalsForm1.PutEvent('Paintbox size ' + Name, IntToStr(L));
   vDrawingObjects.Resize( W, H );
-  //SetLength( vDrawingObjects, L );
-  //L := Length( VDrawingObjects);
 end;
 
 procedure TDrawingFrame.PaintDrawing;
@@ -315,14 +313,6 @@ begin
   // Draw the Active Layers of the Drawing;
 
   Drawing.Draw( Self );
-
-  for X := 0 to vDrawingObjects.Width - 1 do
-    for Y := 0 to vDrawingObjects.Height - 1 do
-      if DrawingObject(X, Y) = nil then
-        PaintBox1.Canvas.Pixels[X,Y] := clGreen
-      else
-        PaintBox1.Canvas.Pixels[X,Y] := clYellow;
-
 end;
 
 constructor TDrawingFrame.Create(TheOwner: TComponent);
@@ -388,37 +378,6 @@ begin
   PaintBox1.Invalidate;
 end;
 
-//function TDrawingFrame.DrawingObject(X, Y: Integer): TDrawingObject;
-//var
-//  H, W : Integer;
-//begin
-//  Result := nil;
-//  H := PaintBox1.Height;
-//  W := PaintBox1.Width;
-//  if (X < 0) or (Y < 0) or (X >= W) or (Y >= H) then
-//    raise Exception.Create('Drawing object bounds check');
-//  Result := vDrawingObjects[ X + Y * W];
-//end;
-
-//procedure TDrawingFrame.SetDrawingObject(X, Y: Integer; Obj: TDrawingObject);
-//var
-//  H, W, L, I : Integer;
-//  S : String;
-//begin
-//  H := PaintBox1.Height;
-//  W := PaintBox1.Width;
-//  L := Length(vDrawingObjects);
-//  I := X + (Y*W);
-//  if (X < 0) or (Y < 0) or (X >= W) or (Y >= H) then
-//    raise Exception.Create('Drawing object bounds check');
-//  try
-//    vDrawingObjects[ X + Y * W] := Obj;
-//
-//  except
-//    S := IntToStr(X) + ' ' + IntToStr(Y) + ' ' + IntToStr(H) + ' ' + IntToStr(W);
-//  end;
-//end;
-//
 procedure TDrawingFrame.MenuItem1Click(Sender: TObject);
 begin
   Guide1X := MouseX( vMouseDownX );
@@ -465,14 +424,26 @@ end;
 
 procedure TDrawingFrame.PaintBox1MouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+var
+  Obj : TDrawingObject;
 begin
   if Button = mbRight then
     begin
+      // Set Guide to current X Y
       vMouseDownX := X;
       Y := pred(PaintBox1.Height) - Y;
       vMouseDownY := Y;
       PopupMenu1.PopUp;
       exit;
+    end;
+
+  if Button = mbLeft then
+    begin
+      Obj := DrawingObject(X, Y);
+      if Obj <> nil then
+        begin
+
+        end;
     end;
   if vMouseOverGuide1X then
     begin

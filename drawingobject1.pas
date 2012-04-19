@@ -18,6 +18,7 @@ type
     fDrawingObjects : TDrawingObjects;
     fOrigin         : T3Point;
     fRho, fTheta    : Double;
+    fSelect         : Boolean;
 
     function GetX: Double;
     function GetY: Double;
@@ -56,9 +57,13 @@ type
 
     procedure Draw( Frame       : TFrame;
                     Preferences : TPreferences;
-                    ActiveLayer : Boolean ) virtual; abstract;
+                    ActiveLayer : Boolean ); virtual; abstract;
 
     function Drawing : TObject;
+
+    procedure ToggleSelect;
+    procedure Select;
+    procedure Deselect;
 
     property X : Double read GetX write SetX;
     property Y : Double read GetY write SetY;
@@ -67,6 +72,8 @@ type
     property Origin : T3Point read fOrigin write SetOrigin;
     property Rho : Double read fRho write SetRho;       // rotation in Z
     property Theta : Double read fTheta write SetTheta; // rotation in XY
+
+    property Selected : Boolean read fSelect;
 
   end;
 
@@ -81,6 +88,8 @@ type
 
     procedure Draw( PaintBox : TPaintBox;
                     Box : TDrawingBox ); virtual; abstract;
+
+    procedure DeselectAll;
   end;
 
   { TDrawingObjectRaster }
@@ -118,6 +127,9 @@ const
 
 { TDrawingObjectRaster }
 
+const
+  RasterDiv = 3;
+
 constructor TDrawingObjectRaster.Create;
 begin
   SetLength(vRaster,0);
@@ -134,6 +146,7 @@ function TDrawingObjectRaster.DrawingObject(X, Y: Integer): TDrawingObject;
 var
   Index : Integer;
 begin
+  X := X div RasterDiv; Y := Y div RasterDiv;
   ValidateCoordinates( X, Y );
   Index := Y * Width + X;
   Result := vRaster[Index];
@@ -141,6 +154,7 @@ end;
 
 procedure TDrawingObjectRaster.ValidateCoordinates(X, Y: Integer);
 begin
+  X := X div RasterDiv; Y := Y div RasterDiv;
   if X < 0 then
     raise Exception.create('DrawingObjectRaster X < 0');
   if Y < 0 then
@@ -157,6 +171,7 @@ procedure TDrawingObjectRaster.DrawingObject(X, Y: Integer; Obj: TDrawingObject
 var
   Index : Integer;
 begin
+  X := X div RasterDiv; Y := Y div RasterDiv;
   ValidateCoordinates( X, Y );
   Index := Y * fWidth + X;
   vRaster[Index] := Obj;
@@ -165,8 +180,8 @@ end;
 procedure TDrawingObjectRaster.Resize(aWidth, aHeight: Integer);
 begin
   SetLength(vRaster,0);
-  fWidth := aWidth;
-  fHeight := aHeight;
+  fWidth := aWidth div RasterDiv;
+  fHeight := aHeight div RasterDiv;
   SetLength(vRaster, fWidth * fHeight );
 end;
 
@@ -175,6 +190,14 @@ end;
 procedure TDrawingObjects.Assign(Source: TPersistentZ);
 begin
   inherited Assign(Source);
+end;
+
+procedure TDrawingObjects.DeselectAll;
+var
+  I : Integer;
+begin
+  for I := 0 to pred(Count) do
+    TDrawingObject(Items[I]).Deselect;
 end;
 
 procedure TDrawingObjects.Load(var F: TextFile);
@@ -259,6 +282,21 @@ end;
 function TDrawingObject.Drawing: TObject;
 begin
   Result := MainForm.ActiveDrawing;
+end;
+
+procedure TDrawingObject.ToggleSelect;
+begin
+  fSelect := not fSelect;
+end;
+
+procedure TDrawingObject.Select;
+begin
+  fSelect := true;
+end;
+
+procedure TDrawingObject.Deselect;
+begin
+  fSelect := False;
 end;
 
 function TDrawingObject.GetX: Double;
