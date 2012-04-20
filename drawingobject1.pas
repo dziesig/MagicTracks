@@ -145,14 +145,22 @@ end;
 function TDrawingObjectRaster.DrawingObject(X, Y: Integer): TDrawingObject;
 var
   Index : Integer;
+  Q : Integer;
 begin
   X := X div RasterDiv; Y := Y div RasterDiv;
   ValidateCoordinates( X, Y );
-  Index := Y * Width + X;
-  Result := vRaster[Index];
+  Index := Y * fWidth + X;
+  try
+    Result := vRaster[Index];
+  except
+    Q := Length(vRaster);
+    raise;
+  end;
 end;
 
 procedure TDrawingObjectRaster.ValidateCoordinates(X, Y: Integer);
+var
+  Index, Len : Integer;
 begin
   X := X div RasterDiv; Y := Y div RasterDiv;
   if X < 0 then
@@ -163,7 +171,10 @@ begin
     raise exception.create('DrawingObjectRaster X(' + IntToStr(X) + ') >= ' + IntToStr(fWidth) );
   if Y >= fHeight then
     raise exception.create('DrawingObjectRaster Y(' + IntToStr(Y) + ') >= ' + IntToStr(fHeight) );
-
+  Index := Y * Width + X;
+  Len := Length(vRaster);
+  if Index >= Len then
+    raise exception.create('DrawingObjectRaster Index( ' + IntToStr(index) + ' ) >= Length( ' + IntToStr(Len) );
 end;
 
 procedure TDrawingObjectRaster.DrawingObject(X, Y: Integer; Obj: TDrawingObject

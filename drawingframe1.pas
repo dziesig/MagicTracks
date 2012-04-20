@@ -442,7 +442,7 @@ begin
       Obj := DrawingObject(X, Y);
       if Obj <> nil then
         begin
-
+          Obj.ToggleSelect;
         end;
     end;
   if vMouseOverGuide1X then
@@ -601,17 +601,23 @@ begin
       Application.ProcessMessages;
     end;
 
-  //Y := MicronsToPixels(vMouseLastY, fDrawing.Preferences );
-  //Y := pred(PaintBox1.Height) - Y;
-  //
-  if DrawingObject( X, Y) <> nil then
-    begin
-      InternalsForm1.PutEvent('OBJ:  X, Y = ', IntToStr( X ) +  ',' +
-                                               IntToStr( Y ) );
-      PaintBox1.Cursor := crHandPoint;
-      Application.ProcessMessages;
-//      PaintBox1.Canvas.Pixels[X, Y] := clRed;
-    end;
+  try
+    if DrawingObject( X, Y) <> nil then
+      begin
+        InternalsForm1.PutEvent('OBJ:  X, Y = ', IntToStr( X ) +  ',' +
+                                                 IntToStr( Y ) );
+        PaintBox1.Cursor := crHandPoint;
+        Application.ProcessMessages;
+  //      PaintBox1.Canvas.Pixels[X, Y] := clRed;
+      end;
+  except
+    InternalsForm1.PutEvent('Exception:  ',(Sender as TComponent).Name);
+    InternalsForm1.PutEvent('Exception:  ',Name);
+    InternalsForm1.PutEvent('PB W x H:  ',IntToStr(PaintBox1.Width) + ' x ' + IntToStr(PaintBox1.Height) );
+    InternalsForm1.PutEvent(' Exception OBJ:  X, Y = ', IntToStr( X ) +  ',' +
+                                                        IntToStr( Y ) );
+    raise;
+  end;
 
 end;
 

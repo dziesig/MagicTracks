@@ -100,7 +100,7 @@ begin
     begin
       PenSize := DF.PaintBox1.Canvas.Pen.Width;
       try
-        DF.PaintBox1.Canvas.Pen.Width := 3;
+        DF.PaintBox1.Canvas.Pen.Width := 6;
         DF.PaintBox1.Canvas.MoveTo(BLine[0].X,BLine[0].Y);
         DF.PaintBox1.Canvas.LineTo(BLine[0].X+1, BLine[0].Y+1);
         DF.PaintBox1.Canvas.MoveTo(BLine[pred(Len)].X,BLine[pred(Len)].Y);
