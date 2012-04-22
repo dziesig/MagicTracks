@@ -100,7 +100,7 @@ type
     fHeight : Integer;
     fWidth  : Integer;
 
-    procedure ValidateCoordinates( X, Y : Integer );
+    procedure ValidateCoordinates( var X, Y : Integer );
   public
     constructor Create;
     destructor  Destroy;
@@ -128,7 +128,7 @@ const
 { TDrawingObjectRaster }
 
 const
-  RasterDiv = 3;
+  RasterDiv = 5;
 
 constructor TDrawingObjectRaster.Create;
 begin
@@ -150,19 +150,21 @@ begin
   X := X div RasterDiv; Y := Y div RasterDiv;
   ValidateCoordinates( X, Y );
   Index := Y * fWidth + X;
-  try
-    Result := vRaster[Index];
-  except
-    Q := Length(vRaster);
-    raise;
-  end;
+  Q := Length(vRaster);
+  if Index < Q then
+    Result := vRaster[Index]
+  else
+    Result := nil;
+
 end;
 
-procedure TDrawingObjectRaster.ValidateCoordinates(X, Y: Integer);
+procedure TDrawingObjectRaster.ValidateCoordinates(var X, Y: Integer);
 var
   Index, Len : Integer;
 begin
-  X := X div RasterDiv; Y := Y div RasterDiv;
+  if X = fWidth then X := pred(fWidth);
+  if Y = fHeight then Y := pred(fHeight);
+//  X := X div RasterDiv; Y := Y div RasterDiv;
   if X < 0 then
     raise Exception.create('DrawingObjectRaster X < 0');
   if Y < 0 then
@@ -175,6 +177,8 @@ begin
   Len := Length(vRaster);
   if Index >= Len then
     raise exception.create('DrawingObjectRaster Index( ' + IntToStr(index) + ' ) >= Length( ' + IntToStr(Len) );
+  if Len < fWidth * fHeight then
+    raise exception.create('DrawingObjectRaster Len( ' + IntToStr(Len) + ' ) <= ' + IntToStr( fWidth * fHeight ) + ':::' + IntToStr(fWidth) + ' x ' + IntToStr(fHeight) );
 end;
 
 procedure TDrawingObjectRaster.DrawingObject(X, Y: Integer; Obj: TDrawingObject

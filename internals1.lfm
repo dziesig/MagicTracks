@@ -47,7 +47,7 @@ object InternalsForm1: TInternalsForm1
           Height = 25
           Top = 10
           Width = 75
-          Caption = 'Button2'
+          Caption = 'Separator'
           OnClick = Button2Click
           TabOrder = 1
         end
@@ -61,6 +61,7 @@ object InternalsForm1: TInternalsForm1
         Lines.Strings = (
           'Memo1'
         )
+        ScrollBars = ssVertical
         TabOrder = 1
       end
     end

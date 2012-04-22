@@ -104,6 +104,9 @@ type
 
     vDrawingObjects : TDrawingObjectRaster;
 
+    vMouseInPaintBox : Boolean;
+    vRecursionDepth : Integer;
+
     function GetGuide1X: Double;
     function GetGuide1Y: Double;
     function GetGuide2X: Double;
@@ -319,6 +322,8 @@ constructor TDrawingFrame.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   vDrawingObjects := TDrawingObjectRaster.Create;
+  vMouseInPaintBox := False;
+  vRecursionDepth := 0;
 end;
 
 destructor TDrawingFrame.Destroy;
@@ -427,6 +432,7 @@ procedure TDrawingFrame.PaintBox1MouseDown(Sender: TObject;
 var
   Obj : TDrawingObject;
 begin
+  InternalsForm1.PutEvent('PaintBox1MouseDown ' + Name + ' X, Y:  ', IntToStr(X) + ', ' + IntToStr(Y));
   if Button = mbRight then
     begin
       // Set Guide to current X Y
@@ -443,6 +449,7 @@ begin
       if Obj <> nil then
         begin
           Obj.ToggleSelect;
+          TDrawingSetFrame( Owner ).Invalidate;
         end;
     end;
   if vMouseOverGuide1X then
@@ -469,7 +476,10 @@ end;
 
 procedure TDrawingFrame.PaintBox1MouseEnter(Sender: TObject);
 begin
+  if fDrawing = nil then exit;
   vMouseJustEntered := True;
+  vMouseInPaintBox := True;
+  InternalsForm1.PutEvent('PaintBox1MouseEnter ' + Name ,'');
 end;
 
 procedure TDrawingFrame.PaintBox1MouseLeave(Sender: TObject);
@@ -478,6 +488,8 @@ var
   OldColor : TColor;
 begin
   if fDrawing = nil then exit;
+  vMouseInPaintBox := False;
+  InternalsForm1.PutEvent('PaintBox1MouseLeave ' + Name ,'');
   PM := Ruler_XPB.Canvas.Pen.Mode;
   OldColor := Ruler_XPB.Canvas.Pen.Color;
   Ruler_XPB.Canvas.Pen.Color := RulerHackColor;
@@ -513,6 +525,10 @@ var
   YPrime : Integer;
 begin
   if fDrawing = nil then exit;
+  if not vMouseInPaintBox then exit;
+  if VRecursionDepth > 0 then exit;
+//  InternalsForm1.PutEvent('PaintBox1MouseMove ' + Name + '('+IntToStr(vRecursionDepth) + ') X, Y:  ', IntToStr(X) + ', ' + IntToStr(Y));
+  Inc(vRecursionDepth);
   OldColor := Ruler_XPB.Canvas.Pen.Color;
   Ruler_XPB.Canvas.Pen.Color := RulerHackColor;
   Ruler_YPB.Canvas.Pen.Color := RulerHackColor;
@@ -602,7 +618,7 @@ begin
     end;
 
   try
-    if DrawingObject( X, Y) <> nil then
+    if DrawingObject(X, Y) <> nil then
       begin
         InternalsForm1.PutEvent('OBJ:  X, Y = ', IntToStr( X ) +  ',' +
                                                  IntToStr( Y ) );
@@ -613,17 +629,21 @@ begin
   except
     InternalsForm1.PutEvent('Exception:  ',(Sender as TComponent).Name);
     InternalsForm1.PutEvent('Exception:  ',Name);
+    InternalsForm1.PutEvent('Depth:  ',IntToStr(vRecursionDepth));
     InternalsForm1.PutEvent('PB W x H:  ',IntToStr(PaintBox1.Width) + ' x ' + IntToStr(PaintBox1.Height) );
-    InternalsForm1.PutEvent(' Exception OBJ:  X, Y = ', IntToStr( X ) +  ',' +
+    InternalsForm1.PutEvent('Exception OBJ:  X, Y = ', IntToStr( X ) +  ',' +
                                                         IntToStr( Y ) );
     raise;
   end;
+  Dec(vRecursionDepth);
+  InternalsForm1.PutEvent('PaintBox1MouseMove ' + Name + '('+IntToStr(vRecursionDepth) + ') Done','');
 
 end;
 
 procedure TDrawingFrame.PaintBox1MouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
+  InternalsForm1.PutEvent('PaintBox1MouseUp ' + Name + ' X, Y:  ', IntToStr(X) + ', ' + IntToStr(Y));
   vMouseGuide1XTracking := false;
   vMouseGuide1YTracking := false;
   vMouseGuide2XTracking := false;
