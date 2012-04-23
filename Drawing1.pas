@@ -108,6 +108,8 @@ type
 
       procedure Draw( Frame : TFrame );
 
+      procedure MoveSelected( Delta : T3Point );
+
       procedure Update( var Data : TLayer; NewValue : TLayer );  overload;
 
       property Path : String read fPath;
@@ -383,6 +385,11 @@ begin
   fMinZ[XZ] := 0;
   fMinY[YZ] := 0;
   fMinZ[YZ] := 0;
+end;
+
+procedure TDrawing.MoveSelected(Delta: T3Point);
+begin
+  ????
 end;
 
 procedure TDrawing.PutToFile;

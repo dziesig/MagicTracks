@@ -78,6 +78,8 @@ type
 
       function Drawing : TObject;
 
+      procedure Deselect;
+
       property LineColor    : Integer read fLineColor    write SetLineColor;
       property SurfaceColor : Integer read fSurfaceColor write SetSurfaceColor;
       property LineStyle    : Integer read fLineStyle    write setLineStyle;
@@ -121,6 +123,8 @@ type
 
       function Drawing : TObject;
 
+      procedure Deselect;
+
       property ActiveLayerKind : TLayerKinds read fActiveLayer write SetActiveLayer;
       property ViewLayers  : TViewLayers read fViewLayers write SetViewLayers;
   end;
@@ -162,6 +166,18 @@ end;
 constructor TLayer.Create(AParent: TPersistentz);
 begin
   fDrawingObjects := TDrawingObjects.Create( AParent );
+end;
+
+procedure TLayer.Deselect;
+var
+  I : Integer;
+  O : TDrawingObject;
+begin
+  for I := 0 to pred(fDrawingObjects.Count) do
+    begin
+      O := TDrawingObject(fDrawingObjects.Items[I]);
+      O.Deselect;
+    end;
 end;
 
 procedure TLayer.Draw(  Frame       : TFrame;
@@ -366,6 +382,12 @@ begin
       Add(Layer);
     end;
 
+end;
+
+procedure TLayers.Deselect;
+begin
+  TLayer(Items[ord(fActiveLayer)]).Deselect;
+//  fActiveLayer.Deselect;
 end;
 
 destructor TLayers.Destroy;

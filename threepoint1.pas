@@ -52,9 +52,13 @@ type
 
     procedure Assign( From : T3Point );
 
+    procedure Sub( const Value : T3Point );
+
     property X : Double read fX write SetX;
     property Y : Double read fY write SetY;
     property Z : Double read fZ write SetZ;
+
+
   end;
 
 implementation
@@ -91,6 +95,14 @@ end;
 procedure T3Point.SetZ(const AValue: Double);
 begin
   Update(fZ,AValue);
+end;
+
+procedure T3Point.Sub(const Value: T3Point);
+begin
+  Update( fX, fX - Value.X );
+  Update( fY, fY - Value.Y );
+  Update( fZ, fZ - Value.Z );
+
 end;
 
 procedure T3Point.Add(const Value: T3Point);

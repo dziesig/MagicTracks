@@ -61,6 +61,12 @@ type
 
     function Drawing : TObject;
 
+    procedure DrawHandle( Frame : TFrame;
+                          X, Y  : Integer; // Pixel coordinates on Canvas
+                          Start : Boolean );
+
+    procedure Move( Delta : T3Point );
+
     procedure ToggleSelect;
     procedure Select;
     procedure Deselect;
@@ -119,7 +125,7 @@ implementation
 
 uses
   Main1, Internals1, Drawing1, UnitConversion1, RectangularSolid1, Sphere1,
-  StraightLine1;
+  StraightLine1, CanvasStack1, DrawingFrame1;
 
 const
   CurrentVersion = 1;
@@ -294,6 +300,44 @@ begin
   inherited Destroy;
 end;
 
+procedure TDrawingObject.DrawHandle(Frame: TFrame; X, Y: Integer; Start : Boolean);
+var
+  DF : TDrawingFrame;
+  X0, Y0, X1, Y1 : Integer;
+  Size : Integer;
+begin
+  DF := Frame as TDrawingFrame;
+  if Start then
+    begin
+      Size := 5;
+    end
+  else
+    begin
+      Size := 4;
+    end;
+  X0 := X - Size;
+  X1 := X + Size;
+  Y0 := Y - Size;
+  Y1 := Y + Size;
+  CanvasStack.Push( DF.PaintBox1.Canvas );
+  DF.PaintBox1.Canvas.Pen.Width := 1;
+  DF.PaintBox1.Canvas.Pen.Style := psSolid;
+  DF.PaintBox1.Canvas.Pen.Color := clBlack;
+  DF.PaintBox1.Canvas.Brush.Color := $cccc00;
+  DF.PaintBox1.Canvas.Rectangle( X0, Y0, X1, Y1 );
+  X0 := X - Size + 3;
+  Y0 := Y + Size - 2;
+  X1 := X + Size - 2;
+  Y1 := Y - Size + 3;
+
+  DF.PaintBox1.Canvas.Pen.Width := 1;
+  DF.PaintBox1.Canvas.Pen.Color := clBlack;
+  DF.PaintBox1.Canvas.MoveTo( X0,Y0);
+  DF.PaintBox1.Canvas.LineTo( X1,Y0);
+  DF.PaintBox1.Canvas.LineTo( X1, Y1);
+  CanvasStack.Pop( DF.PaintBox1.Canvas );
+end;
+
 function TDrawingObject.Drawing: TObject;
 begin
   Result := MainForm.ActiveDrawing;
@@ -374,6 +418,11 @@ begin
     XY     :  Result := Value.Y;
     XZ, YZ :  Result := Value.Z;
   end;
+end;
+
+procedure TDrawingObject.Move(Delta: T3Point);
+begin
+  Origin.Add( Delta );
 end;
 
 function TDrawingObject.PixelsX(Value: T3Point; Box: TDrawingBox;
