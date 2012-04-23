@@ -25,7 +25,7 @@ interface
 
 uses
   Classes, SysUtils, Persistent1, Preferences1, ExtCtrls, DrawingCommon1,
-  Layers1, Graphics, Forms;
+  Layers1, Graphics, Forms, ThreePoint1;
 
 type
   TDrawingMins = array [TDrawingBox] of Double;
@@ -389,7 +389,7 @@ end;
 
 procedure TDrawing.MoveSelected(Delta: T3Point);
 begin
-  ????
+  //????
 end;
 
 procedure TDrawing.PutToFile;

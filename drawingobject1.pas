@@ -63,7 +63,7 @@ type
 
     procedure DrawHandle( Frame : TFrame;
                           X, Y  : Integer; // Pixel coordinates on Canvas
-                          Start : Boolean );
+                          Ref   : Integer );
 
     procedure Move( Delta : T3Point );
 
@@ -100,9 +100,14 @@ type
 
   { TDrawingObjectRaster }
 
+  TDrawingObjectReference = record
+    Obj : TDrawingObject;
+    Ref : Integer;
+  end;
+
   TDrawingObjectRaster = class
   private
-    vRaster : array of TDrawingObject;
+    vRaster : array of TDrawingObjectReference;
     fHeight : Integer;
     fWidth  : Integer;
 
@@ -113,8 +118,8 @@ type
 
     procedure Resize( aWidth, aHeight : Integer );
 
-    function DrawingObject( X, Y : Integer) : TDrawingObject;
-    procedure DrawingObject( X, Y : Integer; Obj : TDrawingObject);
+    function DrawingObject( X, Y : Integer) : TDrawingObjectReference;
+    procedure DrawingObject( X, Y : Integer; Obj : TDrawingObject; Reference : Integer);
 
     property Height : Integer read fHeight;
     property Width  : Integer read fWidth;
@@ -148,7 +153,7 @@ begin
   SetLength(vRaster,0);
 end;
 
-function TDrawingObjectRaster.DrawingObject(X, Y: Integer): TDrawingObject;
+function TDrawingObjectRaster.DrawingObject(X, Y: Integer): TDrawingObjectReference;
 var
   Index : Integer;
   Q : Integer;
@@ -160,7 +165,7 @@ begin
   if Index < Q then
     Result := vRaster[Index]
   else
-    Result := nil;
+    Result.Obj := nil;
 
 end;
 
@@ -187,15 +192,16 @@ begin
     raise exception.create('DrawingObjectRaster Len( ' + IntToStr(Len) + ' ) <= ' + IntToStr( fWidth * fHeight ) + ':::' + IntToStr(fWidth) + ' x ' + IntToStr(fHeight) );
 end;
 
-procedure TDrawingObjectRaster.DrawingObject(X, Y: Integer; Obj: TDrawingObject
-  );
+procedure TDrawingObjectRaster.DrawingObject(X, Y: Integer; Obj: TDrawingObject;
+  Reference : Integer );
 var
   Index : Integer;
 begin
   X := X div RasterDiv; Y := Y div RasterDiv;
   ValidateCoordinates( X, Y );
   Index := Y * fWidth + X;
-  vRaster[Index] := Obj;
+  vRaster[Index].Obj := Obj;
+  vRaster[Index].Ref := Reference;
 end;
 
 procedure TDrawingObjectRaster.Resize(aWidth, aHeight: Integer);
@@ -300,14 +306,14 @@ begin
   inherited Destroy;
 end;
 
-procedure TDrawingObject.DrawHandle(Frame: TFrame; X, Y: Integer; Start : Boolean);
+procedure TDrawingObject.DrawHandle(Frame: TFrame; X, Y: Integer; Ref : Integer);
 var
   DF : TDrawingFrame;
   X0, Y0, X1, Y1 : Integer;
   Size : Integer;
 begin
   DF := Frame as TDrawingFrame;
-  if Start then
+  if Ref = 1 then
     begin
       Size := 5;
     end
@@ -319,6 +325,11 @@ begin
   X1 := X + Size;
   Y0 := Y - Size;
   Y1 := Y + Size;
+  DF.DrawingObject(X0, Y0, Self,Ref);
+  DF.DrawingObject(X0, Y1, Self,Ref);
+  DF.DrawingObject(X1, Y0, Self,Ref);
+  DF.DrawingObject(X1, Y1, Self,Ref);
+  DF.DrawingObject( X, Y,  Self, Ref );
   CanvasStack.Push( DF.PaintBox1.Canvas );
   DF.PaintBox1.Canvas.Pen.Width := 1;
   DF.PaintBox1.Canvas.Pen.Style := psSolid;

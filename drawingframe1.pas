@@ -74,6 +74,7 @@ type
     fBoxType : TDrawingBox;
     fDrawing : TDrawing;
 
+    // Ruler Mouse ops;
     vXMouseDown : Boolean;
     vXStart : Double;
     vYMouseDown : Boolean;
@@ -136,8 +137,8 @@ type
     procedure PositionLowerLeft;
     procedure Invalidate; override;
 
-    function  DrawingObject( X, Y : Integer) : TDrawingObject; overload;
-    procedure DrawingObject( X, Y : Integer; Obj : TDrawingObject ); overload;
+    function  DrawingObject( X, Y : Integer) : TDrawingObjectReference; overload;
+    procedure DrawingObject( X, Y : Integer; Obj : TDrawingObject; Reference : Integer ); overload;
 
     property BoxType : TDrawingBox read fBoxType write SetBoxType;
     property Drawing : TDrawing read fDrawing write SetDrawing;
@@ -332,14 +333,14 @@ begin
   inherited Destroy;
 end;
 
-function TDrawingFrame.DrawingObject(X, Y: Integer): TDrawingObject;
+function TDrawingFrame.DrawingObject(X, Y: Integer): TDrawingObjectReference;
 begin
   Result := vDrawingObjects.DrawingObject( X, Y );
 end;
 
-procedure TDrawingFrame.DrawingObject(X, Y: Integer;  Obj : TDrawingObject );
+procedure TDrawingFrame.DrawingObject(X, Y: Integer;  Obj : TDrawingObject; Reference : Integer );
 begin
-  vDrawingObjects.DrawingObject( X, Y, Obj );
+  vDrawingObjects.DrawingObject( X, Y, Obj, Reference );
 end;
 
 function TDrawingFrame.GetGuide1X: Double;
@@ -430,7 +431,7 @@ end;
 procedure TDrawingFrame.PaintBox1MouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
-  Obj : TDrawingObject;
+  Obj : TDrawingObjectReference;
 begin
 //  InternalsForm1.PutEvent('PaintBox1MouseDown ' + Name + ' X, Y:  ', IntToStr(X) + ', ' + IntToStr(Y));
   if Button = mbRight then
@@ -446,7 +447,7 @@ begin
   if Button = mbLeft then
     begin
       Obj := DrawingObject(X, Y);
-      if Obj = nil then
+      if Obj.Obj = nil then
         begin
           fDrawing.Layers.Deselect;
         end
@@ -455,10 +456,10 @@ begin
           if not (ssCtrl in Shift) then
             begin
               fDrawing.Layers.Deselect;
-              Obj.Select;
+              Obj.Obj.Select;
             end
           else
-            Obj.ToggleSelect;
+            Obj.Obj.Obj.ToggleSelect;
         end;
       TDrawingSetFrame( Owner ).Invalidate;
     end;
@@ -534,7 +535,7 @@ var
 
   YPrime : Integer;
 
-  Obj : TDrawingObject;
+  Obj : TDrawingObjectReference;
 
 begin
   if fDrawing = nil then exit;
@@ -631,10 +632,13 @@ begin
 
   try
     Obj := DrawingObject(X, Y);
-    if Obj <> nil then
+    if Obj.Obj <> nil then
       begin
-        if Obj.Selected then
-          PaintBox1.Cursor := crSize // For moveing the object.
+        if Obj.Obj.Selected then
+          if Obj.Ref = 0 then
+            PaintBox1.Cursor := crSize // For moving the object.
+          else
+            PaintBox1.Cursor := crCross // For moving handle
         else
           PaintBox1.Cursor := crHandPoint;
         Application.ProcessMessages;

@@ -95,28 +95,15 @@ begin
   BreshenhamLine( BLine, XX0, YY0, XX1, YY1 );
   Len := Length( BLine );
   for I := 0 to pred(Len) do
-    DF.PaintBox1.Canvas.Pixels[BLine[I].X, BLine[I].Y] := clBlack;
+    begin
+      DF.PaintBox1.Canvas.Pixels[BLine[I].X, BLine[I].Y] := clBlack;
+      DF.DrawingObject(BLine[I].X, BLine[I].Y, Self,0);
+    end;
   if Selected then
     begin
-      DrawHandle(DF,BLine[0].X,BLine[0].Y,True);
-      DrawHandle(DF,BLine[pred(Len)].X,BLine[pred(Len)].Y,False);
+      DrawHandle(DF,BLine[0].X,BLine[0].Y,1);
+      DrawHandle(DF,BLine[pred(Len)].X,BLine[pred(Len)].Y,2);
     end;
-    //    DF.PaintBox1.Canvas.LineTo(BLine[0].X+1, BLine[0].
-    //begin
-    //  PenSize := DF.PaintBox1.Canvas.Pen.Width;
-    //  try
-    //    DF.PaintBox1.Canvas.Pen.Width := 6;
-    //    DF.PaintBox1.Canvas.MoveTo(BLine[0].X,BLine[0].Y);
-    //    DF.PaintBox1.Canvas.LineTo(BLine[0].X+1, BLine[0].Y+1);
-    //    DF.PaintBox1.Canvas.MoveTo(BLine[pred(Len)].X,BLine[pred(Len)].Y);
-    //    DF.PaintBox1.Canvas.LineTo(BLine[pred(Len)].X+1, BLine[pred(Len)].Y+1);
-    //  finally
-    //    DF.PaintBox1.Canvas.Pen.Width := PenSize;
-    //  end;
-    //
-    //end;
-  for I := 0 to pred(Len) do
-    DF.DrawingObject(BLine[I].X, BLine[I].Y, Self);
 
   Offset.free;
 end;
