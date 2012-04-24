@@ -25,7 +25,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, Menus,
-  ActnList, ComCtrls, ExtCtrls, StdCtrls, PrintersDlgs, types, Drawing1,
+  ActnList, ComCtrls, ExtCtrls, StdCtrls, Printers, types, Drawing1,
   Preferences1, DrawingSetFrame1, Layers1;
 
 type
@@ -136,8 +136,6 @@ type
     MenuItem8: TMenuItem;
     MenuItem9: TMenuItem;
     OpenDialog1: TOpenDialog;
-    PrintDialog1: TPrintDialog;
-    PrinterSetupDialog1: TPrinterSetupDialog;
     SaveDialog1: TSaveDialog;
     StatusBar1: TStatusBar;
     TabControl1: TTabControl;
@@ -316,18 +314,18 @@ end;
 
 procedure TMainForm.FilePrintExecute(Sender: TObject);
 begin
-  if PrintDialog1.Execute then
-    begin
-
-    end;
+  //if PrintDialog1.Execute then
+  //  begin
+  //
+  //  end;
 end;
 
 procedure TMainForm.FilePrintSetupExecute(Sender: TObject);
 begin
-  if PrinterSetupDialog1.Execute then
-    begin
-      ;
-    end;
+  //if PrinterSetupDialog1.Execute then
+  //  begin
+  //    ;
+  //  end;
 end;
 
 procedure TMainForm.FileSaveAllExecute(Sender: TObject);

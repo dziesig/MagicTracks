@@ -12,7 +12,7 @@ object MainForm: TMainForm
   OnResize = FormResize
   Position = poScreenCenter
   ShowHint = True
-  LCLVersion = '0.9.30'
+  LCLVersion = '0.9.30.4'
   object StatusBar1: TStatusBar
     Left = 0
     Height = 23
@@ -1860,14 +1860,6 @@ object MainForm: TMainForm
     Filter = 'Magic Track Design|*.mtd|All Files|*.*'
     left = 185
     top = 111
-  end
-  object PrinterSetupDialog1: TPrinterSetupDialog
-    left = 239
-    top = 123
-  end
-  object PrintDialog1: TPrintDialog
-    left = 136
-    top = 152
   end
   object IdleTimer1: TIdleTimer
     AutoEnabled = True

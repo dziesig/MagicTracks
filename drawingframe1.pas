@@ -459,7 +459,7 @@ begin
               Obj.Obj.Select;
             end
           else
-            Obj.Obj.Obj.ToggleSelect;
+            Obj.Obj.ToggleSelect;
         end;
       TDrawingSetFrame( Owner ).Invalidate;
     end;
