@@ -608,6 +608,9 @@ object MainForm: TMainForm
       object MenuItem6: TMenuItem
         Caption = '----------'
       end
+      object MenuItem37: TMenuItem
+        Action = FilePageSetup
+      end
       object MenuItem13: TMenuItem
         Action = FilePrintSetup
       end
@@ -1361,6 +1364,12 @@ object MainForm: TMainForm
       Caption = 'Straight Line'
       OnExecute = GuidesToLineExecute
     end
+    object FilePageSetup: TAction
+      Category = 'File'
+      Caption = 'Page Setup ...'
+      Hint = 'Setup Page for printing.'
+      OnExecute = FilePageSetupExecute
+    end
   end
   object ImageList1: TImageList
     left = 288
@@ -1867,5 +1876,17 @@ object MainForm: TMainForm
     OnTimer = IdleTimer1Timer
     left = 492
     top = 15
+  end
+  object PrintDialog1: TPrintDialog
+    left = 337
+    top = 177
+  end
+  object PrinterSetupDialog1: TPrinterSetupDialog
+    left = 265
+    top = 177
+  end
+  object PageSetupDialog1: TPageSetupDialog
+    left = 348
+    top = 132
   end
 end

@@ -26,7 +26,7 @@ uses
   cthreads,
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, Main1, Drawing1, About1, Preferences1,
+  Forms, printer4lazarus, Main1, Drawing1, About1, Preferences1,
   PreferencesForm1, UnitConversion1, Ruler1, DrawingFrame1, DrawingSetFrame1,
   ThreePoint1, LayerForm1, Layers1, Internals1, DrawingObject1, DrawingCommon1,
   RectangularSolid1, Sphere1, Common1, Persistent1, StraightLine1, Breshenham1,

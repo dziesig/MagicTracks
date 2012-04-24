@@ -25,7 +25,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, Menus,
-  ActnList, ComCtrls, ExtCtrls, StdCtrls, Printers, types, Drawing1,
+  ActnList, ComCtrls, ExtCtrls, StdCtrls, PrintersDlgs, types, Drawing1,
   Preferences1, DrawingSetFrame1, Layers1;
 
 type
@@ -33,6 +33,7 @@ type
   { TMainForm }
 
   TMainForm = class(TForm)
+    FilePageSetup: TAction;
     GuidesToLine: TAction;
     GuidesToRectangularSolid: TAction;
     GuidesToSphere: TAction;
@@ -46,7 +47,11 @@ type
     MenuItem35: TMenuItem;
     MenuItem36: TMenuItem;
     GuidesStraightLine: TMenuItem;
+    MenuItem37: TMenuItem;
     MenuItem38: TMenuItem;
+    PageSetupDialog1: TPageSetupDialog;
+    PrintDialog1: TPrintDialog;
+    PrinterSetupDialog1: TPrinterSetupDialog;
     VisibleLayerPanel: TPanel;
     ActiveLayerPanel: TPanel;
     ToolButton19: TToolButton;
@@ -156,6 +161,7 @@ type
     procedure FileExitExecute(Sender: TObject);
     procedure FileNewExecute(Sender: TObject);
     procedure FileOpenExecute(Sender: TObject);
+    procedure FilePageSetupExecute(Sender: TObject);
     procedure FilePrintExecute(Sender: TObject);
     procedure FilePrintSetupExecute(Sender: TObject);
     procedure FileSaveAllExecute(Sender: TObject);
@@ -312,20 +318,28 @@ begin
     end;
 end;
 
+procedure TMainForm.FilePageSetupExecute(Sender: TObject);
+begin
+  if PageSetupDialog1.Execute then
+    begin
+
+    end;
+end;
+
 procedure TMainForm.FilePrintExecute(Sender: TObject);
 begin
-  //if PrintDialog1.Execute then
-  //  begin
-  //
-  //  end;
+  if PrintDialog1.Execute then
+    begin
+
+    end;
 end;
 
 procedure TMainForm.FilePrintSetupExecute(Sender: TObject);
 begin
-  //if PrinterSetupDialog1.Execute then
-  //  begin
-  //    ;
-  //  end;
+  if PrinterSetupDialog1.Execute then
+    begin
+      ;
+    end;
 end;
 
 procedure TMainForm.FileSaveAllExecute(Sender: TObject);

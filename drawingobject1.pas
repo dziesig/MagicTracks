@@ -112,6 +112,7 @@ type
     fWidth  : Integer;
 
     procedure ValidateCoordinates( var X, Y : Integer );
+    function  CoordinatesAreValid( var X, Y : Integer ) : Boolean;
   public
     constructor Create;
     destructor  Destroy;
@@ -141,6 +142,17 @@ const
 const
   RasterDiv = 5;
 
+function TDrawingObjectRaster.CoordinatesAreValid(var X, Y: Integer): Boolean;
+begin
+  Result := False;
+  Dec(X);
+  Dec(Y);
+  if (X < 0) or (Y < 0) then exit;
+  if (X >= fWidth) or (Y >= fHeight) then exit;
+
+  Result := True;
+end;
+
 constructor TDrawingObjectRaster.Create;
 begin
   SetLength(vRaster,0);
@@ -159,14 +171,19 @@ var
   Q : Integer;
 begin
   X := X div RasterDiv; Y := Y div RasterDiv;
-  ValidateCoordinates( X, Y );
-  Index := Y * fWidth + X;
-  Q := Length(vRaster);
-  if Index < Q then
-    Result := vRaster[Index]
+  if CoordinatesAreValid( X, Y ) then
+    begin
+    //  ValidateCoordinates( X, Y );
+      Index := Y * fWidth + X;
+    //  Q := Length(vRaster);
+    //  if Index < Q then
+        Result := vRaster[Index]
+    end
   else
-    Result.Obj := nil;
-
+    begin
+      Result.Obj := nil;
+      Result.Ref := 0;
+    end;
 end;
 
 procedure TDrawingObjectRaster.ValidateCoordinates(var X, Y: Integer);
@@ -198,10 +215,12 @@ var
   Index : Integer;
 begin
   X := X div RasterDiv; Y := Y div RasterDiv;
-  ValidateCoordinates( X, Y );
-  Index := Y * fWidth + X;
-  vRaster[Index].Obj := Obj;
-  vRaster[Index].Ref := Reference;
+  if CoordinatesAreValid( X, Y ) then
+    begin
+      Index := Y * fWidth + X;
+      vRaster[Index].Obj := Obj;
+      vRaster[Index].Ref := Reference;
+    end;
 end;
 
 procedure TDrawingObjectRaster.Resize(aWidth, aHeight: Integer);
