@@ -19,6 +19,7 @@ type
     fOrigin         : T3Point;
     fRho, fTheta    : Double;
     fSelect         : Boolean;
+    fMoveStart      : T3Point;
 
     function GetX: Double;
     function GetY: Double;
@@ -66,6 +67,7 @@ type
                           Ref   : Integer );
 
     procedure Move( Delta : T3Point );
+    procedure MoveStart( Start : T3Point );
 
     procedure ToggleSelect;
     procedure Select;
@@ -111,7 +113,6 @@ type
     fHeight : Integer;
     fWidth  : Integer;
 
-    procedure ValidateCoordinates( var X, Y : Integer );
     function  CoordinatesAreValid( var X, Y : Integer ) : Boolean;
   public
     constructor Create;
@@ -173,40 +174,14 @@ begin
   X := X div RasterDiv; Y := Y div RasterDiv;
   if CoordinatesAreValid( X, Y ) then
     begin
-    //  ValidateCoordinates( X, Y );
       Index := Y * fWidth + X;
-    //  Q := Length(vRaster);
-    //  if Index < Q then
-        Result := vRaster[Index]
+      Result := vRaster[Index]
     end
   else
     begin
       Result.Obj := nil;
       Result.Ref := 0;
     end;
-end;
-
-procedure TDrawingObjectRaster.ValidateCoordinates(var X, Y: Integer);
-var
-  Index, Len : Integer;
-begin
-  if X = fWidth then X := pred(fWidth);
-  if Y = fHeight then Y := pred(fHeight);
-//  X := X div RasterDiv; Y := Y div RasterDiv;
-  if X < 0 then
-    raise Exception.create('DrawingObjectRaster X < 0');
-  if Y < 0 then
-    raise Exception.create('DrawingObjectRaster Y < 0');
-  if X >= fWidth then
-    raise exception.create('DrawingObjectRaster X(' + IntToStr(X) + ') >= ' + IntToStr(fWidth) );
-  if Y >= fHeight then
-    raise exception.create('DrawingObjectRaster Y(' + IntToStr(Y) + ') >= ' + IntToStr(fHeight) );
-  Index := Y * Width + X;
-  Len := Length(vRaster);
-  if Index >= Len then
-    raise exception.create('DrawingObjectRaster Index( ' + IntToStr(index) + ' ) >= Length( ' + IntToStr(Len) );
-  if Len < fWidth * fHeight then
-    raise exception.create('DrawingObjectRaster Len( ' + IntToStr(Len) + ' ) <= ' + IntToStr( fWidth * fHeight ) + ':::' + IntToStr(fWidth) + ' x ' + IntToStr(fHeight) );
 end;
 
 procedure TDrawingObjectRaster.DrawingObject(X, Y: Integer; Obj: TDrawingObject;
@@ -450,9 +425,14 @@ begin
   end;
 end;
 
-procedure TDrawingObject.Move(Delta: T3Point);
+procedure TDrawingObject.Move(Position: T3Point);
 begin
-  Origin.Add( Delta );
+  Origin.Add( Position );
+end;
+
+procedure TDrawingObject.MoveStart(Start: T3Point);
+begin
+  fMoveStart.Assign(Start);
 end;
 
 function TDrawingObject.PixelsX(Value: T3Point; Box: TDrawingBox;
