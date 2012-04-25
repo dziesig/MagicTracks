@@ -108,7 +108,8 @@ type
 
       procedure Draw( Frame : TFrame );
 
-      procedure MoveSelected( Delta : T3Point );
+      procedure MoveSelected( Position : T3Point );
+      procedure MoveSelectedStart( Start : T3Point );
 
       procedure Update( var Data : TLayer; NewValue : TLayer );  overload;
 
@@ -166,7 +167,7 @@ type
 implementation
 
 uses
-  UnitConversion1, Internals1;
+  UnitConversion1, Internals1, DrawingObject1;
 
 { TDrawing }
 
@@ -387,9 +388,30 @@ begin
   fMinZ[YZ] := 0;
 end;
 
-procedure TDrawing.MoveSelected(Delta: T3Point);
+procedure TDrawing.MoveSelected(Position: T3Point);
+var
+  DrawingObject : TDrawingObject;
+  I             : Integer;
 begin
-  //????
+  for I := 0 to pred(ActiveLayer.DrawingObjects.Count) do
+    begin
+      DrawingObject := TDrawingObject(ActiveLayer.DrawingObjects[I]);
+      if DrawingObject.Selected then
+        DrawingObject.Move( Position );
+    end;
+end;
+
+procedure TDrawing.MoveSelectedStart(Start: T3Point);
+var
+  DrawingObject : TDrawingObject;
+  I             : Integer;
+begin
+  for I := 0 to pred(ActiveLayer.DrawingObjects.Count) do
+    begin
+      DrawingObject := TDrawingObject(ActiveLayer.DrawingObjects[I]);
+      if DrawingObject.Selected then
+        DrawingObject.MoveStart( Start );
+    end;
 end;
 
 procedure TDrawing.PutToFile;

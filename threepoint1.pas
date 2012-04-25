@@ -54,10 +54,11 @@ type
 
     procedure Sub( const Value : T3Point );
 
+    function Show : String;
+
     property X : Double read fX write SetX;
     property Y : Double read fY write SetY;
     property Z : Double read fZ write SetZ;
-
 
   end;
 
@@ -95,6 +96,13 @@ end;
 procedure T3Point.SetZ(const AValue: Double);
 begin
   Update(fZ,AValue);
+end;
+
+function T3Point.Show: String;
+begin
+  Result := '(' + FloatToStr( X * MicronstoIn ) + ', ' +
+                  FloatToStr( Y * MicronstoIn ) + ', ' +
+                  FloatToStr( Z * MicronstoIn ) + ')';
 end;
 
 procedure T3Point.Sub(const Value: T3Point);

@@ -66,7 +66,7 @@ type
                           X, Y  : Integer; // Pixel coordinates on Canvas
                           Ref   : Integer );
 
-    procedure Move( Delta : T3Point );
+    procedure Move( Position : T3Point );
     procedure MoveStart( Start : T3Point );
 
     procedure ToggleSelect;
@@ -285,18 +285,21 @@ end;
 constructor TDrawingObject.Create(var F: TextFile; aParent: TPersistentZ);
 begin
   Origin := T3Point.Create;;
+  fMoveStart := T3Point.Create;
 end;
 
 constructor TDrawingObject.Create(aParent: TPersistentZ);
 begin
   inherited Create(aParent);
   Origin := T3Point.Create;
+  fMoveStart := T3Point.Create;
 end;
 
 destructor TDrawingObject.Destroy;
 begin
   Origin.Free;
   fDrawingObjects.Free;
+  fMoveStart.Free;
   inherited Destroy;
 end;
 
@@ -426,13 +429,23 @@ begin
 end;
 
 procedure TDrawingObject.Move(Position: T3Point);
+var
+  T : T3Point;
 begin
-  Origin.Add( Position );
+  InternalsForm1.PutEvent( 'Move', 'Pos:    ' + Position.Show );
+  InternalsForm1.PutEvent( 'Move', 'Start:  ' + fMoveStart.Show );
+  T := T3Point.Create(Position);
+  T.Sub(fMoveStart);
+  InternalsForm1.PutEvent( 'Move', 'T:      ' + T.Show );
+  Origin.Sub( T );
+  InternalsForm1.PutEvent( 'Move', 'Origin: ' + Origin.Show );
+  T.Free;
 end;
 
 procedure TDrawingObject.MoveStart(Start: T3Point);
 begin
   fMoveStart.Assign(Start);
+  InternalsForm1.PutEvent( 'MoveStart:  ', fMoveStart.Show );
 end;
 
 function TDrawingObject.PixelsX(Value: T3Point; Box: TDrawingBox;

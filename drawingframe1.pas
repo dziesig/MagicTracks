@@ -25,7 +25,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, ExtCtrls, StdCtrls, Menus,
-  DrawingCommon1, Drawing1, DrawingObject1;
+  DrawingCommon1, Drawing1, DrawingObject1, ThreePoint1;
 
 type
 
@@ -102,11 +102,14 @@ type
 
     vMouseDownX,
     vMouseDownY : Integer;
+    vMouseDown  : Boolean;
 
     vDrawingObjects : TDrawingObjectRaster;
 
     vMouseInPaintBox : Boolean;
     vRecursionDepth : Integer;
+
+    vTempPosition : T3Point;
 
     function GetGuide1X: Double;
     function GetGuide1Y: Double;
@@ -120,6 +123,8 @@ type
 
     function MouseX( X : Integer ) : Double; // Returns Mouse X in DRAWING coords.
     function MouseY( Y : Integer ) : Double;
+
+    procedure MousePosition( var Position : T3Point; X, Y : Integer );
 
     function PixelsX( X : Double ) : Integer;
     function PixelsY( Y : Double ) : Integer;
@@ -156,7 +161,7 @@ implementation
 
 uses
   Common1, Graphics, UnitConversion1, Preferences1, Math,
-  DrawingSetFrame1, Internals1;
+  DrawingSetFrame1, Internals1, CanvasStack1;
 
 const
   RulerHackColor = clGreen;
@@ -214,8 +219,8 @@ var
   X, OldX : Integer;
   Y, OldY : Integer;
   XX, YY : Double;
-  oldColor : TColor;
-  oldPenStyle : TPenStyle;
+//  oldColor : TColor;
+//  oldPenStyle : TPenStyle;
 begin
   { Setup and draw the drawing background }
 
@@ -237,7 +242,8 @@ begin
 
       if ApproxGridPixels >= 10 then  { can't tell them apart }
         begin
-          oldColor := PaintBox1.Canvas.Pen.Color;
+          CanvasStack.Push( PaintBox1.Canvas);
+//          oldColor := PaintBox1.Canvas.Pen.Color;
           PaintBox1.Canvas.Pen.Color := clBlack;
           XX := PixelsToMicrons(-1,Drawing.Preferences);
           OldX := Floor( XX /  fDrawing.Preferences.GridSpacingMicrons);
@@ -264,12 +270,14 @@ begin
                     end;
                 end;
             end;
-          PaintBox1.Canvas.Pen.Color := oldColor;
+          CanvasStack.Pop( PaintBox1.Canvas);
+//          PaintBox1.Canvas.Pen.Color := oldColor;
         end;
     end;
 
   // Draw the guides
-  oldPenStyle := PaintBox1.Canvas.Pen.Style;
+//  oldPenStyle := PaintBox1.Canvas.Pen.Style;
+  CanvasStack.Push( PaintBox1.Canvas);
   X := PaintBox1.Width;
   Y := PaintBox1.Height;
   PaintBox1.Canvas.Pen.Style := psDashDot;
@@ -279,7 +287,7 @@ begin
   PaintBox1.Canvas.LineTo( I, Y);
   PaintBox1.Canvas.MoveTo( 0, Y-J);
   PaintBox1.Canvas.LineTo( X, Y-J);
-  PaintBox1.Canvas.Pen.Style := oldPenStyle;
+//  PaintBox1.Canvas.Pen.Style := oldPenStyle;
   PaintBox1.Canvas.Pen.Style := psDash;
   I := PixelsX( Guide1X );
   J := PixelsY( Guide1Y );
@@ -287,6 +295,7 @@ begin
   PaintBox1.Canvas.LineTo( I, Y);
   PaintBox1.Canvas.MoveTo( 0, Y-J);
   PaintBox1.Canvas.LineTo( X, Y-J);
+  CanvasStack.Pop( PaintBox1.Canvas);
 
 end;
 
@@ -311,8 +320,6 @@ begin
 end;
 
 procedure TDrawingFrame.PaintDrawing;
-var
-  X, Y : Integer;
 begin
   // Draw the Active Layers of the Drawing;
 
@@ -325,11 +332,13 @@ begin
   vDrawingObjects := TDrawingObjectRaster.Create;
   vMouseInPaintBox := False;
   vRecursionDepth := 0;
+  vTempPosition := T3Point.Create;
 end;
 
 destructor TDrawingFrame.Destroy;
 begin
   vDrawingObjects.Free;
+  vTempPosition.Free;
   inherited Destroy;
 end;
 
@@ -398,6 +407,30 @@ begin
   TDrawingSetFrame( Owner ).Invalidate;
 end;
 
+procedure TDrawingFrame.MousePosition(var Position: T3Point; X, Y: Integer);
+begin
+  case BoxType of
+    XY:
+      begin
+        Position.X := PixelsToMicrons( X, fDrawing.Preferences) + fDrawing.MinX[BoxType];
+        Position.Y := PixelsToMicrons( Y, fDrawing.Preferences) + fDrawing.MinY[BoxType];
+        Position.Z := 0.0;
+      end;
+    XZ:
+      begin
+        Position.X := PixelsToMicrons( X, fDrawing.Preferences) + fDrawing.MinX[BoxType];
+        Position.Y := 0.0;
+        Position.Z := PixelsToMicrons( Y, fDrawing.Preferences) + fDrawing.MinY[BoxType];
+      end;
+    YZ:
+      begin
+        Position.X := 0.0;
+        Position.Y := PixelsToMicrons( X, fDrawing.Preferences) + fDrawing.MinX[BoxType];
+        Position.Z := PixelsToMicrons( Y, fDrawing.Preferences) + fDrawing.MinY[BoxType];
+      end;
+  end;
+end;
+
 function TDrawingFrame.MouseX(X: Integer): Double;
 var
   XX, Spacing : Double;
@@ -433,6 +466,7 @@ procedure TDrawingFrame.PaintBox1MouseDown(Sender: TObject;
 var
   Obj : TDrawingObjectReference;
 begin
+  MousePosition(vTempPosition, X, Y );
 //  InternalsForm1.PutEvent('PaintBox1MouseDown ' + Name + ' X, Y:  ', IntToStr(X) + ', ' + IntToStr(Y));
   if Button = mbRight then
     begin
@@ -461,6 +495,8 @@ begin
           else
             Obj.Obj.ToggleSelect;
         end;
+      vMouseDown := true;
+      fDrawing.MoveSelectedStart( vTempPosition );
       TDrawingSetFrame( Owner ).Invalidate;
     end;
   if vMouseOverGuide1X then
@@ -541,6 +577,7 @@ begin
   if fDrawing = nil then exit;
   if not vMouseInPaintBox then exit;
   if VRecursionDepth > 0 then exit;
+  MousePosition(vTempPosition,X,Y);
   Inc(vRecursionDepth);
   OldColor := Ruler_XPB.Canvas.Pen.Color;
   Ruler_XPB.Canvas.Pen.Color := RulerHackColor;
@@ -636,7 +673,12 @@ begin
       begin
         if Obj.Obj.Selected then
           if Obj.Ref = 0 then
-            PaintBox1.Cursor := crSize // For moving the object.
+            begin
+              PaintBox1.Cursor := crSize; // For moving the object.
+              if vMouseDown then
+                fDrawing.MoveSelected( vTempPosition );
+              TDrawingSetFrame(Owner).Invalidate;
+            end
           else
             PaintBox1.Cursor := crCross // For moving handle
         else
@@ -653,18 +695,17 @@ begin
     raise;
   end;
   Dec(vRecursionDepth);
-//  InternalsForm1.PutEvent('PaintBox1MouseMove ' + Name + '('+IntToStr(vRecursionDepth) + ') Done','');
 
 end;
 
 procedure TDrawingFrame.PaintBox1MouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
-//  InternalsForm1.PutEvent('PaintBox1MouseUp ' + Name + ' X, Y:  ', IntToStr(X) + ', ' + IntToStr(Y));
   vMouseGuide1XTracking := false;
   vMouseGuide1YTracking := false;
   vMouseGuide2XTracking := false;
   vMouseGuide2YTracking := false;
+  vMouseDown := false;
 end;
 
 procedure TDrawingFrame.Ruler_XPBMouseDown(Sender: TObject;
@@ -884,7 +925,7 @@ begin
                     Ruler_XPB.Canvas.Pen.Width := 2;                    Ruler_XPB.Canvas.MoveTo(I,0);
                     Ruler_XPB.Canvas.LineTo(I,Trunc(DisplayHeight * 0.67));
                     Ruler_XPB.Canvas.Pen.Width := 1;                    Ruler_XPB.Canvas.MoveTo(I,0);
-                     Ruler_XPB.Canvas.TextOut(I+3,Trunc(DisplayHeight * 0.45),IntToStr(X)+'''');
+                    Ruler_XPB.Canvas.TextOut(I+3,Trunc(DisplayHeight * 0.45),IntToStr(X)+'''');
                   end
                else
                  Ruler_XPB.Canvas.LineTo(I,Trunc(DisplayHeight * 0.3));
