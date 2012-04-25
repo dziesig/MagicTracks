@@ -40,7 +40,6 @@ begin
   Application.CreateForm(TAboutForm1, AboutForm1);
   Application.CreateForm(TPreferencesForm, PreferencesForm);
   Application.CreateForm(TLayerForm, LayerForm);
-  Application.CreateForm(TInternalsForm1, InternalsForm1);
   Application.Run;
 end.
 

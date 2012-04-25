@@ -204,6 +204,9 @@ type
 
     MIZooms : array[0..MaxZoom] of TMenuItem;
 
+    procedure InitFromConfig( ConfigFileName : String );
+    procedure InitToConfig( ConfigFileName : String );
+
     procedure SetActiveDrawing( Value : TDrawing );
 
   public
@@ -224,7 +227,7 @@ implementation
 
 uses
   About1, PreferencesForm1, LayerForm1, Internals1, Sphere1, DrawingObject1,
-  RectangularSolid1, ThreePoint1, StraightLine1;
+  RectangularSolid1, ThreePoint1, StraightLine1, IniFiles;
 
 { TMainForm }
 
@@ -265,6 +268,7 @@ end;
 
 procedure TMainForm.FileExitExecute(Sender: TObject);
 begin
+  InitToConfig( fConfigFileName );
   Close;
 end;
 
@@ -408,9 +412,12 @@ end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
+  Application.CreateForm(TInternalsForm1, InternalsForm1);
+//  InternalsForm1 := TInternalsForm1.Create( Self ); // So we can configure later
   fConfigFileName := GetAppConfigFile(False);
   { Create the configuration file directory if it doesn't exist }
   ForceDirectory(ExtractFilePath(fConfigFileName));
+  InitFromConfig( fConfigFileName );
   fDefaultPreferences := TPreferences.Create;
   fDefaultPreferences.GetFromConfig( fConfigFileName );
   fDefaultLayers := TLayers.Create;
@@ -527,6 +534,7 @@ end;
 
 procedure TMainForm.HelpShowInternalsExecute(Sender: TObject);
 begin
+  InternalsForm1.Visible := True;
   InternalsForm1.Show;
 end;
 
@@ -540,6 +548,38 @@ begin
     if TDrawing(Drawings[I]).Modified then
       Inc(Count);
   FileSaveAll.Enabled := Count > 0;
+end;
+
+procedure TMainForm.InitFromConfig(ConfigFileName: String);
+var
+  F : TIniFile;
+  FS  : TFormStyle;
+  Val : Integer;
+  I   : Integer;
+begin
+  F := TIniFile.Create( ConfigFileName );
+  InternalsForm1.Visible := F.ReadBool('Internals','Visible',False);
+  InternalsForm1.FormStyle := TFormStyle(F.ReadInteger('Internals','FormStyle',ord(fsNormal) ));
+  InternalsForm1.MenuItem2.Checked := InternalsForm1.FormStyle = fsStayOnTop;
+  Val := F.ReadInteger('Internals','Top',-100000);
+  if Val <> -100000 then
+    begin
+      InternalsForm1.Top := Val;
+      InternalsForm1.Left := F.ReadInteger('Internals','Left',0);
+    end;
+  F.Free;
+end;
+
+procedure TMainForm.InitToConfig(ConfigFileName: String);
+var
+  F : TIniFile;
+begin
+  F := TIniFile.Create( ConfigFileName );
+  F.WriteBool('Internals','Visible',InternalsForm1.Visible );
+  F.WriteInteger('Internals','FormStyle', ord(InternalsForm1.FormStyle) );
+  F.WriteInteger('Internals','Top', InternalsForm1.Top );
+  F.WriteInteger('Internals','Left', InternalsForm1.Left );
+  F.Free;
 end;
 
 procedure TMainForm.LayersEditExecute(Sender: TObject);
