@@ -8,8 +8,8 @@ object DrawingFrame: TDrawingFrame
   ClientWidth = 729
   TabOrder = 0
   Visible = False
-  DesignLeft = 258
-  DesignTop = 116
+  DesignLeft = 406
+  DesignTop = 145
   object Panel1: TPanel
     Left = 0
     Height = 40

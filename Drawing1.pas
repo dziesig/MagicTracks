@@ -109,7 +109,6 @@ type
       procedure Draw( Frame : TFrame );
 
       procedure MoveSelected( Position : T3Point );
-      procedure MoveSelectedStart( Start : T3Point );
 
       procedure Update( var Data : TLayer; NewValue : TLayer );  overload;
 
@@ -398,19 +397,6 @@ begin
       DrawingObject := TDrawingObject(ActiveLayer.DrawingObjects[I]);
       if DrawingObject.Selected then
         DrawingObject.Move( Position );
-    end;
-end;
-
-procedure TDrawing.MoveSelectedStart(Start: T3Point);
-var
-  DrawingObject : TDrawingObject;
-  I             : Integer;
-begin
-  for I := 0 to pred(ActiveLayer.DrawingObjects.Count) do
-    begin
-      DrawingObject := TDrawingObject(ActiveLayer.DrawingObjects[I]);
-      if DrawingObject.Selected then
-        DrawingObject.MoveStart( Start );
     end;
 end;
 

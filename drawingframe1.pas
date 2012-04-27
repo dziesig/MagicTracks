@@ -322,7 +322,7 @@ end;
 procedure TDrawingFrame.PaintDrawing;
 begin
   // Draw the Active Layers of the Drawing;
-
+  vDrawingObjects.Reset;
   Drawing.Draw( Self );
 end;
 
@@ -408,25 +408,28 @@ begin
 end;
 
 procedure TDrawingFrame.MousePosition(var Position: T3Point; X, Y: Integer);
+var
+  YPrime : Integer;
 begin
+  YPrime := PaintBox1.Height - Y;
   case BoxType of
     XY:
       begin
         Position.X := PixelsToMicrons( X, fDrawing.Preferences) + fDrawing.MinX[BoxType];
-        Position.Y := PixelsToMicrons( Y, fDrawing.Preferences) + fDrawing.MinY[BoxType];
+        Position.Y := PixelsToMicrons( YPrime, fDrawing.Preferences) + fDrawing.MinY[BoxType];
         Position.Z := 0.0;
       end;
     XZ:
       begin
         Position.X := PixelsToMicrons( X, fDrawing.Preferences) + fDrawing.MinX[BoxType];
         Position.Y := 0.0;
-        Position.Z := PixelsToMicrons( Y, fDrawing.Preferences) + fDrawing.MinY[BoxType];
+        Position.Z := PixelsToMicrons( YPrime, fDrawing.Preferences) + fDrawing.MinY[BoxType];
       end;
     YZ:
       begin
         Position.X := 0.0;
         Position.Y := PixelsToMicrons( X, fDrawing.Preferences) + fDrawing.MinX[BoxType];
-        Position.Z := PixelsToMicrons( Y, fDrawing.Preferences) + fDrawing.MinY[BoxType];
+        Position.Z := PixelsToMicrons( YPrime, fDrawing.Preferences) + fDrawing.MinY[BoxType];
       end;
   end;
 end;
@@ -485,7 +488,7 @@ begin
         begin
           fDrawing.Layers.Deselect;
         end
-      else
+      else if not vMouseDown then
         begin
           if not (ssCtrl in Shift) then
             begin
@@ -496,7 +499,7 @@ begin
             Obj.Obj.ToggleSelect;
         end;
       vMouseDown := true;
-      fDrawing.MoveSelectedStart( vTempPosition );
+//      fDrawing.MoveSelectedStart( vTempPosition );
       TDrawingSetFrame( Owner ).Invalidate;
     end;
   if vMouseOverGuide1X then
@@ -526,7 +529,6 @@ begin
   if fDrawing = nil then exit;
   vMouseJustEntered := True;
   vMouseInPaintBox := True;
-//  InternalsForm1.PutEvent('PaintBox1MouseEnter ' + Name ,'');
 end;
 
 procedure TDrawingFrame.PaintBox1MouseLeave(Sender: TObject);
@@ -536,7 +538,6 @@ var
 begin
   if fDrawing = nil then exit;
   vMouseInPaintBox := False;
-//  InternalsForm1.PutEvent('PaintBox1MouseLeave ' + Name ,'');
   PM := Ruler_XPB.Canvas.Pen.Mode;
   OldColor := Ruler_XPB.Canvas.Pen.Color;
   Ruler_XPB.Canvas.Pen.Color := RulerHackColor;
@@ -573,101 +574,109 @@ var
 
   Obj : TDrawingObjectReference;
 
+  CurrentPosition,
+  DeltaPosition : T3Point;
+
 begin
   if fDrawing = nil then exit;
   if not vMouseInPaintBox then exit;
   if VRecursionDepth > 0 then exit;
-  MousePosition(vTempPosition,X,Y);
-  Inc(vRecursionDepth);
-  OldColor := Ruler_XPB.Canvas.Pen.Color;
-  Ruler_XPB.Canvas.Pen.Color := RulerHackColor;
-  Ruler_YPB.Canvas.Pen.Color := RulerHackColor;
-  if not vMouseJustEntered then
-    begin
-      PM := Ruler_XPB.Canvas.Pen.Mode;
-      Ruler_XPB.Canvas.Pen.Mode := pmNotXOR;
-      Ruler_XPB.Canvas.MoveTo(vMouseXPixels,0);
-      Ruler_XPB.Canvas.LineTo(vMouseXPixels,Ruler_XPB.Height);
-      Ruler_XPB.Canvas.Pen.Mode := PM;
-
-      PM := Ruler_YPB.Canvas.Pen.Mode;
-      Ruler_YPB.Canvas.Pen.Mode := pmNotXOR;
-      Ruler_YPB.Canvas.MoveTo(0,pred(PaintBox1.Height) - vMouseYPixels);
-      Ruler_YPB.Canvas.LineTo(Ruler_YPB.Height,pred(PaintBox1.Height) - vMouseYPixels);
-      Ruler_YPB.Canvas.Pen.Mode := PM;
-    end;
-
-  vMouseJustEntered := False;
-  vMouseLastX := MouseX( X );
-
-  vMouseXPixels := MicronsToPixels( vMouseLastX - fDrawing.MinX[fBoxType], fDrawing.Preferences );
-  PM := Ruler_XPB.Canvas.Pen.Mode;
-  Ruler_XPB.Canvas.Pen.Mode := pmNotXOR;
-  Ruler_XPB.Canvas.MoveTo(vMouseXPixels,0);
-  Ruler_XPB.Canvas.LineTo(vMouseXPixels,Ruler_XPB.Height);
-  Ruler_XPB.Canvas.Pen.Mode := PM;
-
-  YPrime := pred(PaintBox1.Height) - Y;
-  vMouseLastY := MouseY( YPrime );
-
-  vMouseYPixels := MicronsToPixels( vMouseLastY - fDrawing.MinY[fBoxType], fDrawing.Preferences );
-  PM := Ruler_YPB.Canvas.Pen.Mode;
-  Ruler_YPB.Canvas.Pen.Mode := pmNotXOR;
-  Ruler_YPB.Canvas.MoveTo(0,pred(PaintBox1.Height) - vMouseYPixels);
-  Ruler_YPB.Canvas.LineTo(Ruler_YPB.Height,pred(PaintBox1.Height) - vMouseYPixels);
-  Ruler_YPB.Canvas.Pen.Mode := PM;
-  Ruler_XPB.Canvas.Pen.Color := OldColor;
-  Ruler_YPB.Canvas.Pen.Color := OldColor;
-
-// Check if Mouse is over one of the guides (starting with 1)
-
-  vMouseOverGuide1X := false;
-  vMouseOverGuide1y := false;
-  vMouseOverGuide2X := false;
-  vMouseOverGuide2Y := false;
-
-  DG1X := Guide1X;
-  DG1Y := Guide1Y;
-  DG2X := Guide2X;
-  DG2Y := Guide2Y;
-
-  DX1 := MicronsToPixels(vMouseLastX - DG1X, fDrawing.Preferences );
-  DY1 := MicronsToPixels(vMouseLastY - DG1Y, fDrawing.Preferences );
-  DX2 := MicronsToPixels(vMouseLastX - DG2X, fDrawing.Preferences );
-  DY2 := MicronsToPixels(vMouseLastY - DG2Y, fDrawing.Preferences );
-
-  if abs(DX1) < Thresh then
-    vMouseOverGuide1X := true
-  else if abs(DY1) < Thresh then
-    vMouseOverGuide1Y := true
-  else if abs(DX2) < Thresh then
-    vMouseOverGuide2X := true
-  else if abs(DY2) < Thresh then
-    vMouseOverGuide2Y := true;
-
-  if vMouseOverGuide1X or vMouseOverGuide2X then
-    PaintBox1.Cursor := crHSplit
-  else if vMouseOverGuide1Y or vMouseOverGuide2Y then
-    PaintBox1.Cursor := crVSplit
-  else
-    PaintBox1.Cursor := crDefault;
-
-  if ssLeft in Shift then
-    begin
-      if vMouseGuide1XTracking then
-        Guide1X := vMouseLastX
-      else if vMouseGuide1YTracking then
-        Guide1Y := vMouseLastY
-      else if vMouseGuide2XTracking then
-        Guide2X := vMouseLastX
-      else if vMouseGuide2YTracking then
-        Guide2Y := vMouseLastY;
-      TDrawingSetFrame(Owner).Invalidate;
-
-      Application.ProcessMessages;
-    end;
-
+  CurrentPosition := T3Point.Create;
+  DeltaPosition := T3Point.Create;
+  MousePosition(CurrentPosition,X,Y);
+  DeltaPosition.Assign( CurrentPosition );
+  DeltaPosition.Sub( vTempPosition );
+  vTempPosition.Assign(CurrentPosition);
   try
+    Inc(vRecursionDepth);
+    OldColor := Ruler_XPB.Canvas.Pen.Color;
+    Ruler_XPB.Canvas.Pen.Color := RulerHackColor;
+    Ruler_YPB.Canvas.Pen.Color := RulerHackColor;
+    if not vMouseJustEntered then
+      begin
+        PM := Ruler_XPB.Canvas.Pen.Mode;
+        Ruler_XPB.Canvas.Pen.Mode := pmNotXOR;
+        Ruler_XPB.Canvas.MoveTo(vMouseXPixels,0);
+        Ruler_XPB.Canvas.LineTo(vMouseXPixels,Ruler_XPB.Height);
+        Ruler_XPB.Canvas.Pen.Mode := PM;
+
+        PM := Ruler_YPB.Canvas.Pen.Mode;
+        Ruler_YPB.Canvas.Pen.Mode := pmNotXOR;
+        Ruler_YPB.Canvas.MoveTo(0,pred(PaintBox1.Height) - vMouseYPixels);
+        Ruler_YPB.Canvas.LineTo(Ruler_YPB.Height,pred(PaintBox1.Height) - vMouseYPixels);
+        Ruler_YPB.Canvas.Pen.Mode := PM;
+      end;
+
+    vMouseJustEntered := False;
+    vMouseLastX := MouseX( X );
+
+    vMouseXPixels := MicronsToPixels( vMouseLastX - fDrawing.MinX[fBoxType], fDrawing.Preferences );
+    PM := Ruler_XPB.Canvas.Pen.Mode;
+    Ruler_XPB.Canvas.Pen.Mode := pmNotXOR;
+    Ruler_XPB.Canvas.MoveTo(vMouseXPixels,0);
+    Ruler_XPB.Canvas.LineTo(vMouseXPixels,Ruler_XPB.Height);
+    Ruler_XPB.Canvas.Pen.Mode := PM;
+
+    YPrime := pred(PaintBox1.Height) - Y;
+    vMouseLastY := MouseY( YPrime );
+
+    vMouseYPixels := MicronsToPixels( vMouseLastY - fDrawing.MinY[fBoxType], fDrawing.Preferences );
+    PM := Ruler_YPB.Canvas.Pen.Mode;
+    Ruler_YPB.Canvas.Pen.Mode := pmNotXOR;
+    Ruler_YPB.Canvas.MoveTo(0,pred(PaintBox1.Height) - vMouseYPixels);
+    Ruler_YPB.Canvas.LineTo(Ruler_YPB.Height,pred(PaintBox1.Height) - vMouseYPixels);
+    Ruler_YPB.Canvas.Pen.Mode := PM;
+    Ruler_XPB.Canvas.Pen.Color := OldColor;
+    Ruler_YPB.Canvas.Pen.Color := OldColor;
+
+  // Check if Mouse is over one of the guides (starting with 1)
+
+    vMouseOverGuide1X := false;
+    vMouseOverGuide1y := false;
+    vMouseOverGuide2X := false;
+    vMouseOverGuide2Y := false;
+
+    DG1X := Guide1X;
+    DG1Y := Guide1Y;
+    DG2X := Guide2X;
+    DG2Y := Guide2Y;
+
+    DX1 := MicronsToPixels(vMouseLastX - DG1X, fDrawing.Preferences );
+    DY1 := MicronsToPixels(vMouseLastY - DG1Y, fDrawing.Preferences );
+    DX2 := MicronsToPixels(vMouseLastX - DG2X, fDrawing.Preferences );
+    DY2 := MicronsToPixels(vMouseLastY - DG2Y, fDrawing.Preferences );
+
+    if abs(DX1) < Thresh then
+      vMouseOverGuide1X := true
+    else if abs(DY1) < Thresh then
+      vMouseOverGuide1Y := true
+    else if abs(DX2) < Thresh then
+      vMouseOverGuide2X := true
+    else if abs(DY2) < Thresh then
+      vMouseOverGuide2Y := true;
+
+    if vMouseOverGuide1X or vMouseOverGuide2X then
+      PaintBox1.Cursor := crHSplit
+    else if vMouseOverGuide1Y or vMouseOverGuide2Y then
+      PaintBox1.Cursor := crVSplit
+    else
+      PaintBox1.Cursor := crDefault;
+
+    if ssLeft in Shift then
+      begin
+        if vMouseGuide1XTracking then
+          Guide1X := vMouseLastX
+        else if vMouseGuide1YTracking then
+          Guide1Y := vMouseLastY
+        else if vMouseGuide2XTracking then
+          Guide2X := vMouseLastX
+        else if vMouseGuide2YTracking then
+          Guide2Y := vMouseLastY;
+        TDrawingSetFrame(Owner).Invalidate;
+
+        Application.ProcessMessages;
+      end;
+
     Obj := DrawingObject(X, Y);
     if Obj.Obj <> nil then
       begin
@@ -676,8 +685,11 @@ begin
             begin
               PaintBox1.Cursor := crSize; // For moving the object.
               if vMouseDown then
-                fDrawing.MoveSelected( vTempPosition );
-              TDrawingSetFrame(Owner).Invalidate;
+                begin
+//                  InternalsForm1.PutEvent( 'Mouse Delta:  ',DeltaPosition.Show);
+                  fDrawing.MoveSelected( DeltaPosition );
+                  TDrawingSetFrame(Owner).Invalidate;
+                end;
             end
           else
             PaintBox1.Cursor := crCross // For moving handle
@@ -685,17 +697,12 @@ begin
           PaintBox1.Cursor := crHandPoint;
         Application.ProcessMessages;
       end;
-  except
-    InternalsForm1.PutEvent('Exception:  ',(Sender as TComponent).Name);
-    InternalsForm1.PutEvent('Exception:  ',Name);
-    InternalsForm1.PutEvent('Depth:  ',IntToStr(vRecursionDepth));
-    InternalsForm1.PutEvent('PB W x H:  ',IntToStr(PaintBox1.Width) + ' x ' + IntToStr(PaintBox1.Height) );
-    InternalsForm1.PutEvent('Exception OBJ:  X, Y = ', IntToStr( X ) +  ',' +
-                                                        IntToStr( Y ) );
-    raise;
-  end;
-  Dec(vRecursionDepth);
+  finally
+    CurrentPosition.Free;
+    DeltaPosition.Free;
 
+    Dec(vRecursionDepth);
+  end;
 end;
 
 procedure TDrawingFrame.PaintBox1MouseUp(Sender: TObject; Button: TMouseButton;
