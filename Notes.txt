@@ -100,8 +100,45 @@
 
           Make provisions for eventual dual gauge track rendering.
 
-0002.3  Design of the Layer editing GUI.
+0003.0   April 27, 2012
 
+0003.1   Did a lot of work without entering in these notes.
 
+         Notes about Drawing editing:
 
+         Mouse Down: Selects individual objects.
+                     Ctrl Mouse Down selects multiple objects.
+                     Not on object - deselects all objects.
+                     On Selected Object but NOT on handle, sets move-object flag
+                     (Worry about handle selection when multiple objects are
+                     selected).
+
+         Mouse Up:   Stops move of selected objects. clears move object flag.
+
+         Mouse Move: Moves all selected objects if move-object flag is set.
+
+         After implementing the above and combining the Invalidate calls to
+         one at the end of the method (if needed) the move-object functionality
+         works like a charm!!!!!
+
+0004.0   April 28, 2012 Saturday
+
+0004.1   Now need to work on moving handles - specific to the individual
+         object kind (e.g., straight line, ellipsoid, ... ).
+
+         Ran into problem with assignment of objects (specifically deep
+         copying).  After some research I found that:
+
+                    1) Freepascal/Delphi now has generics - I can improve
+                       the type safety of the lists significantly.
+
+                    2) With the latest versions of RTTI I can create
+                       a really compact object factory.
+
+0005.0   April 30, 2012 - Monday
+
+         Since the generic capablility allows generation of libraries
+         that are common to multiple projects, I am going to return the
+         common1 and persistent1 units to the MagicLibraries folder and
+         make sure I can compile them before I start using generic types.
 

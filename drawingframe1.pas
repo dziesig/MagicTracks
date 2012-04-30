@@ -104,6 +104,8 @@ type
     vMouseDownY : Integer;
     vMouseDown  : Boolean;
 
+    vMoveObject : Boolean;
+
     vDrawingObjects : TDrawingObjectRaster;
 
     vMouseInPaintBox : Boolean;
@@ -271,12 +273,11 @@ begin
                 end;
             end;
           CanvasStack.Pop( PaintBox1.Canvas);
-//          PaintBox1.Canvas.Pen.Color := oldColor;
         end;
     end;
 
   // Draw the guides
-//  oldPenStyle := PaintBox1.Canvas.Pen.Style;
+
   CanvasStack.Push( PaintBox1.Canvas);
   X := PaintBox1.Width;
   Y := PaintBox1.Height;
@@ -287,7 +288,7 @@ begin
   PaintBox1.Canvas.LineTo( I, Y);
   PaintBox1.Canvas.MoveTo( 0, Y-J);
   PaintBox1.Canvas.LineTo( X, Y-J);
-//  PaintBox1.Canvas.Pen.Style := oldPenStyle;
+
   PaintBox1.Canvas.Pen.Style := psDash;
   I := PixelsX( Guide1X );
   J := PixelsY( Guide1Y );
@@ -333,6 +334,7 @@ begin
   vMouseInPaintBox := False;
   vRecursionDepth := 0;
   vTempPosition := T3Point.Create;
+  vMoveObject := False;
 end;
 
 destructor TDrawingFrame.Destroy;
@@ -468,9 +470,10 @@ procedure TDrawingFrame.PaintBox1MouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
   Obj : TDrawingObjectReference;
+  DoInvalidate : Boolean;
 begin
   MousePosition(vTempPosition, X, Y );
-//  InternalsForm1.PutEvent('PaintBox1MouseDown ' + Name + ' X, Y:  ', IntToStr(X) + ', ' + IntToStr(Y));
+  DoInvalidate := False;
   if Button = mbRight then
     begin
       // Set Guide to current X Y
@@ -487,20 +490,27 @@ begin
       if Obj.Obj = nil then
         begin
           fDrawing.Layers.Deselect;
+          DoInvalidate := True;
         end
-      else if not vMouseDown then
+      else
         begin
-          if not (ssCtrl in Shift) then
-            begin
-              fDrawing.Layers.Deselect;
-              Obj.Obj.Select;
-            end
+          if Obj.Obj.Selected then
+            vMoveObject := True
           else
-            Obj.Obj.ToggleSelect;
+            if not vMouseDown then
+              begin
+                if not (ssCtrl in Shift) then
+                  begin
+                    fDrawing.Layers.Deselect;
+                    Obj.Obj.Select;
+                  end
+                else
+                  Obj.Obj.ToggleSelect;
+                vMouseDown := true;
+                DoInvalidate := True;
+              end;
         end;
-      vMouseDown := true;
-//      fDrawing.MoveSelectedStart( vTempPosition );
-      TDrawingSetFrame( Owner ).Invalidate;
+
     end;
   if vMouseOverGuide1X then
     begin
@@ -522,6 +532,10 @@ begin
       vMouseGuide2YStart := MouseY( Y );
       vMouseGuide2YTracking := True;
     end;
+  if DoInvalidate then
+    TDrawingSetFrame( Owner ).Invalidate;
+
+
 end;
 
 procedure TDrawingFrame.PaintBox1MouseEnter(Sender: TObject);
@@ -577,16 +591,25 @@ var
   CurrentPosition,
   DeltaPosition : T3Point;
 
+  DoInvalidate : Boolean;
+
 begin
   if fDrawing = nil then exit;
   if not vMouseInPaintBox then exit;
   if VRecursionDepth > 0 then exit;
+  DoInvalidate := False;
   CurrentPosition := T3Point.Create;
   DeltaPosition := T3Point.Create;
   MousePosition(CurrentPosition,X,Y);
   DeltaPosition.Assign( CurrentPosition );
   DeltaPosition.Sub( vTempPosition );
   vTempPosition.Assign(CurrentPosition);
+
+  if vMoveObject then
+    begin
+      fDrawing.MoveSelected(DeltaPosition);
+      DoInvalidate := true;
+    end;
   try
     Inc(vRecursionDepth);
     OldColor := Ruler_XPB.Canvas.Pen.Color;
@@ -672,9 +695,7 @@ begin
           Guide2X := vMouseLastX
         else if vMouseGuide2YTracking then
           Guide2Y := vMouseLastY;
-        TDrawingSetFrame(Owner).Invalidate;
-
-        Application.ProcessMessages;
+        DoInvalidate := True;
       end;
 
     Obj := DrawingObject(X, Y);
@@ -682,20 +703,14 @@ begin
       begin
         if Obj.Obj.Selected then
           if Obj.Ref = 0 then
-            begin
-              PaintBox1.Cursor := crSize; // For moving the object.
-              if vMouseDown then
-                begin
-//                  InternalsForm1.PutEvent( 'Mouse Delta:  ',DeltaPosition.Show);
-                  fDrawing.MoveSelected( DeltaPosition );
-                  TDrawingSetFrame(Owner).Invalidate;
-                end;
-            end
+            PaintBox1.Cursor := crSize // For moving the object.
           else
-            PaintBox1.Cursor := crCross // For moving handle
+            begin
+              if Drawing.SelectedCount < 2 then
+                PaintBox1.Cursor := crCross // For moving handle
+            end
         else
           PaintBox1.Cursor := crHandPoint;
-        Application.ProcessMessages;
       end;
   finally
     CurrentPosition.Free;
@@ -703,6 +718,8 @@ begin
 
     Dec(vRecursionDepth);
   end;
+  if DoInvalidate then
+    TDrawingSetFrame(Owner).Invalidate;
 end;
 
 procedure TDrawingFrame.PaintBox1MouseUp(Sender: TObject; Button: TMouseButton;
@@ -713,6 +730,7 @@ begin
   vMouseGuide2XTracking := false;
   vMouseGuide2YTracking := false;
   vMouseDown := false;
+  vMoveObject := false;
 end;
 
 procedure TDrawingFrame.Ruler_XPBMouseDown(Sender: TObject;

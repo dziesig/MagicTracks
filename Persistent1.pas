@@ -77,6 +77,7 @@ type
   public
     constructor  Create( aParent : TPersistentZ = nil ); override;
     destructor   Destroy; override;
+    procedure    Assign( Source : TPersistentZ ); override;
     function     Add( Item : Pointer) : Integer;   overload;
     procedure    Clear; virtual;
     procedure    Delete( Index : Integer ); overload;
@@ -237,6 +238,24 @@ begin
   Inc(fCount);
   Result := fCount;
   Modify;
+end;
+
+procedure TPersistentList.Assign(Source: TPersistentZ);
+var
+  S : TPersistentList;
+  L : TPersistentZ;
+  I : Integer;
+begin
+  inherited Assign(Source);
+  S := TPersistentList(Source);
+  Clear;
+  fCount := S.Count;;
+  for I := 0 to pred(S.Count) do
+    begin
+      L := TPersistentZ(S.Items[I]);
+      Add(L);
+    end;
+
 end;
 
 procedure TPersistentList.Clear;

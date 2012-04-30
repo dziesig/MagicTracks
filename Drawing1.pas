@@ -109,6 +109,7 @@ type
       procedure Draw( Frame : TFrame );
 
       procedure MoveSelected( Position : T3Point );
+      function  SelectedCount : Integer;
 
       procedure Update( var Data : TLayer; NewValue : TLayer );  overload;
 
@@ -436,6 +437,20 @@ begin
   Writeln(F,fGuide2Z);
 
   Writeln(F,'</Magic Track Drawing>' );
+end;
+
+function TDrawing.SelectedCount: Integer;
+var
+  DrawingObject : TDrawingObject;
+  I             : Integer;
+begin
+  Result := 0;
+  for I := 0 to pred(ActiveLayer.DrawingObjects.Count) do
+    begin
+      DrawingObject := TDrawingObject(ActiveLayer.DrawingObjects[I]);
+      if DrawingObject.Selected then
+        Inc(Result);
+    end;
 end;
 
 procedure TDrawing.SetActiveLayer(const AValue: TLayer);

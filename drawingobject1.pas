@@ -19,7 +19,7 @@ type
     fOrigin         : T3Point;
     fRho, fTheta    : Double;
     fSelect         : Boolean;
-    fMoveStart      : T3Point;
+//    fMoveStart      : T3Point;
 
     function GetX: Double;
     function GetY: Double;
@@ -67,6 +67,7 @@ type
                           Ref   : Integer );
 
     procedure Move( Position : T3Point );
+    procedure MoveHandle( Position : T3Point; Handle : Integer );
 
     procedure ToggleSelect;
     procedure Select;
@@ -206,10 +207,8 @@ end;
 
 procedure TDrawingObjectRaster.Resize(aWidth, aHeight: Integer);
 begin
-//  SetLength(vRaster,0);
   fWidth := aWidth div RasterDiv;
   fHeight := aHeight div RasterDiv;
-//  SetLength(vRaster, fWidth * fHeight );
   Reset;
 end;
 
@@ -285,28 +284,36 @@ end;
 { TDrawingObject }
 
 procedure TDrawingObject.Assign(Source: TPersistentZ);
+var
+  S : TDrawingObject;
 begin
   inherited Assign(Source);
+  S := TDrawingObject(Source);
+  fDrawingObjects.Assign(S.fDrawingObjects);
+  fOrigin.Assign(S.fOrigin);
+  fRho            := S.fRho;
+  fTheta          := S.fTheta;
+  fSelect         := S.fSelect;
 end;
 
 constructor TDrawingObject.Create(var F: TextFile; aParent: TPersistentZ);
 begin
-  Origin := T3Point.Create;;
-  fMoveStart := T3Point.Create;
+  Origin := T3Point.Create( self );
+//  fMoveStart := T3Point.Create;
 end;
 
 constructor TDrawingObject.Create(aParent: TPersistentZ);
 begin
   inherited Create(aParent);
   Origin := T3Point.Create;
-  fMoveStart := T3Point.Create;
+//  fMoveStart := T3Point.Create;
 end;
 
 destructor TDrawingObject.Destroy;
 begin
   Origin.Free;
   fDrawingObjects.Free;
-  fMoveStart.Free;
+//  fMoveStart.Free;
   inherited Destroy;
 end;
 
@@ -436,17 +443,13 @@ begin
 end;
 
 procedure TDrawingObject.Move(Position: T3Point);
-var
-  T : T3Point;
 begin
-//  InternalsForm1.PutEvent( 'Move', 'Pos:    ' + Position.Show );
-  //InternalsForm1.PutEvent( 'Move', 'Start:  ' + fMoveStart.Show );
-  //T := T3Point.Create(Position);
-  //T.Sub(fMoveStart);
-  //InternalsForm1.PutEvent( 'Move', 'T:      ' + T.Show );
   Origin.Add( Position );
-//  InternalsForm1.PutEvent( 'Move', 'Origin: ' + Origin.Show );
-//  T.Free;
+end;
+
+procedure TDrawingObject.MoveHandle(Position: T3Point; Handle: Integer);
+begin
+  ;
 end;
 
 function TDrawingObject.PixelsX(Value: T3Point; Box: TDrawingBox;
