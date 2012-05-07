@@ -24,7 +24,9 @@ unit Drawing1;
 interface
 
 uses
-  Classes, SysUtils, Persistent1, Preferences1, ExtCtrls, DrawingCommon1,
+  Classes, SysUtils,
+
+  Persists1, Preferences1, ExtCtrls, DrawingCommon1, TextIO1,
   Layers1, Graphics, Forms, ThreePoint1;
 
 type
@@ -32,7 +34,7 @@ type
 
   { TDrawing }
 
-  TDrawing = class(TPersistentZ)
+  TDrawing = class(TPersists)
     private
       fActiveLayer: TLayer;
       fPath : String;
@@ -87,15 +89,15 @@ type
       function IsModified : Boolean; override;
 
     public
-      constructor Create( AParent : TPersistentZ = nil ); override;
+      constructor Create( AParent : TPersists = nil ); override;
       destructor  Destroy; override;
 
       procedure MakeNew; override;
 
       procedure SetFullPath( Value : String );
 
-      procedure Save(var F : TextFile ); override;
-      procedure Load(var F : TextFile ); override;
+      procedure Save( TextIO : TTextIO ); override;
+      procedure Load( TextIO : TTextIO ); override;
 
       procedure PutToFile;
       procedure GetFromFile( IsReadOnly : Boolean = false);
@@ -179,7 +181,7 @@ begin
   Result := (fPath <> '') and (fName <> '') and (Pos('UNTITLED',fName) = 0);
 end;
 
-constructor TDrawing.Create( AParent : TPersistentZ );
+constructor TDrawing.Create( AParent : TPersists );
 begin
   inherited;
   fPreferences := TPreferences.Create;
@@ -210,13 +212,17 @@ end;
 
 procedure TDrawing.GetFromFile( IsReadOnly : Boolean);
 var
-  F : TextFile;
+//  F : TextFile;
+  TextIo : TTextIO;
 begin
   fReadOnly := IsReadOnly;
-  AssignFile(F, GetFullPath);
-  Reset(F);
-  Load(F);
-  Closefile(F);
+  TextIO := TTextIO.Create( GetFullPath, false );
+  Load( TextIO );
+  TextIO.Destroy;
+  //AssignFile(F, GetFullPath);
+  //Reset(F);
+  //Load(F);
+  //Closefile(F);
 end;
 
 function TDrawing.GetFullPath: string;
@@ -335,46 +341,46 @@ begin
   Result:=inherited IsModified or fPreferences.Modified;
 end;
 
-procedure TDrawing.Load( var F : TextFile );
+procedure TDrawing.Load( TextIO : TTextIO );
 var
-  S : String;
   V : Integer;
+  ClsName : String;
+  S       : String;
 begin
   MakeNew;
-  Readln(F, S);
-  if S <> '<Magic Track Drawing>' then
-    raise Exception.Create('Start of Drawing');
-  Readln(F, V );
+  ClsName := self.ClassName;    // Get the expected class name
+  TextIO.ReadLn(S);             // Read the start of class
+  CheckStartClass(S,ClsName);   // Assert they are correct and of correct format
+  TextIO.Readln(V);
 // Read based on version;
   if V >= 2 then
-    Preferences.Load(F);
+    Preferences.Load(TextIO);
   if V >= 3 then
     begin
-      Readln(F,fMinX[XY]);
-      Readln(F,fMinY[XY]);
-      Readln(F,fMinX[XZ]);
-      Readln(F,fMinZ[XZ]);
-      Readln(F,fMinY[YZ]);
-      Readln(F,fMinZ[XZ]);
+      TextIO.Readln(fMinX[XY]);
+      TextIO.Readln(fMinY[XY]);
+      TextIO.Readln(fMinX[XZ]);
+      TextIO.Readln(fMinZ[XZ]);
+      TextIO.Readln(fMinY[YZ]);
+      TextIO.Readln(fMinZ[XZ]);
     end;
   if V >= 4 then
     begin
-      Layers.Load(F);
+      Layers.Load(TextIO);
     end;
   if V >= 5 then
     begin
-      Readln(F,fGuide1X);
-      Readln(F,fGuide1Y);
-      Readln(F,fGuide1Z);
-      Readln(F,fGuide2X);
-      Readln(F,fGuide2Y);
-      Readln(F,fGuide2Z);
+      TextIO.Readln(fGuide1X);
+      TextIO.Readln(fGuide1Y);
+      TextIO.Readln(fGuide1Z);
+      TextIO.Readln(fGuide2X);
+      TextIO.Readln(fGuide2Y);
+      TextIO.Readln(fGuide2Z);
     end;
 
-  Readln(F, S);
-  if S <> '</Magic Track Drawing>' then
-    raise Exception.Create('End of Drawing');
-  inherited;
+  TextIO.Readln(S);             // Read the end of class
+  CheckEndClass(S,ClsName);     // Assert end of class is correct and of correct format
+  fModified := false;           // make sure this was NOT modified by the load.
 end;
 
 procedure TDrawing.MakeNew;
@@ -403,40 +409,42 @@ end;
 
 procedure TDrawing.PutToFile;
 var
-  F : TextFile;
+  TextIO : TTextIO;
 begin
-  AssignFile(F, GetFullPath);
-  Rewrite(F);
-  Save(F);
-  Closefile(F);
+  TextIO := TTextIO.Create( GetFullPath, true );
+  Save( TextIO );
+  TextIO.Destroy;
 end;
 
-procedure TDrawing.Save( var F : TextFile );
+procedure TDrawing.Save( TextIO : TTextIO );
+var
+  S : String;
 begin
-  inherited;
-  Writeln(F,'<Magic Track Drawing>' );
-  Writeln(F, CurrentVersion );
+  S := self.ClassName;          // Get our class name
+  TextIO.Writeln('<'+S+'>');    // Write the start of class
+  TextIO.Writeln(CurrentVersion);
   // Write based on version;
   // Version 2
-  Preferences.Save(F);
+  Preferences.Save(TextIO);
   // Version 3
-  Writeln(F,fMinX[XY]);
-  Writeln(F,fMinY[XY]);
-  Writeln(F,fMinX[XZ]);
-  Writeln(F,fMinZ[XZ]);
-  Writeln(F,fMinY[YZ]);
-  Writeln(F,fMinZ[XZ]);
+  TextIO.Writeln(fMinX[XY]);
+  TextIO.Writeln(fMinY[XY]);
+  TextIO.Writeln(fMinX[XZ]);
+  TextIO.Writeln(fMinZ[XZ]);
+  TextIO.Writeln(fMinY[YZ]);
+  TextIO.Writeln(fMinZ[XZ]);
   // Version 4
-  Layers.Save(F);
+  Layers.Save(TextIO);
   //Version 5
-  Writeln(F,fGuide1X);
-  Writeln(F,fGuide1Y);
-  Writeln(F,fGuide1Z);
-  Writeln(F,fGuide2X);
-  Writeln(F,fGuide2Y);
-  Writeln(F,fGuide2Z);
+  TextIO.Writeln(fGuide1X);
+  TextIO.Writeln(fGuide1Y);
+  TextIO.Writeln(fGuide1Z);
+  TextIO.Writeln(fGuide2X);
+  TextIO.Writeln(fGuide2Y);
+  TextIO.Writeln(fGuide2Z);
 
-  Writeln(F,'</Magic Track Drawing>' );
+  TextIO.Writeln('</'+S+'>');   // Write the end of class
+  fModified := false;           // if it were modified, it isn't any more.
 end;
 
 function TDrawing.SelectedCount: Integer;

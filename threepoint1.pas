@@ -25,13 +25,14 @@ interface
 
 uses
   Classes, SysUtils,
-  Persistent1;
+
+  Persists1, TextIO1;
 
 type
 
   { T3Point }
 
-  T3Point = class( TPersistentZ )
+  T3Point = class( TPersists )
   private
     procedure SetX(const AValue: Double);
     procedure SetY(const AValue: Double);
@@ -39,14 +40,14 @@ type
   public
     fX, fY, fZ : Double;
 
-    constructor Create( aParent : TPersistentZ = nil ); virtual;
-    constructor Create( vX, vY, vZ : Double; aParent : TPersistentZ = nil ); virtual;
-    constructor Create( From : T3Point; aParent : TPersistentZ = nil ); virtual;
+    constructor Create( aParent : TPersists = nil ); override;
+    constructor Create( vX, vY, vZ : Double; aParent : TPersists = nil ); virtual;
+    constructor Create( From : T3Point; aParent : TPersists = nil ); virtual;
 
     procedure Add( const Value : T3Point );
 
-    procedure Save(var F : TextFile ); override;
-    procedure Load(var F : TextFile ); override;
+    procedure Save( TextIO : TTextIO ); override;
+    procedure Load( TextIO : TTextIO ); override;
 
     procedure MakeNew;
 
@@ -65,22 +66,26 @@ type
 implementation
 
 uses
-  UnitConversion1, DrawingCommon1, Drawing1;
+  UnitConversion1; // , DrawingCommon1, Drawing1;
 
 { T3Point }
 
 const
   CurrentVersion = 1;
 
-procedure T3Point.Save(var F: TextFile);
+procedure T3Point.Save( TextIO : TTextIO );
+var
+  S : String;
 begin
-  inherited Save(F);
-  Writeln(F,'<3 Point>');
-  Writeln(F,CurrentVersion);
-  Writeln(F,fX);
-  Writeln(F,fY);
-  Writeln(F,fZ);
-  Writeln(F,'</3 Point>');
+  S := self.ClassName;          // Get our class name
+  TextIO.Writeln('<'+S+'>');    // Write the start of class
+
+  TextIO.Writeln(CurrentVersion);
+  TextIO.Writeln(fX);
+  TextIO.Writeln(fY);
+  TextIO.Writeln(fZ);
+  TextIO.Writeln('</'+S+'>');   // Write the end of class
+  fModified := false;           // if it were modified, it isn't any more.
 end;
 
 procedure T3Point.SetX(const AValue: Double);
@@ -127,12 +132,12 @@ begin
   fZ := From.fZ;
 end;
 
-constructor T3Point.Create(aParent: TPersistentZ);
+constructor T3Point.Create(aParent: TPersists);
 begin
   if aParent <> nil then inherited Create(aParent);
 end;
 
-constructor T3Point.Create( vX, vY, vZ: Double; aParent: TPersistentZ);
+constructor T3Point.Create( vX, vY, vZ: Double; aParent: TPersists);
 begin
   if aParent <> nil then inherited Create(aParent);
   fX := vX;
@@ -140,29 +145,31 @@ begin
   fZ := vZ;
 end;
 
-constructor T3Point.Create( From: T3Point; aParent: TPersistentZ);
+constructor T3Point.Create( From: T3Point; aParent: TPersists);
 begin
   if aParent <> nil then inherited Create(aParent);
   Assign( From );
 end;
 
-procedure T3Point.Load(var F: TextFile);
+procedure T3Point.Load( TextIO : TTextIO );
 var
   V : Integer;
-  S : String;
+  ClsName : String;
+  S       : String;
 begin
-  Readln(F,S);
-  if S <> '<3 Point>' then;
-  Readln(F,V);
+  ClsName := self.ClassName;    // Get the expected class name
+  TextIO.ReadLn(S);             // Read the start of class
+  CheckStartClass(S,ClsName);   // Assert they are correct and of correct format
+  TextIO.Readln(V);
   if V >= 1 then
     begin
-      Readln(F,fx);
-      Readln(F,fY);
-      Readln(F,fZ);
+      TextIO.Readln(fx);
+      TextIO.Readln(fY);
+      TextIO.Readln(fZ);
     end;
-  Readln(F,S);
-  if S <> '</3 Point>' then ;
-  inherited Load(F);
+  TextIO.Readln(S);             // Read the end of class
+  CheckEndClass(S,ClsName);     // Assert end of class is correct and of correct format
+  fModified := false;           // make sure this was NOT modified by the load.
 end;
 
 procedure T3Point.MakeNew;

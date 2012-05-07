@@ -24,7 +24,9 @@ unit RectangularSolid1;
 interface
 
 uses
-  Classes, SysUtils, Graphics, Persistent1, DrawingCommon1, DrawingObject1,
+  Classes, SysUtils, Graphics,
+
+  Persists1, TextIO1, DrawingCommon1, DrawingObject1,
   Preferences1, ExtCtrls, ThreePoint1, Forms;
 
 type
@@ -42,16 +44,16 @@ type
     procedure SetHeight(const AValue: Double);
     procedure SetLength(const AValue: Double);
     procedure SetWidth(const AValue: Double);
-  protected
-    procedure LoadCommon( var F : TextFile ); override;
+  //protected
+  //  procedure LoadCommon( var F : TextFile ); override;
   public
-    constructor Create( aParent : TPersistentZ = nil); override;
-    constructor Create( var F    : TextFile;
-                        aParent : TPersistentZ = nil ); override;
+    constructor Create( aParent : TPersists = nil); override;
+    //constructor Create( var F    : TextFile;
+    //                    aParent : TPersists = nil ); override;
     procedure MakeNew; override;
-    procedure Save( var F : TextFile ); override;
-    procedure Load( var F : TextFile ); override;
-    procedure Assign( Source : TPersistentZ ); override;
+    procedure Save( TextIO : TTextIO ); override;
+    procedure Load( TextIO : TTextIO ); override;
+    procedure Assign( Source : TPersists ); override;
 
     procedure Draw( Frame       : TFrame;
                     Preferences : TPreferences;
@@ -72,19 +74,19 @@ uses
 const
   CurrentVersion = 1;
 
-procedure TRectangularSolid.Assign(Source: TPersistentZ);
+procedure TRectangularSolid.Assign(Source: TPersists);
 begin
   inherited Assign(Source);
 end;
 
-constructor TRectangularSolid.Create(var F: TextFile; aParent: TPersistentZ);
-begin
-  inherited Create(F, aParent);
-  MakeNew;
-  LoadCommon( F );
-end;
+//constructor TRectangularSolid.Create(var F: TextFile; aParent: TPersistentZ);
+//begin
+//  inherited Create(F, aParent);
+//  MakeNew;
+//  LoadCommon( F );
+//end;
 
-constructor TRectangularSolid.Create(aParent: TPersistentZ);
+constructor TRectangularSolid.Create(aParent: TPersists);
 begin
   inherited Create(aParent);
   MakeNew;
@@ -164,32 +166,41 @@ begin
   Result := fSize.Y;
 end;
 
-procedure TRectangularSolid.Load(var F: TextFile);
+procedure TRectangularSolid.Load( TextIO : TTextIO );
 var
-  S : String;
   V : Integer;
+  ClsName : String;
+  S       : String;
 begin
-  Readln(F,S);
-  if S <> '<Rectangular Solid>' then
-    raise Exception.Create('Start of Rectangular Solid.');
-  LoadCommon( F );
-end;
-
-procedure TRectangularSolid.LoadCommon(var F: TextFile);
-var
-  S : String;
-  V : Integer;
-begin
-  Readln(F,V);
+  ClsName := self.ClassName;    // Get the expected class name
+  TextIO.ReadLn(S);             // Read the start of class
+  CheckStartClass(S,ClsName);   // Assert they are correct and of correct format
+  TextIO.Readln(V);
   if V >= 1 then
     begin
-      fSize.Load(F);
+      fSize.Load(TextIO);
     end;
-  inherited Load(F);  { TODO : Make sure that this inherited Load(F) is really needed/valid; }
-  Readln(F,S);
-  if S <> '</Rectangular Solid>' then
-    raise Exception.Create('End of Rectangular Solid.');
+  inherited Load(TextIO);  { TODO : Make sure that this inherited Load(F) is really needed/valid; }
+  TextIO.Readln(S);             // Read the end of class
+  CheckEndClass(S,ClsName);     // Assert end of class is correct and of correct format
+  fModified := false;           // make sure this was NOT modified by the load.
 end;
+
+//procedure TRectangularSolid.LoadCommon(var F: TextFile);
+//var
+//  S : String;
+//  V : Integer;
+//begin
+//  Readln(F,V);
+//  if V >= 1 then
+//    begin
+//      fSize.Load(F);
+//    end;
+//  inherited Load(F);  { TODO : Make sure that this inherited Load(F) is really needed/valid; }
+//  Readln(F,S);
+//  if S <> '</Rectangular Solid>' then
+//    raise Exception.Create('End of Rectangular Solid.');
+//end;
 
 procedure TRectangularSolid.MakeNew;
 begin
@@ -197,13 +208,18 @@ begin
   fSize := T3Point.Create;
 end;
 
-procedure TRectangularSolid.Save(var F: TextFile);
+procedure TRectangularSolid.Save( TextIO : TTextIO );
+var
+  S : String;
 begin
-  Writeln(F,'<Rectangular Solid>');
-  Writeln(F,CurrentVersion);
-  fSize.Save(F);
-  inherited Save(F);
-  Writeln(F,'</Rectangular Solid>');
+  S := self.ClassName;          // Get our class name
+  TextIO.Writeln('<'+S+'>');    // Write the start of class
+
+  TextIO.Writeln(CurrentVersion);
+  fSize.Save(TextIO);
+  inherited Save(TextIO);
+  TextIO.Writeln('</'+S+'>');   // Write the end of class
+  fModified := false;           // if it were modified, it isn't any more.
 end;
 
 procedure TRectangularSolid.SetHeight(const AValue: Double);

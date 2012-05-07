@@ -24,13 +24,15 @@ unit Preferences1;
 interface
 
 uses
-  Classes, SysUtils, Persistent1;
+  Classes, SysUtils,
+
+  Persists1, TextIO1;
 
 type
 
   { TPreferences }
 
-  TPreferences = class(TPersistentZ)
+  TPreferences = class(TPersists)
   private
     fEnglishUnits       : Boolean;   { Drawing is displayed in Feet, etc. }
     fInchesAndFractions : Boolean;   { If English, use e.g. 5'3 1/8", else 5.26042 }
@@ -55,14 +57,16 @@ type
     procedure SetSnapToGrid(const AValue: Boolean);
     procedure SetZoomIndex(const AValue: Integer);
   public
-    constructor Create( aParent : TPersistentZ = nil); override;
+    constructor Create( aParent : TPersists = nil); override;
 
     procedure MakeNew; override;
 
-    procedure Save( var F : TextFile ); override;
-    procedure Load( var F : TextFile ); override;
+    //procedure Save( var F : TextFile ); override;
+    //procedure Load( var F : TextFile ); override;
+    procedure Save( TextIO : TTextIO ); override;
+    procedure Load( TextIO : TTextIO ); override;
 
-    procedure Assign( Source : TPersistentZ ); override;
+    procedure Assign( Source : TPersists ); override;
 
     procedure PutToConfig( ConfigFileName : String );
     procedure GetFromConfig( ConfigFilename : String );
@@ -107,7 +111,7 @@ uses
 const
   CurrentVersion = 3;
 
-procedure TPreferences.Assign(Source: TPersistentZ);
+procedure TPreferences.Assign(Source: TPersists);
 var
   S : TPreferences;
 begin
@@ -126,7 +130,7 @@ begin
   ScaleIndex         := S.ScaleIndex;
 end;
 
-constructor TPreferences.Create(aParent: TPersistentZ);
+constructor TPreferences.Create(aParent: TPersists);
 begin
   inherited Create(aParent);
 end;
@@ -173,40 +177,50 @@ begin
   Result := Scales[fScaleIndex];
 end;
 
-procedure TPreferences.Load(var F: TextFile);
+procedure TPreferences.Load(TextIO : TTextIO );
 var
   S : String;
   V : Integer;
+  ClsName : String;
 begin
-  Readln(F,S);
-  if S <> '<Preferences>' then
-    raise Exception.Create('Sync Error:  Preferences Start');
+  ClsName := self.ClassName;    // Get the expected class name
+  TextIO.ReadLn(S);             // Read the start of class
+  CheckStartClass(S,ClsName);   // Assert they are correct and of correct format
+  TextIO.Readln(S);             // Read the Object's Name
+  Name := S;
+  TextIO.Readln(S);             // Read the end of class
+  CheckEndClass(S,ClsName);     // Assert end of class is correct and of correct format
+  fModified := false;           // make sure this was NOT modified by the load.
+
+  //Readln(F,S);
+  //if S <> '<Preferences>' then
+  //  raise Exception.Create('Sync Error:  Preferences Start');
   MakeNew;
-  Readln(F,V);
+  TextIO.Readln(V);
   if V >= 1 then
     begin
-      ReadBool(F,fEnglishUnits);
-      ReadBool(F,fInchesAndFractions);
-      ReadBool(F,fCentimeters);
-      ReadBool(F,fSnapToGrid);
-      ReadBool(F,fShowGrid);
-      Readln(F,fGridSpacingEnglish);
-      Readln(F,fGridSpacingMetric);
+      TextIO.Readln(fEnglishUnits);
+      //ReadBool(F,fEnglishUnits);
+      //ReadBool(F,fInchesAndFractions);
+      //ReadBool(F,fCentimeters);
+      //ReadBool(F,fSnapToGrid);
+      //ReadBool(F,fShowGrid);
+      //Readln(F,fGridSpacingEnglish);
+      //Readln(F,fGridSpacingMetric);
     end;
   if V >= 2 then
     begin
-      Readln(F,fZoomIndex);
+      TextIO.Readln(fZoomIndex);
     end;
   if V >= 3 then
     begin
-      Readln(F,fScaleIndex);
+      TextIO.Readln(fScaleIndex);
     end;
-  Readln(F,S);
+//  Readln(F,S);
 
-  if S <> '</Preferences>' then
-    raise Exception.Create('Sync Error:  Preferences End');
-
-  inherited Load(F);
+  TextIO.Readln(S);             // Read the end of class
+  CheckEndClass(S,ClsName);     // Assert end of class is correct and of correct format
+  inherited Load(TextIO);
 end;
 
 procedure TPreferences.MakeNew;
@@ -239,22 +253,27 @@ begin
   IniFile.Free;
 end;
 
-procedure TPreferences.Save(var F: TextFile);
+procedure TPreferences.Save( TextIO : TTextIO );
+var
+  S : String;
 begin
-  Writeln(F,'<Preferences>');
-  Writeln(F,CurrentVersion);
-  Writeln(F,EnglishUnits);
-  Writeln(F,InchesAndFractions);
-  Writeln(F,Centimeters);
-  Writeln(F,SnapToGrid);
-  Writeln(F,ShowGrid);
-  Writeln(F,GridSpacingEnglish);
-  Writeln(F,GridSpacingMetric);
-  Writeln(F,fZoomIndex);
-  Writeln(F,fScaleIndex);
-  Writeln(F,'</Preferences>');
-
-  inherited Save(F);
+  S := self.ClassName;          // Get our class name
+  TextIO.Writeln('<'+S+'>');    // Write the start of class
+  TextIO.Writeln(CurrentVersion);
+  //Writeln(F,'<Preferences>');
+  //Writeln(F,CurrentVersion);
+  TextIO.Writeln(EnglishUnits);
+  TextIO.Writeln(InchesAndFractions);
+  TextIO.Writeln(Centimeters);
+  TextIO.Writeln(SnapToGrid);
+  TextIO.Writeln(ShowGrid);
+  TextIO.Writeln(GridSpacingEnglish);
+  TextIO.Writeln(GridSpacingMetric);
+  TextIO.Writeln(fZoomIndex);
+  TextIO.Writeln(fScaleIndex);
+  //Writeln(F,'</Preferences>');
+  //
+  //inherited Save(F);
 end;
 
 procedure TPreferences.SetCentimeters(const AValue: Boolean);

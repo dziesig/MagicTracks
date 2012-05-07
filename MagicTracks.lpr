@@ -30,7 +30,7 @@ uses
   PreferencesForm1, UnitConversion1, Ruler1, DrawingFrame1, DrawingSetFrame1,
   ThreePoint1, LayerForm1, Layers1, Internals1, DrawingObject1, DrawingCommon1,
   RectangularSolid1, Sphere1, StraightLine1, Breshenham1,
-  CanvasStack1;
+  CanvasStack1, persists1, generics1, Common1, ObjectFactory1, TextIO1;
 
 {$R *.res}
 

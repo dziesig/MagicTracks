@@ -24,8 +24,10 @@ unit Layers1;
 interface
 
 uses
-  Classes, SysUtils, Graphics, Persistent1, DrawingObject1, DrawingCommon1,
-  Preferences1, ExtCtrls, Forms;
+  Classes, SysUtils, Graphics,
+
+  DrawingObject1, DrawingCommon1, Generics1,
+  Preferences1, ExtCtrls, Forms, Persists1, TextIO1;
 
 type
 
@@ -40,7 +42,7 @@ type
 
   { TLayer }
 
-  TLayer = class(TPersistentz)
+  TLayer = class(TPersists)
     private
       fLineColor    : Integer;
       fSurfaceColor : Integer;
@@ -63,14 +65,14 @@ type
       procedure SetTrackType(const AValue: Integer);
     public
 
-      constructor Create( AParent : TPersistentz = nil ); override;
+      constructor Create( AParent : TPersists = nil ); override;
       procedure PutToConfig( ConfigFileName : String );
       procedure GetFromConfig( ConfigFile : String );
 
-      procedure Assign( Source : TPersistentz ); override;
+      procedure Assign( Source : TPersists ); override;
 
-      procedure Load( var F : TextFile ); override;
-      procedure Save( var F : TextFile ); override;
+      procedure Load( TextIO : TTextIO ); override;
+      procedure Save( TextIO : TTextIO ); override;
 
       procedure Draw( Frame       : TFrame;
                       Preferences : TPreferences;
@@ -95,17 +97,19 @@ type
 
   { TLayers }
 
-  TLayers = class(TPersistentList)
+    TDrawingObjectList = specialize TMagicList<TLayer>;
+
+  TLayers = class(TDrawingObjectList)
     private
       fActiveLayer  : TLayerKinds;
       fViewLayers   : TViewLayers;
       procedure SetActiveLayer(const AValue: TLayerKinds);
       procedure SetViewLayers(const AValue: TViewLayers);
 
-      procedure ReadViewLayers( var F : TextFile; var Value : TViewLayers);
-      procedure WriteViewLayers( var F : TextFile; Value : TViewLayers);
+      procedure ReadViewLayers(  TextIO : TTextIO; var Value : TViewLayers);
+      procedure WriteViewLayers(  TextIO : TTextIO; Value : TViewLayers);
     public
-      constructor Create( aParent : TPersistentZ = nil ); override;
+      constructor Create( aParent : TPersists = nil ); override;
       destructor  Destroy; override;
 
       procedure PutToConfig( ConfigFileName : String );
@@ -113,13 +117,13 @@ type
       procedure Update( var Data : TLayerKinds; NewValue : TLayerKinds );  overload;
       procedure Update( var Data : TViewLayers; NewValue : TViewLayers );  overload;
 
-      procedure Assign( Source : TPersistentz ); override;
+      procedure Assign( Source : TPersists ); override;
 
       procedure SetViewLayer( Layer : TLayerKinds );
       procedure ClearViewLayer( Layer : TLayerKinds );
 
-      procedure Load( var F : TextFile ); override;
-      procedure Save( var F : TextFile ); override;
+      procedure Load( TextIO : TTextIO ); override;
+      procedure Save( TextIO : TTextIO ); override;
 
       function Drawing : TObject;
 
@@ -147,7 +151,7 @@ const
 
 { TLayer }
 
-procedure TLayer.Assign(Source: TPersistentz);
+procedure TLayer.Assign(Source: TPersists);
 var
   S : TLayer;
 begin
@@ -163,7 +167,7 @@ begin
   fTrackType    := S.fTrackType;
 end;
 
-constructor TLayer.Create(AParent: TPersistentz);
+constructor TLayer.Create(AParent: TPersists);
 begin
   fDrawingObjects := TDrawingObjects.Create( AParent );
 end;
@@ -219,40 +223,41 @@ begin
   IniFile.Free;
 end;
 
-procedure TLayer.Load(var F: TextFile);
+procedure TLayer.Load( TextIO : TTextIO );
 var
-  S : String;
   V : Integer;
+  ClsName : String;
+  S       : String;
   I : Integer;
   C : Integer;
   D : TDrawingObject;
 begin
   MakeNew;
-  Readln(F, S);
-  if S <> '<Magic Track Layer>' then
-    raise Exception.Create('Start of Layer');
-  Readln(F, V );
+  ClsName := self.ClassName;    // Get the expected class name
+  TextIO.ReadLn(S);             // Read the start of class
+  CheckStartClass(S,ClsName);   // Assert they are correct and of correct format
+  TextIO.Readln(V);
 // Read based on version;
   if V >= 1 then
     begin
-      Readln(F, fName );
-      Readln(F, fLineColor);
-      Readln(F, fSurfaceColor);
-      Readln(F, fLineStyle);
-      Readln(F, fLineSize);
-      Readln(F, fRailSize);
-      Readln(F, fLineStart);
-      Readln(F, fLineEnd);
-      Readln(F, fTrackType);
+      TextIO.ReadLn( fName );
+      TextIO.ReadLn( fLineColor);
+      TextIO.ReadLn( fSurfaceColor);
+      TextIO.ReadLn( fLineStyle);
+      TextIO.ReadLn( fLineSize);
+      TextIO.ReadLn( fRailSize);
+      TextIO.ReadLn( fLineStart);
+      TextIO.ReadLn( fLineEnd);
+      TextIO.ReadLn( fTrackType);
     end;
   if V >= 2 then
     begin
-      fDrawingObjects.Load(F);
+      fDrawingObjects.Load(TextIO);
     end;
-  Readln(F, S);
-  if S <> '</Magic Track Layer>' then
-    raise Exception.Create('End of Layer');
-  inherited Load(F);
+  TextIO.Readln(S);             // Read the end of class
+  CheckEndClass(S,ClsName);     // Assert end of class is correct and of correct format
+  fModified := false;           // make sure this was NOT modified by the load.
+//  inherited Load(F);
 end;
 
 procedure TLayer.PutToConfig(ConfigFileName: String);
@@ -273,26 +278,28 @@ begin
   IniFile.Free;
 end;
 
-procedure TLayer.Save(var F: TextFile);
+procedure TLayer.Save( TextIO : TTextIO );
 var
-  I : Integer;
+  S : String;
 begin
-  inherited Save(F);
-  Writeln(F,'<Magic Track Layer>' );
-  Writeln(F, CurrentVersion );
+  S := self.ClassName;          // Get our class name
+  TextIO.Writeln('<'+S+'>');    // Write the start of class
+
+  TextIO.Writeln(CurrentVersion);
   // Version 1
-  Writeln(F, Name );
-  Writeln(F, fLineColor);
-  Writeln(F, fSurfaceColor);
-  Writeln(F, fLineStyle);
-  Writeln(F, fLineSize);
-  Writeln(F, fRailSize);
-  Writeln(F, fLineStart);
-  Writeln(F, fLineEnd);
-  Writeln(F, fTrackType);
+  TextIO.Writeln( Name );
+  TextIO.Writeln( fLineColor);
+  TextIO.Writeln( fSurfaceColor);
+  TextIO.Writeln( fLineStyle);
+  TextIO.Writeln( fLineSize);
+  TextIO.Writeln( fRailSize);
+  TextIO.Writeln( fLineStart);
+  TextIO.Writeln( fLineEnd);
+  TextIO.Writeln( fTrackType);
   // Version 2
-  fDrawingObjects.Save( F );
-  Writeln(F,'</Magic Track Layer>' );
+  fDrawingObjects.Save( TextIO );
+  TextIO.Writeln('</'+S+'>');   // Write the end of class
+  fModified := false;           // if it were modified, it isn't any more.
 end;
 
 procedure TLayer.SetLineColor(const AValue: Integer);
@@ -343,7 +350,7 @@ begin
   fTrackType:=AValue;
 end;
 
-procedure TLayers.Assign(Source: TPersistentz);
+procedure TLayers.Assign(Source: TPersists);
 var
   S : TLayers;
   L : TLayer;
@@ -369,7 +376,7 @@ begin
     end;
 end;
 
-constructor TLayers.Create( aParent : TPersistentZ = nil );
+constructor TLayers.Create( aParent : TPersists = nil );
 var
   Kind      : TLayerKinds;
   Layer     : TLayer;
@@ -419,30 +426,32 @@ begin
     TLayer(Items[ord(Kind)]).GetFromConfig(ConfigFileName);
 end;
 
-procedure TLayers.Load(var F: TextFile);
+procedure TLayers.Load( TextIO : TTextIO );
 var
-  S : String;
   V : Integer;
-  I : TLayerKinds;
+  ClsName : String;
+  S       : String;
+  I       : TLayerKinds;
+  Temp    : Integer;
 begin
+  ClsName := self.ClassName;    // Get the expected class name
+  TextIO.ReadLn(S);             // Read the start of class
+  CheckStartClass(S,ClsName);   // Assert they are correct and of correct format
+  TextIO.Readln(V);
   MakeNew;
-  Readln(F, S);
-  if S <> '<Magic Track Layers>' then
-    raise Exception.Create('Start of Layers');
-  Readln(F, V );
 // Read based on version;
   if V >= 1 then
     begin
-      Readln(F, fActiveLayer);
-      ReadViewLayers(F, fViewLayers);
+      TextIO.Readln( Temp);
+      fActiveLayer := TLayerKinds( Temp );
+      ReadViewLayers( TextIO, fViewLayers );
       for I in TLayerKinds do
-        TLayer(Items[ord(I)]).Load(F);
+        TLayer(Items[ord(I)]).Load(TextIO);
     end;
 
-  Readln(F, S);
-  if S <> '</Magic Track Layers>' then
-    raise Exception.Create('End of Layers');
-  inherited Load(F);
+  TextIO.Readln(S);             // Read the end of class
+  CheckEndClass(S,ClsName);     // Assert end of class is correct and of correct format
+  fModified := false;           // make sure this was NOT modified by the load.
 end;
 
 procedure TLayers.PutToConfig(ConfigFileName: String);
@@ -468,7 +477,7 @@ begin
     end;
 end;
 
-procedure TLayers.ReadViewLayers(var F: TextFile; var Value: TViewLayers);
+procedure TLayers.ReadViewLayers( TextIO : TTextIO; var Value: TViewLayers);
 var
   I : TLayerKinds;
   V : Integer;
@@ -476,26 +485,28 @@ begin
   Value := [];
   for I in TLayerKinds do
     begin
-      Readln(F,V);
+      TextIO.Readln(V);
       if V = 1 then
         Value := Value + [I];
     end;
 end;
 
-procedure TLayers.Save(var F: TextFile);
+procedure TLayers.Save( TextIO : TTextIO );
 var
   I : TLayerKinds;
+  S : String;
 begin
-  inherited;
-  Writeln(F,'<Magic Track Layers>' );
-  Writeln(F, CurrentLayersVersion );
-  // Write based on version;
-  Writeln(F, fActiveLayer);
-  WriteViewLayers( F, fViewLayers );
-  for I in TLayerKinds do
-    TLayer(Items[ord(I)]).Save(F);
+  S := self.ClassName;          // Get our class name
+  TextIO.Writeln('<'+S+'>');    // Write the start of class
 
-  Writeln(F,'</Magic Track Layers>' );
+  TextIO.Writeln(CurrentVersion);
+  // Write based on version;
+  TextIO.Writeln(ord(fActiveLayer));
+  WriteViewLayers( TextIO, fViewLayers );
+  for I in TLayerKinds do
+    TLayer(Items[ord(I)]).Save(TextIO);
+  TextIO.Writeln('</'+S+'>');   // Write the end of class
+  fModified := false;           // if it were modified, it isn't any more.
 end;
 
 procedure TLayers.SetActiveLayer(const AValue: TLayerKinds);
@@ -530,15 +541,15 @@ begin
   Data := NewValue;
 end;
 
-procedure TLayers.WriteViewLayers(var F: TextFile; Value: TViewLayers);
+procedure TLayers.WriteViewLayers( TextIO : TTextIO; Value: TViewLayers);
 var
   I : TLayerKinds;
 begin
   for I in TLayerKinds do
     if I in Value then
-      Writeln(F, 1)
+      TextIO.Writeln(1)
     else
-      Writeln(F, 0);
+      TextIO.Writeln(0);
 end;
 
 end.

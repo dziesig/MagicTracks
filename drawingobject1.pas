@@ -5,15 +5,17 @@ unit DrawingObject1;
 interface
 
 uses
-  Classes, SysUtils, Persistent1, DrawingCommon1, Graphics, Preferences1,
-  ExtCtrls, ThreePoint1, Forms;
+  Classes, SysUtils,
+
+  Persists1, DrawingCommon1, Graphics, Preferences1,
+  ExtCtrls, ThreePoint1, Forms, TextIO1, Generics1;
 
 type
   TDrawingObjects = class;
 
   { TDrawingObject }
 
-  TDrawingObject = class(TPersistentz)
+  TDrawingObject = class(TPersists)
   private
     fDrawingObjects : TDrawingObjects;
     fOrigin         : T3Point;
@@ -33,14 +35,14 @@ type
   protected
     procedure LoadCommon( var F : TextFile ); virtual; abstract;
   public
-    constructor Create( aParent : TPersistentZ = nil); override;
-    constructor Create( var F    : TextFile;
-                        aParent : TPersistentZ = nil ); virtual; //abstract;
+    constructor Create( aParent : TPersists = nil); override;
+    //constructor Create( var F    : TextFile;
+    //                    aParent : TPersistentZ = nil ); virtual; //abstract;
     destructor Destroy; override;
     procedure MakeNew; override;
-    procedure Save( var F : TextFile ); override;
-    procedure Load( var F : TextFile ); override;
-    procedure Assign( Source : TPersistentZ ); override;
+    procedure Save( TextIO : TTextIO ); override;
+    procedure Load( TextIO : TTextIO ); override;
+    procedure Assign( Source : TPersists ); override;
 
     function PixelsX( Value       : T3Point;
                       Box         : TDrawingBox;
@@ -87,12 +89,14 @@ type
 
   { TDrawingObjects }
 
-  TDrawingObjects = class(TPersistentList)
+  TDrawingObjectList = specialize TMagicList<TDrawingObject>;
+
+  TDrawingObjects = class(TDrawingObjectList)
   public
     procedure MakeNew; override;
-    procedure Save( var F : TextFile ); override;
-    procedure Load( var F : TextFile ); override;
-    procedure Assign( Source : TPersistentZ ); override;
+    procedure Save( TextIO : TTextIO ); override;
+    procedure Load( TextIO : TTextIO ); override;
+    //procedure Assign( Source : TDrawingObjects ); override;
 
     procedure Draw( PaintBox : TPaintBox;
                     Box : TDrawingBox ); virtual; abstract;
@@ -214,10 +218,10 @@ end;
 
 { TDrawingObjects }
 
-procedure TDrawingObjects.Assign(Source: TPersistentZ);
-begin
-  inherited Assign(Source);
-end;
+//procedure TDrawingObjects.Assign(Source: TPersists);
+//begin
+//  inherited Assign(Source);
+//end;
 
 procedure TDrawingObjects.DeselectAll;
 var
@@ -227,7 +231,7 @@ begin
     TDrawingObject(Items[I]).Deselect;
 end;
 
-procedure TDrawingObjects.Load(var F: TextFile);
+procedure TDrawingObjects.Load( TextIO : TTextIO );
 var
   V : Integer;
   S : String;
@@ -268,7 +272,7 @@ begin
   inherited MakeNew;
 end;
 
-procedure TDrawingObjects.Save(var F: TextFile);
+procedure TDrawingObjects.Save( TextIO : TTextIO );
 var
   I : Integer;
 begin

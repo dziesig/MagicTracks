@@ -5,7 +5,9 @@ unit StraightLine1;
 interface
 
 uses
-  Classes, SysUtils, Persistent1, DrawingCommon1, DrawingObject1, ExtCtrls,
+  Classes, SysUtils,
+
+  Persists1, TextIO1, DrawingCommon1, DrawingObject1, ExtCtrls,
   Preferences1, ThreePoint1, Breshenham1, Forms;
 
 type
@@ -13,18 +15,18 @@ type
   { TStraightLine }
 
   TStraightLine = class(TDrawingObject)
-  protected
-    procedure LoadCommon( var F : TextFile ); override;
+  //protected
+  //  procedure LoadCommon( var F : TextFile ); override;
   private
     fLineEnd : T3Point;
   public
-    constructor Create( aParent : TPersistentZ = nil); override;
-    constructor Create( var F    : TextFile;
-                        aParent : TPersistentZ = nil ); override;
+    constructor Create( aParent : TPersists = nil); override;
+    //constructor Create( var F    : TextFile;
+    //                    aParent : TPersistentZ = nil ); override;
     procedure MakeNew; override;
-    procedure Save( var F : TextFile ); override;
-    procedure Load( var F : TextFile ); override;
-    procedure Assign( Source : TPersistentZ ); override;
+    procedure Save( TextIO : TTextIO ); override;
+    procedure Load( TextIO : TTextIO ); override;
+    procedure Assign( Source : TPersists ); override;
 
     //procedure Draw( PaintBox    : TPaintBox;
     //                Box         : TDrawingBox;
@@ -48,19 +50,19 @@ uses
 const
   CurrentVersion = 1;
 
-procedure TStraightLine.Assign(Source: TPersistentZ);
+procedure TStraightLine.Assign(Source: TPersists);
 begin
   inherited Assign(Source);
 end;
 
-constructor TStraightLine.Create(var F: TextFile; aParent: TPersistentZ);
-begin
-  inherited Create(F, aParent);
-  MakeNew;
-  LoadCommon( F );
-end;
+//constructor TStraightLine.Create(var F: TextFile; aParent: TPersistentZ);
+//begin
+//  inherited Create(F, aParent);
+//  MakeNew;
+//  LoadCommon( F );
+//end;
 
-constructor TStraightLine.Create(aParent: TPersistentZ);
+constructor TStraightLine.Create(aParent: TPersists);
 begin
   inherited Create(aParent);
   MakeNew;
@@ -108,32 +110,42 @@ begin
   Offset.free;
 end;
 
-procedure TStraightLine.Load(var F: TextFile);
+procedure TStraightLine.Load( TextIO : TTextIO );
 var
-  S : String;
   V : Integer;
+  ClsName : String;
+  S       : String;
 begin
-  Readln(F,S);
-  if S <> '<Straight Line>' then
-    raise Exception.Create('Start of Straight Line.');
-  LoadCommon( F );
-end;
-
-procedure TStraightLine.LoadCommon(var F: TextFile);
-var
-  S : String;
-  V : Integer;
-begin
-  Readln(F,V);
+  ClsName := self.ClassName;    // Get the expected class name
+  TextIO.ReadLn(S);             // Read the start of class
+  CheckStartClass(S,ClsName);   // Assert they are correct and of correct format
+  TextIO.Readln(V);
   if V >= 1 then
     begin
-      fLineEnd.Load(F);
+      fLineEnd.Load(TextIO);
     end;
-  inherited Load(F);  { TODO : Make sure that this inherited Load(F) is really needed/valid; }
-  Readln(F,S);
-  if S <> '</Straight Line>' then
-    raise Exception.Create('End of Rectangular Solid.');
-end;
+  inherited Load(TextIO);  { TODO : Make sure that this inherited Load(F) is really needed/valid; }
+
+  TextIO.Readln(S);             // Read the end of class
+  CheckEndClass(S,ClsName);     // Assert end of class is correct and of correct format
+  fModified := false;           // make sure this was NOT modified by the load.
+ end;
+
+//procedure TStraightLine.LoadCommon(var F: TextFile);
+//var
+//  S : String;
+//  V : Integer;
+//begin
+//  Readln(F,V);
+//  if V >= 1 then
+//    begin
+//      fLineEnd.Load(F);
+//    end;
+//  inherited Load(F);  { TODO : Make sure that this inherited Load(F) is really needed/valid; }
+//  Readln(F,S);
+//  if S <> '</Straight Line>' then
+//    raise Exception.Create('End of Rectangular Solid.');
+//end;
 
 procedure TStraightLine.MakeNew;
 begin
@@ -141,13 +153,18 @@ begin
   fLineEnd := T3Point.Create;
 end;
 
-procedure TStraightLine.Save(var F: TextFile);
+procedure TStraightLine.Save( TextIO : TTextIO );
+var
+  S : String;
 begin
-  Writeln(F,'<Straight Line>');
-  Writeln(F,CurrentVersion);
-  fLineEnd.Save(F);
-  inherited Save(F);
-  Writeln(F,'</Straight Line>');
+  S := self.ClassName;          // Get our class name
+  TextIO.Writeln('<'+S+'>');    // Write the start of class
+
+  TextIO.Writeln(CurrentVersion);
+  fLineEnd.Save(TextIO);
+  inherited Save(TextIO);
+  TextIO.Writeln('</'+S+'>');   // Write the end of class
+  fModified := false;           // if it were modified, it isn't any more.
 end;
 
 procedure TStraightLine.SetLineEnd(XX, YY, ZZ: Double);

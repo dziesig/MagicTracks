@@ -24,7 +24,9 @@ unit Sphere1;
 interface
 
 uses
-  Classes, SysUtils, Graphics, DrawingCommon1, DrawingObject1, Persistent1,
+  Classes, SysUtils, Graphics,
+
+  Persists1, DrawingCommon1, DrawingObject1, TextIO1,
   Preferences1, ExtCtrls, ThreePoint1, Forms;
 
 type
@@ -39,19 +41,19 @@ type
     //procedure SetRY(const AValue: Double);
     //procedure SetRZ(const AValue: Double);
     procedure SetRadii(const AValue: T3Point);
-  protected
-    procedure LoadCommon( var F : TextFile ); override;
+  //protected
+  //  procedure LoadCommon( var F : TextFile ); override;
   public
-    constructor Create( aParent : TPersistentZ = nil); override;
-    constructor Create( var F   : TextFile;
-                        aParent : TPersistentZ = nil ); virtual;
+    constructor Create( aParent : TPersists = nil); override;
+    //constructor Create( var F   : TextFile;
+    //                    aParent : TPersistentZ = nil ); virtual;
 
     destructor Destroy; override;
 
     procedure MakeNew; override;
-    procedure Save( var F : TextFile ); override;
-    procedure Load( var F : TextFile ); override;
-    procedure Assign( Source : TPersistentZ ); override;
+    procedure Save( TextIO : TTextIO ); override;
+    procedure Load( TextIO : TTextIO ); override;
+    procedure Assign( Source : TPersists ); override;
 
     procedure Draw( Frame       : TFrame;
                     Preferences : TPreferences;
@@ -152,19 +154,19 @@ end;////////////////////////////////////////////////////////////////////////////
 const
   CurrentVersion = 1;
 
-procedure TSphere.Assign(Source: TPersistentZ);
+procedure TSphere.Assign(Source: TPersists);
 begin
   inherited Assign(Source);
 end;
 
-constructor TSphere.Create(var F: TextFile; aParent: TPersistentZ);
-begin
-  inherited Create(aParent);
-  MakeNew;
-  LoadCommon( F );
-end;
+//constructor TSphere.Create(var F: TextFile; aParent: TPersists);
+//begin
+//  inherited Create(aParent);
+//  MakeNew;
+//  LoadCommon( F );
+//end;
 
-constructor TSphere.Create(aParent: TPersistentZ);
+constructor TSphere.Create(aParent: TPersists);
 begin
   inherited Create(aParent);
   MakeNew;
@@ -197,55 +199,62 @@ begin
   end;
 end;
 
-procedure TSphere.Load(var F: TextFile);
+procedure TSphere.Load( TextIO : TTextIO );
 var
-  S : String;
   V : Integer;
+  ClsName : String;
+  S       : String;
 begin
-  Readln(F,S);
-  if S <> '<Sphere>' then
-    raise Exception.Create('Start of Sphere.');
-  LoadCommon( F );
-end;
-
-procedure TSphere.LoadCommon(var F: TextFile);
-var
-  S : String;
-  V : Integer;
-begin
-  Readln(F,V);
+  ClsName := self.ClassName;    // Get the expected class name
+  TextIO.ReadLn(S);             // Read the start of class
+  CheckStartClass(S,ClsName);   // Assert they are correct and of correct format
+  TextIO.Readln(V);
   if V >= 1 then
     begin
-      fRadii.Load(F);
-      //Readln(F,fRX);
-      //Readln(F,fRY);
-      //Readln(F,fRZ);
+      fRadii.Load(TextIO);
     end;
-  inherited Load(F);
-  Readln(F,S);
-  if S <> '</Sphere>' then
-    raise Exception.Create('End of Sphere.');
+  inherited Load(TextIO);
+  TextIO.Readln(S);             // Read the end of class
+  CheckEndClass(S,ClsName);     // Assert end of class is correct and of correct format
+  fModified := false;           // make sure this was NOT modified by the load.
 end;
+
+//procedure TSphere.LoadCommon( TextIO : TTextIO );
+//var
+//  S : String;
+//  V : Integer;
+//begin
+//  Readln(F,V);
+//  if V >= 1 then
+//    begin
+//      fRadii.Load(F);
+//      //Readln(F,fRX);
+//      //Readln(F,fRY);
+//      //Readln(F,fRZ);
+//    end;
+//  inherited Load(F);
+//  Readln(F,S);
+//  if S <> '</Sphere>' then
+//    raise Exception.Create('End of Sphere.');
+//end;
 
 procedure TSphere.MakeNew;
 begin
   inherited MakeNew;
   Radii :=T3Point.Create( Self );
-  //fRX := 0;
-  //fRY := 0;
-  //fRZ := 0;
 end;
 
-procedure TSphere.Save(var F: TextFile);
+procedure TSphere.Save( TextIO : TTextIO );
+var
+  S : String;
 begin
-  Writeln(F,'<Sphere>');
-  Writeln(F,CurrentVersion);
-  fRadii.Save( F );
-  //Writeln(F,fRX);
-  //Writeln(F,fRY);
-  //Writeln(F,fRZ);
-  inherited Save(F);
-  Writeln(F,'</Sphere>');
+  S := self.ClassName;          // Get our class name
+  TextIO.Writeln('<'+S+'>');    // Write the start of class
+
+  TextIO.Writeln(CurrentVersion);
+  fRadii.Save( TextIO );
+  TextIO.Writeln('</'+S+'>');   // Write the end of class
+  fModified := false;           // if it were modified, it isn't any more.
 end;
 
 procedure TSphere.SetRadii(const AValue: T3Point);
@@ -254,20 +263,6 @@ begin
   fRadii:=AValue;
 end;
 
-//procedure TSphere.SetRX(const AValue: Double);
-//begin
-//  Update(fRX,AValue);
-//end;
-//
-//procedure TSphere.SetRY(const AValue: Double);
-//begin
-//  Update(fRY,AValue);
-//end;
-//
-//procedure TSphere.SetRZ(const AValue: Double);
-//begin
-//  Update(fRZ,AValue);
-//end;
 
 end.
 
