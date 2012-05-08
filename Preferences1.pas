@@ -186,11 +186,11 @@ begin
   ClsName := self.ClassName;    // Get the expected class name
   TextIO.ReadLn(S);             // Read the start of class
   CheckStartClass(S,ClsName);   // Assert they are correct and of correct format
-  TextIO.Readln(S);             // Read the Object's Name
-  Name := S;
-  TextIO.Readln(S);             // Read the end of class
-  CheckEndClass(S,ClsName);     // Assert end of class is correct and of correct format
-  fModified := false;           // make sure this was NOT modified by the load.
+//  TextIO.Readln(S);             // Read the Object's Name
+//  Name := S;
+  //TextIO.Readln(S);             // Read the end of class
+  //CheckEndClass(S,ClsName);     // Assert end of class is correct and of correct format
+  //fModified := false;           // make sure this was NOT modified by the load.
 
   //Readln(F,S);
   //if S <> '<Preferences>' then
@@ -201,12 +201,12 @@ begin
     begin
       TextIO.Readln(fEnglishUnits);
       //ReadBool(F,fEnglishUnits);
-      //ReadBool(F,fInchesAndFractions);
-      //ReadBool(F,fCentimeters);
-      //ReadBool(F,fSnapToGrid);
-      //ReadBool(F,fShowGrid);
-      //Readln(F,fGridSpacingEnglish);
-      //Readln(F,fGridSpacingMetric);
+      TextIO.Readln(fInchesAndFractions);
+      TextIO.Readln(fCentimeters);
+      TextIO.Readln(fSnapToGrid);
+      TextIO.Readln(fShowGrid);
+      TextIO.Readln(fGridSpacingEnglish);
+      TextIO.Readln(fGridSpacingMetric);
     end;
   if V >= 2 then
     begin
@@ -220,7 +220,7 @@ begin
 
   TextIO.Readln(S);             // Read the end of class
   CheckEndClass(S,ClsName);     // Assert end of class is correct and of correct format
-  inherited Load(TextIO);
+//  inherited Load(TextIO);
 end;
 
 procedure TPreferences.MakeNew;
@@ -271,9 +271,8 @@ begin
   TextIO.Writeln(GridSpacingMetric);
   TextIO.Writeln(fZoomIndex);
   TextIO.Writeln(fScaleIndex);
-  //Writeln(F,'</Preferences>');
-  //
-  //inherited Save(F);
+  TextIO.Writeln('</'+S+'>');    // Write the end of class
+  fModified := false;
 end;
 
 procedure TPreferences.SetCentimeters(const AValue: Boolean);

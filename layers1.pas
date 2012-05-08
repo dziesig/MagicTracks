@@ -356,7 +356,7 @@ var
   L : TLayer;
   I : Integer;
 begin
-  inherited Assign(Source);
+//  inherited Assign(Source);
   S := TLayers( Source );
   fViewLayers := S.fViewLayers;
   fActiveLayer := S.fActiveLayer;

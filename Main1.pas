@@ -227,7 +227,7 @@ implementation
 
 uses
   About1, PreferencesForm1, LayerForm1, Internals1, Sphere1, DrawingObject1,
-  RectangularSolid1, ThreePoint1, StraightLine1, IniFiles;
+  RectangularSolid1, ThreePoint1, StraightLine1, IniFiles, ObjectFactory1;
 
 { TMainForm }
 
@@ -451,6 +451,10 @@ begin
 { NO ActiveDrawing to start }
 
   ActiveDrawing := nil;
+
+{ Populate the Object Factory }
+
+  ObjectFactory.RegisterClass(TStraightLine.ClassType);
 
 end;
 

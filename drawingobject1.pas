@@ -94,8 +94,8 @@ type
   TDrawingObjects = class(TDrawingObjectList)
   public
     procedure MakeNew; override;
-    procedure Save( TextIO : TTextIO ); override;
-    procedure Load( TextIO : TTextIO ); override;
+    //procedure Save( TextIO : TTextIO ); override;
+    //procedure Load( TextIO : TTextIO ); override;
     //procedure Assign( Source : TDrawingObjects ); override;
 
     procedure Draw( PaintBox : TPaintBox;
@@ -231,63 +231,63 @@ begin
     TDrawingObject(Items[I]).Deselect;
 end;
 
-procedure TDrawingObjects.Load( TextIO : TTextIO );
-var
-  V : Integer;
-  S : String;
-  C : Integer;
-  I : Integer;
-  O : TDrawingObject;
-begin
-  Readln(F,S);
-  if S <> '<DrawingObjects>' then
-    raise Exception.Create('Start of Drawing Object List');
-  Readln(F, V );
-// Read based on version;
-  if V >= 1 then
-    begin
-      Readln(F,C);
-      for I := 0 to pred(C) do
-        begin
-          Readln(F,S);
-          if S = '<Rectangular Solid>' then
-            O := TRectangularSolid.Create(F,self)
-          else if S = '<Sphere>' then
-            O := TSphere.Create(F,Self)
-          else if S = '<Straight Line>' then
-            O := TStraightLine.Create(F,self)
-          else
-            raise Exception.Create('Drawing Object List Error or unknown Drawing Object: ' + S);
-          Add(O);
-        end;
-    end;
-  Readln(F, S);
-  if S <> '</DrawingObjects>' then
-    raise Exception.Create('End of Drawing Object List');
-  inherited Load(F);
-end;
+//procedure TDrawingObjects.Load( TextIO : TTextIO );
+//var
+//  V : Integer;
+//  S : String;
+//  C : Integer;
+//  I : Integer;
+//  O : TDrawingObject;
+//begin
+//  ClsName := self.ClassName;    // Get the expected class name
+//  TextIO.ReadLn(S);             // Read the start of class
+//  CheckStartClass(S,ClsName);   // Assert they are correct and of correct format
+//  TextIO.Readln(V);
+//// Read based on version;
+//  if V >= 1 then
+//    begin
+//      Readln(F,C);
+//      for I := 0 to pred(C) do
+//        begin
+//          Readln(F,S);
+//          if S = '<Rectangular Solid>' then
+//            O := TRectangularSolid.Create(F,self)
+//          else if S = '<Sphere>' then
+//            O := TSphere.Create(F,Self)
+//          else if S = '<Straight Line>' then
+//            O := TStraightLine.Create(F,self)
+//          else
+//            raise Exception.Create('Drawing Object List Error or unknown Drawing Object: ' + S);
+//          Add(O);
+//        end;
+//    end;
+//  Readln(F, S);
+//  if S <> '</DrawingObjects>' then
+//    raise Exception.Create('End of Drawing Object List');
+//  inherited Load(F);
+//end;
 
 procedure TDrawingObjects.MakeNew;
 begin
   inherited MakeNew;
 end;
 
-procedure TDrawingObjects.Save( TextIO : TTextIO );
-var
-  I : Integer;
-begin
-  inherited Save(F);
-  Writeln(F,'<DrawingObjects>');
-  Writeln(F,CurrentListVersion);
-  Writeln(F,Count);
-  for I := 0 to pred(Count) do
-    TDrawingObject(Items[I]).Save(F);
-  Writeln(F,'</DrawingObjects>');
-end;
+//procedure TDrawingObjects.Save( TextIO : TTextIO );
+//var
+//  I : Integer;
+//begin
+//  inherited Save(F);
+//  Writeln(F,'<DrawingObjects>');
+//  Writeln(F,CurrentListVersion);
+//  Writeln(F,Count);
+//  for I := 0 to pred(Count) do
+//    TDrawingObject(Items[I]).Save(F);
+//  Writeln(F,'</DrawingObjects>');
+//end;
 
 { TDrawingObject }
 
-procedure TDrawingObject.Assign(Source: TPersistentZ);
+procedure TDrawingObject.Assign(Source: TPersists);
 var
   S : TDrawingObject;
 begin
@@ -300,13 +300,13 @@ begin
   fSelect         := S.fSelect;
 end;
 
-constructor TDrawingObject.Create(var F: TextFile; aParent: TPersistentZ);
-begin
-  Origin := T3Point.Create( self );
-//  fMoveStart := T3Point.Create;
-end;
+//constructor TDrawingObject.Create(var F: TextFile; aParent: TPersists);
+//begin
+//  Origin := T3Point.Create( self );
+////  fMoveStart := T3Point.Create;
+//end;
 
-constructor TDrawingObject.Create(aParent: TPersistentZ);
+constructor TDrawingObject.Create(aParent: TPersists);
 begin
   inherited Create(aParent);
   Origin := T3Point.Create;
@@ -399,24 +399,25 @@ begin
   Result := fOrigin.fZ;
 end;
 
-procedure TDrawingObject.Load(var F: TextFile);
+procedure TDrawingObject.Load( TextIO : TTextIO );
 var
-  S : String;
   V : Integer;
+  ClsName : String;
+  S       : String;
 begin
-  Readln(F,S);
-  if S <> '<Drawing Object>' then
-    raise Exception.Create('Start of Drawing Object');
-  Readln(F,V);
+  ClsName := self.ClassName;    // Get the expected class name
+  TextIO.ReadLn(S);             // Read the start of class
+  CheckStartClass(S,ClsName);   // Assert they are correct and of correct format
+  TextIO.Readln(V);
   if V >= 1 then
-    fOrigin.Load(F);
-  Readln(F,fRho);
-  Readln(F,fTheta);
+    fOrigin.Load(TextIO);
+  TextIO.Readln(fRho);
+  TextIO.Readln(fTheta);
 
-  inherited Load(F);
-  Readln(F,S);
-  if S <> '</Drawing Object>' then
-    raise Exception.Create('End of Drawing Object');
+//  inherited Load(F);
+TextIO.Readln(S);             // Read the end of class
+CheckEndClass(S,ClsName);     // Assert end of class is correct and of correct format
+fModified := false;           // make sure this was NOT modified by the load.
 end;
 
 procedure TDrawingObject.MakeNew;
@@ -495,17 +496,21 @@ begin
   //InternalsForm1.PutEvent('========','=====================================');
 end;
 
-procedure TDrawingObject.Save(var F: TextFile);
+procedure TDrawingObject.Save( TextIO : TTextIO );
+var
+  S : String;
 begin
-  Writeln(F,'<Drawing Object>');
-  Writeln(F,CurrentVersion);
-  fOrigin.Save(F);
+  S := self.ClassName;          // Get our class name
+  TextIO.Writeln('<'+S+'>');    // Write the start of class
 
-  Writeln(F,fRho);
-  Writeln(F,fTheta);
+  TextIO.Writeln(CurrentVersion);
+  fOrigin.Save(TextIO);
 
-  inherited Save(F);
-  Writeln(F,'</Drawing Object>');
+  TextIO.Writeln(fRho);
+  TextIO.Writeln(fTheta);
+
+  TextIO.Writeln('</'+S+'>');   // Write the end of class
+  fModified := false;           // if it were modified, it isn't any more.
 end;
 
 procedure TDrawingObject.SetOrigin(const AValue: T3Point);
