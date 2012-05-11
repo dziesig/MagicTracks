@@ -142,3 +142,23 @@
          common1 and persistent1 units to the MagicLibraries folder and
          make sure I can compile them before I start using generic types.
 
+         Got it done.
+
+0006.0   May 9, 2012 - Wednesday
+
+0006.1   Got the new persists1 and generic1 units to compile and test
+         properly.  Tried to integrate them with the MagicTracks app but
+         ran into problems with the creation of objects by the Object Factory.
+
+         Not sure that I got the integration correct so here is the
+         data design for the Drawing:
+
+Drawing1      TDrawing
+                TPreferences
+                TLayers  == specialize TMagicList<TLayer>->TDrawingObjectList->TLayers    { rename TDrawingObjectList to TLayerList - crash with DrawingObject1 use of same type name }
+                  TLayer ==
+
+                  specialize TMagicList<TDrawingObject>->TDrawingObjectList->TDrawingObjects
+
+           { the two guides should be changed to use T3Point }
+
