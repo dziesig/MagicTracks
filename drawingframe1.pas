@@ -162,8 +162,8 @@ implementation
 {$R *.lfm}
 
 uses
-  Common1, Graphics, UnitConversion1, Preferences1, Math,
-  DrawingSetFrame1, Internals1, CanvasStack1;
+  Common1, Graphics, UnitConversion1{, Preferences1, Math,
+  DrawingSetFrame1, Internals1}, CanvasStack1;
 
 const
   RulerHackColor = clGreen;

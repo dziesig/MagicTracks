@@ -62,7 +62,7 @@ type
                     Preferences : TPreferences;
                     ActiveLayer : Boolean ); virtual; abstract;
 
-    function Drawing : TObject;
+//    function Drawing : TObject;
 
     procedure DrawHandle( Frame : TFrame;
                           X, Y  : Integer; // Pixel coordinates on Canvas
@@ -136,8 +136,8 @@ type
 implementation
 
 uses
-  Main1, Internals1, Drawing1, UnitConversion1, RectangularSolid1, Sphere1,
-  StraightLine1, CanvasStack1, DrawingFrame1;
+  {Main1, Internals1, Drawing1, UnitConversion1, RectangularSolid1, Sphere1,
+  StraightLine1,} CanvasStack1{, DrawingFrame1};
 
 const
   CurrentVersion = 1;
@@ -322,52 +322,52 @@ begin
 end;
 
 procedure TDrawingObject.DrawHandle(Frame: TFrame; X, Y: Integer; Ref : Integer);
-var
-  DF : TDrawingFrame;
-  X0, Y0, X1, Y1 : Integer;
-  Size : Integer;
+//var
+//  DF : TDrawingFrame;
+//  X0, Y0, X1, Y1 : Integer;
+//  Size : Integer;
 begin
-  DF := Frame as TDrawingFrame;
-  if Ref = 1 then
-    begin
-      Size := 5;
-    end
-  else
-    begin
-      Size := 4;
-    end;
-  X0 := X - Size;
-  X1 := X + Size;
-  Y0 := Y - Size;
-  Y1 := Y + Size;
-  DF.DrawingObject(X0, Y0, Self,Ref);
-  DF.DrawingObject(X0, Y1, Self,Ref);
-  DF.DrawingObject(X1, Y0, Self,Ref);
-  DF.DrawingObject(X1, Y1, Self,Ref);
-  DF.DrawingObject( X, Y,  Self, Ref );
-  CanvasStack.Push( DF.PaintBox1.Canvas );
-  DF.PaintBox1.Canvas.Pen.Width := 1;
-  DF.PaintBox1.Canvas.Pen.Style := psSolid;
-  DF.PaintBox1.Canvas.Pen.Color := clBlack;
-  DF.PaintBox1.Canvas.Brush.Color := $cccc00;
-  DF.PaintBox1.Canvas.Rectangle( X0, Y0, X1, Y1 );
-  X0 := X - Size + 3;
-  Y0 := Y + Size - 2;
-  X1 := X + Size - 2;
-  Y1 := Y - Size + 3;
-
-  DF.PaintBox1.Canvas.Pen.Width := 1;
-  DF.PaintBox1.Canvas.Pen.Color := clBlack;
-  DF.PaintBox1.Canvas.MoveTo( X0,Y0);
-  DF.PaintBox1.Canvas.LineTo( X1,Y0);
-  DF.PaintBox1.Canvas.LineTo( X1, Y1);
-  CanvasStack.Pop( DF.PaintBox1.Canvas );
+  //DF := Frame as TDrawingFrame;
+  //if Ref = 1 then
+  //  begin
+  //    Size := 5;
+  //  end
+  //else
+  //  begin
+  //    Size := 4;
+  //  end;
+  //X0 := X - Size;
+  //X1 := X + Size;
+  //Y0 := Y - Size;
+  //Y1 := Y + Size;
+  //DF.DrawingObject(X0, Y0, Self,Ref);
+  //DF.DrawingObject(X0, Y1, Self,Ref);
+  //DF.DrawingObject(X1, Y0, Self,Ref);
+  //DF.DrawingObject(X1, Y1, Self,Ref);
+  //DF.DrawingObject( X, Y,  Self, Ref );
+  //CanvasStack.Push( DF.PaintBox1.Canvas );
+  //DF.PaintBox1.Canvas.Pen.Width := 1;
+  //DF.PaintBox1.Canvas.Pen.Style := psSolid;
+  //DF.PaintBox1.Canvas.Pen.Color := clBlack;
+  //DF.PaintBox1.Canvas.Brush.Color := $cccc00;
+  //DF.PaintBox1.Canvas.Rectangle( X0, Y0, X1, Y1 );
+  //X0 := X - Size + 3;
+  //Y0 := Y + Size - 2;
+  //X1 := X + Size - 2;
+  //Y1 := Y - Size + 3;
+  //
+  //DF.PaintBox1.Canvas.Pen.Width := 1;
+  //DF.PaintBox1.Canvas.Pen.Color := clBlack;
+  //DF.PaintBox1.Canvas.MoveTo( X0,Y0);
+  //DF.PaintBox1.Canvas.LineTo( X1,Y0);
+  //DF.PaintBox1.Canvas.LineTo( X1, Y1);
+  //CanvasStack.Pop( DF.PaintBox1.Canvas );
 end;
 
-function TDrawingObject.Drawing: TObject;
-begin
-  Result := MainForm.ActiveDrawing;
-end;
+//function TDrawingObject.Drawing: TObject;
+//begin
+//  Result := MainForm.ActiveDrawing;
+//end;
 
 procedure TDrawingObject.ToggleSelect;
 begin
